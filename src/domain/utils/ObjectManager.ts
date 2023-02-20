@@ -47,7 +47,6 @@ export class ObjectManager extends Object {
    * @returns obj
    */
   static assing(obj: object, input: object) {
-
     if (!obj || !input) throw new Error('Input or obj is null in assing.');
     for (const key in obj) {
       if (input[key]) {

@@ -1,12 +1,11 @@
-import { iEntity } from "../contracts";
-import { ObjectManager } from "../utils";
+import { iEntity } from '../contracts';
+import { ObjectManager } from '../utils';
 
 export class UserEntity extends iEntity {
+  public readonly name: string;
 
-    public readonly name : string
-
-    constructor(user : Partial<UserEntity>){
-        super(user)
-        ObjectManager.assing(this, user)
-    }
+  constructor(user: Partial<UserEntity>) {
+    super(user);
+    ObjectManager.assing(this, user);
+  }
 }
