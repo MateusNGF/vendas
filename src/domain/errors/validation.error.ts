@@ -1,4 +1,4 @@
-import { BadRequestError } from "./Http.error";
+import { BadRequestError } from './Http.error';
 
 export class MissingParamError extends BadRequestError {
   name: string = 'Missing Param';

@@ -15,7 +15,7 @@ class DateManager implements iDateProvider {
   }
 
   toPrimitive(): Date {
-    return new Date(this.dateRef)
+    return new Date(this.dateRef);
   }
 
   toDateString(locateFormart?: iDateProvider.Locates): string {
@@ -63,7 +63,7 @@ class DateManager implements iDateProvider {
       this.locateFormart,
       { timeZone: timezone ?? process.env.TZ }
     );
-    return new Date(dateNormalized)
+    return new Date(dateNormalized);
   }
 }
 
