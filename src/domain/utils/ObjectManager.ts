@@ -47,11 +47,10 @@ export class ObjectManager extends Object {
    * @returns obj
    */
   static assing(obj: object, input: object) {
-    const ignoreKeyds = ['_id', 'created_at', 'updated_at'];
 
     if (!obj || !input) throw new Error('Input or obj is null in assing.');
     for (const key in obj) {
-      if (!ignoreKeyds[key] && input[key]) {
+      if (input[key]) {
         obj[key] = input[key];
       }
     }
