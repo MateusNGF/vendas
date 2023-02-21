@@ -27,7 +27,7 @@ describe('CreateTokenAuthenticate', () => {
         sut = new CreateAuthenticate(authenticateRepository, getAuthenticateRecord, hashAdapter);
 
         fakeOutput = {
-            token: "token_valid"
+            id: "id_any"
         }
         fakeInputCredentials = {
             associeted_id: '123',
@@ -48,9 +48,9 @@ describe('CreateTokenAuthenticate', () => {
     it('Should return new authenticate id if email has valid.', async () => {
         getAuthenticateRecord.exec.mockResolvedValue(null);
         hashAdapter.encrypt.mockResolvedValue('string_encripted')
-        authenticateRepository.create.mockResolvedValue(fakeAuth)
+        authenticateRepository.create.mockResolvedValue({ id : fakeOutput.id})
 
         const result = await sut.exec(fakeInputCredentials);
-        expect(result).toEqual(fakeAuth.id);
+        expect(result).toEqual(expect.objectContaining(fakeOutput));
     });
 });

@@ -13,6 +13,6 @@ export namespace iCreateAuthentication {
     }
 
     export type Output = {
-        token :string
+        id : string
     }
 }

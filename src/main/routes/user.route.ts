@@ -1,8 +1,11 @@
 import { Router } from 'express';
-import { adaptExpressRoute } from '../adapters/express-route';
 
 export default (router: Router): void => {
-  router.post('/register', (req, res) => {
-    res.send({ heloo: 'hello' });
+  router.post('/register', async (req, res) => {
+    try{
+    }catch(e){
+      console.log(e)
+      res.status(400).send()
+    }
   });
 };
