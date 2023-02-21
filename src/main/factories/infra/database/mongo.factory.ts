@@ -13,7 +13,7 @@ const getConnection = () : Db => {
 
 export const makeAuthenticateRepository = () : iAuthenticateRepository => {
     const database = getConnection()
-    const authenticateColletion =  database.collection<AuthEntity>('authenticate')
+    const authenticateColletion =  database.collection<AuthEntity>('authenticates')
 
     return new AuthenticateRepository(
         database, 
