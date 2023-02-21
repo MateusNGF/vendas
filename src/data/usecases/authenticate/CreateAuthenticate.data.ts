@@ -2,6 +2,7 @@ import { BadRequestError, InternalError } from "../../../domain/errors/Http.erro
 import { iCreateAuthentication, iGetAuthenticateRecord  } from "src/domain/usecases/authenticate";
 import { iAuthenticateRepository } from "src/infra/database/contracts/repositorys/iAuthenticate.repository";
 import { iHashAdapter } from "src/infra/cryptography/contracts";
+import { AuthEntity } from "../../../domain/entities";
 
 export class CreateAuthenticate implements iCreateAuthentication {
     constructor(
@@ -19,11 +20,13 @@ export class CreateAuthenticate implements iCreateAuthentication {
 
         if (hasRecord) throw new BadRequestError(`Email ${input.email} has record.`)
 
-        const authenticate = await this.authenticateRepository.create({
+        const incomingAuthenticate = new AuthEntity({
             email : input.email,
             associeted_id : input.associeted_id,
             password : await this.hashAdapter.encrypt(input.password)
         })
+
+        const authenticate = await this.authenticateRepository.create(incomingAuthenticate)
 
         return authenticate.id
     }
