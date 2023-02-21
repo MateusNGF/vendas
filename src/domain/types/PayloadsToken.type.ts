@@ -3,3 +3,8 @@ export type PayloadToken = {
   user_id: string;
   access_level: number;
 };
+
+export const PERMISSION = {
+  ADM : 1,
+  USR : 0
+}

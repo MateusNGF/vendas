@@ -16,6 +16,16 @@ export class UnauthorizedError extends HTTP_ERROR {
   }
 }
 
+export class ForbiddenError extends HTTP_ERROR {
+  name = 'Forbidden Error';
+  code = HTTP_STATUS.FORBIDDEN;
+
+  constructor(menssage: string = 'Request denied.') {
+    super();
+    this.message = menssage;
+  }
+}
+
 export class BadRequestError extends HTTP_ERROR {
   name = 'BadRequest Error';
   code = HTTP_STATUS.BAD_REQUEST;

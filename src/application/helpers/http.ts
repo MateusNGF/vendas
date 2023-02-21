@@ -11,8 +11,8 @@ export type HttpResponse<T = any> = {
   data: T;
 };
 
-namespace HttpRequest {
+export namespace HttpRequest {
   export type Headers = {
-    decodedTokenCompany: PayloadToken;
+    decodedTokenUser: PayloadToken;
   };
 }

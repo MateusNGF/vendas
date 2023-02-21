@@ -13,7 +13,7 @@ export class RegisterProductController extends iController {
        try{
 
         const content : iRegisterProductUsecase.Input = request.body
-        const currentUser = request.headers.decodedTokenCompany.user_id
+        const currentUser = request.headers.decodedTokenUser.user_id
 
         ObjectManager.hasKeys<iRegisterProductUsecase.Input>(['name', 'sale_price', 'stock'], content)
         

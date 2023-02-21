@@ -8,6 +8,7 @@ export const adaptExpressMiddleware =
 
     if ([200, 202].includes(status)) {
       req.headers = {
+        ...req.headers,
         ...data,
       };
       next();
