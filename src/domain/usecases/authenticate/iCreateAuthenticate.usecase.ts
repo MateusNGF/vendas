@@ -7,9 +7,9 @@ export abstract class iCreateAuthentication implements iUsecase {
 
 export namespace iCreateAuthentication {
     export class Input implements Partial<AuthEntity> {
-        public readonly associeted_id: string;
-        public readonly email: string;
-        public readonly password: string;
+        public associeted_id: string;
+        public email: string;
+        public password: string;
     }
 
     export type Output = {

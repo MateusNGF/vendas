@@ -1,33 +1,45 @@
 import { AuthEntity } from "src/domain/entities/auth.entity";
-import { iCreateTokenAuthenticate } from "src/domain/usecases/authenticate";
-import { iTokenAdapter } from "src/infra/cryptography/contracts";
-import { iAuthenticateRepository } from "src/infra/database/contracts/repositorys/iAuthenticate.repository";
+import { BadRequestError, UnauthorizedError } from "../../../domain/errors";
+import { iCreateTokenAuthenticate, iGetAuthenticateRecord } from "src/domain/usecases/authenticate";
+import { iHashAdapter, iTokenAdapter } from "src/infra/cryptography/contracts";
 
 
 
 export class CreateTokenAuthenticate implements iCreateTokenAuthenticate {
 
     constructor(
-        private readonly authenticateRepository : iAuthenticateRepository,
-        private readonly tokenAdapter : iTokenAdapter
-    ){}
+        private readonly tokenAdapter: iTokenAdapter,
+        private readonly getAuthenticateRecord: iGetAuthenticateRecord,
+        private readonly hashAdapter: iHashAdapter
+    ) { }
 
-    async exec(input: iCreateTokenAuthenticate.Input): Promise<string> {
-        let authenticate : AuthEntity;
-
-        if (input.associeted_id){
-            authenticate = await this.authenticateRepository.findByAssocieted(input.associeted_id)
-        }else{
-            authenticate = await this.authenticateRepository.findById(input.id)
-        }
+    async exec(input: iCreateTokenAuthenticate.Input): Promise<iCreateTokenAuthenticate.Output> {
+        let authenticate: AuthEntity = await this.getAuthenticateRecord.exec({
+            email: input.email,
+            associeted_id: input.associeted_id,
+            id: input.id
+        })
 
         if (!authenticate) return null;
 
-        const token = await this.tokenAdapter.sing({
-            id : authenticate.id,
-            email : authenticate.email
-        })
+        if (input.password) {
+            const matchPassword = await this.hashAdapter.compare(
+                authenticate.password,
+                input.password
+            )
 
-        return token
+            if (!matchPassword) throw new UnauthorizedError('Password invalid.')
+        }
+
+
+        return this.makeTokenByAuthenticate(authenticate)
+    }
+
+
+    private async makeTokenByAuthenticate(authenticate: AuthEntity) {
+        return await this.tokenAdapter.sing({
+            id: authenticate.id,
+            email: authenticate.email
+        })
     }
 }

@@ -1,31 +1,35 @@
+import { iCreateTokenAuthenticate, iGetAuthenticateRecord } from 'src/domain/usecases/authenticate';
 import {mock, MockProxy} from 'jest-mock-extended'
 import { AuthEntity } from 'src/domain/entities/auth.entity';
-import { iCreateTokenAuthenticate } from 'src/domain/usecases/authenticate';
-import { iTokenAdapter } from 'src/infra/cryptography/contracts';
-import { iAuthenticateRepository } from "src/infra/database/contracts/repositorys/iAuthenticate.repository";
+import { UnauthorizedError } from '../../../../domain/errors';
+import { iHashAdapter, iTokenAdapter } from 'src/infra/cryptography/contracts';
 import { CreateTokenAuthenticate } from '../CreateTokenAuthenticate.data';
 
 
 describe('CreateTokenAuthenticate', () => {
   let sut: iCreateTokenAuthenticate;
 
-  let authenticateRepository: MockProxy<iAuthenticateRepository>;
+  
   let tokenAdapter : MockProxy<iTokenAdapter>
+  let getAuthenticateRecord: MockProxy<iGetAuthenticateRecord>
+  let hashAdapter: MockProxy<iHashAdapter>
 
   let fakeInputCredentials: iCreateTokenAuthenticate.Input;
   let fakeOutput: iCreateTokenAuthenticate.Output;
   let fakeAuth : AuthEntity
 
   beforeAll(() => {
-    authenticateRepository = mock();
     tokenAdapter = mock();
+    getAuthenticateRecord = mock();
+    hashAdapter = mock();
   });
 
   beforeEach(() => {
-    sut = new CreateTokenAuthenticate(authenticateRepository, tokenAdapter);
+    sut = new CreateTokenAuthenticate(tokenAdapter, getAuthenticateRecord, hashAdapter);
     
     fakeOutput = "token_valid"
     fakeInputCredentials = {
+      email : 'email@email.com',
       associeted_id : '123',
       id : '123455'
     };
@@ -37,40 +41,62 @@ describe('CreateTokenAuthenticate', () => {
   });
 
   it('Should return null if not found authenticate by associeted_id', async () => {
-    delete fakeInputCredentials.id;
-
-    authenticateRepository.findByAssocieted.mockResolvedValue(null);
+    getAuthenticateRecord.exec.mockResolvedValue(null);
 
     const result = await sut.exec(fakeInputCredentials);
     expect(result).toEqual(null);
   });
 
   it('Should return null if not found authenticate by id', async () => {
-    delete fakeInputCredentials.associeted_id;
 
-    authenticateRepository.findById.mockResolvedValue(null);
+    getAuthenticateRecord.exec.mockResolvedValue(null);
 
     const result = await sut.exec(fakeInputCredentials);
     expect(result).toEqual(null);
   });
 
   it('Should return valid token if found authenticate by associeted_id', async () => {
-    delete fakeInputCredentials.id;
+    const token = "token_valid"
 
-    authenticateRepository.findByAssocieted.mockResolvedValue(fakeAuth);
-    tokenAdapter.sing.mockResolvedValue("token_valid")
+    getAuthenticateRecord.exec.mockResolvedValue(fakeAuth);
+    tokenAdapter.sing.mockResolvedValue(token)
 
     const result = await sut.exec(fakeInputCredentials);
-    expect(result).toEqual("token_valid");
+    expect(result).toEqual(token);
   });
 
   it('Should return valid token if found authenticate by id', async () => {
-    delete fakeInputCredentials.associeted_id;
+    const token = "token_valid"
 
-    authenticateRepository.findById.mockResolvedValue(fakeAuth);
-    tokenAdapter.sing.mockResolvedValue("token_valid")
+    getAuthenticateRecord.exec.mockResolvedValue(fakeAuth);
+    tokenAdapter.sing.mockResolvedValue(token)
 
     const result = await sut.exec(fakeInputCredentials);
-    expect(result).toEqual("token_valid");
+    expect(result).toEqual(token);
   });
+
+
+  it('Should return UnauthorizedError if password not match.', async ()=> {
+    fakeInputCredentials.password = "senha invalida"
+    
+    getAuthenticateRecord.exec.mockResolvedValue(fakeAuth);
+    hashAdapter.compare.mockResolvedValue(false)
+
+    const result = sut.exec(fakeInputCredentials);
+    await expect(result).rejects.toThrow(UnauthorizedError);
+  })
+
+  it('Should return token when password match.', async ()=> {
+    const token = "token_valid"
+
+    fakeInputCredentials.password = fakeAuth.password
+    
+    getAuthenticateRecord.exec.mockResolvedValue(fakeAuth);
+    hashAdapter.compare.mockResolvedValue(true)
+    tokenAdapter.sing.mockResolvedValue(token)
+
+    const result = await sut.exec(fakeInputCredentials);
+    expect(result).toEqual(token);
+  })
+
 });
