@@ -27,12 +27,19 @@ export const makeUserRepository = () : iUserRepository => {
     const database = getConnection()
     const userRepository = database.collection<UserEntity>('users')
 
-    return new UserRepository(database, userRepository)
+    return new UserRepository(
+        database, 
+        userRepository, 
+        makeAuthenticateRepository()
+    )
 }
 
 export const makeProductRepository = () : iProductRepository => {
     const database = getConnection()
     const productRepository = database.collection<ProductEntity>('products')
 
-    return new ProductRepository(database, productRepository)
+    return new ProductRepository(
+        database, 
+        productRepository
+    )
 }
