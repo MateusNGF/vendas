@@ -1,2 +1,2 @@
-export * from './PayloadToken.type';
+export * from './PayloadsToken.type';
 export * from './BaseFilterForListing.type';
