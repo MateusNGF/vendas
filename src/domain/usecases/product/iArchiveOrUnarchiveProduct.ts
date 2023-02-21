@@ -1,10 +1,10 @@
 import { iUsecase } from "src/domain/contracts";
 
-export abstract class iArchiveOrUnarchiveProduct implements iUsecase {
-    abstract exec(input: iArchiveOrUnarchiveProduct.Input): Promise<iArchiveOrUnarchiveProduct.Output>;
+export abstract class iArchiveOrUnarchiveProductUsecase implements iUsecase {
+    abstract exec(input: iArchiveOrUnarchiveProductUsecase.Input): Promise<iArchiveOrUnarchiveProductUsecase.Output>;
 }
 
-export namespace iArchiveOrUnarchiveProduct {
+export namespace iArchiveOrUnarchiveProductUsecase {
     export type Input = {
         action : 'archive' | 'unarchive',
         product_id : string

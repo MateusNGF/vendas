@@ -1,10 +1,11 @@
 import { Db } from "mongodb";
-import { AuthEntity, UserEntity } from "src/domain/entities";
+import { AuthEntity, ProductEntity, UserEntity } from "src/domain/entities";
 import { iAuthenticateRepository } from "src/infra/database/contracts/repositorys/iAuthenticate.repository";
-import { AuthenticateRepository } from "../../../../infra/database/mongodb/repositorys";
+import { AuthenticateRepository, ProductRepository } from "../../../../infra/database/mongodb/repositorys";
 import { MongoDB } from "../../../../../src/infra/database/mongodb";
 import { iUserRepository } from "src/infra/database/contracts/repositorys/iUser.repository";
 import { UserRepository } from "../../../../infra/database/mongodb/repositorys/user.repository";
+import { iProductRepository } from "src/infra/database/contracts/repositorys/iProduct.repository";
 
 
 const getConnection = () : Db => {
@@ -27,4 +28,11 @@ export const makeUserRepository = () : iUserRepository => {
     const userRepository = database.collection<UserEntity>('users')
 
     return new UserRepository(database, userRepository)
+}
+
+export const makeProductRepository = () : iProductRepository => {
+    const database = getConnection()
+    const productRepository = database.collection<ProductEntity>('products')
+
+    return new ProductRepository(database, productRepository)
 }

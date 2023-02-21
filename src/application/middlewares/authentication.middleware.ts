@@ -1,6 +1,6 @@
-import { UnauthorizedError } from 'src/domain/errors';
-import { PayloadToken } from 'src/domain/types';
-import { iTokenAdapter } from 'src/infra/cryptography/contracts';
+import { UnauthorizedError } from '../../domain/errors';
+import { PayloadToken } from '../../domain/types';
+import { iTokenAdapter } from '../../infra/cryptography/contracts';
 import { iMiddleware } from '../contracts/iMiddleware';
 import { HttpRequest, HttpResponse } from '../helpers/http';
 
