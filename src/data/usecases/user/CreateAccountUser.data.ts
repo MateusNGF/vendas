@@ -23,16 +23,20 @@ export class CreateAccountUserData implements iCreateAccountUserUsecase {
         })
 
         if (!authenticate) 
-            throw new BadRequestError('Not completed action of create authenticate.')
+            throw new BadRequestError('Unable to create an authenticator.')
 
         const user = new UserEntity({
             id : userPartial.id,
             name : userPartial.name
         })
 
-        const {id} = await this.userRepository.create(user)
-        const token = await this.createTokenAuthenticate.exec({associeted_id : id})
-        if (!token) throw new BadRequestError('Not complete genereate token.')
+        const inserteded = await this.userRepository.create(user)
+        if (
+             !inserteded || inserteded && !inserteded.id
+        ) throw new BadRequestError('Operation failed, please try again.')
+        
+        const token = await this.createTokenAuthenticate.exec({associeted_id : inserteded.id})
+        if (!token) throw new BadRequestError('Token creation failed.')
         return token
     }
 }
