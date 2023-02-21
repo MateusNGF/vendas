@@ -1,11 +1,11 @@
 import { iController } from "../../../application/contracts";
 import { HttpRequest, HttpResponse } from "src/application/helpers/http";
-import { iCreateAccountUser } from "src/domain/usecases/user";
+import { iCreateAccountUserUsecase } from "src/domain/usecases/user";
 import { ObjectManager } from "../../../domain/utils";
 
 export class CreateAccountUserController extends iController {
     constructor(
-        private readonly createAccountUserUsecase : iCreateAccountUser
+        private readonly createAccountUserUsecase : iCreateAccountUserUsecase
     ){
         super();
     }
@@ -13,7 +13,7 @@ export class CreateAccountUserController extends iController {
         try{
             const incomingData = request.body
 
-            ObjectManager.hasKeys<iCreateAccountUser.Input>(['email', 'name', 'password'], incomingData)
+            ObjectManager.hasKeys<iCreateAccountUserUsecase.Input>(['email', 'name', 'password'], incomingData)
 
             const userCreated = await this.createAccountUserUsecase.exec({
                 email : incomingData.email,

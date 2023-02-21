@@ -1,11 +1,11 @@
 import { iUsecase } from "src/domain/contracts";
 import { AuthEntity, UserEntity } from "src/domain/entities";
 
-export abstract class iAccessAccountUser implements iUsecase {
-    abstract exec(input: iAccessAccountUser.Input): Promise<iAccessAccountUser.Output>;
+export abstract class iAccessAccountUserUsecase implements iUsecase {
+    abstract exec(input: iAccessAccountUserUsecase.Input): Promise<iAccessAccountUserUsecase.Output>;
 }
 
-export namespace iAccessAccountUser {
+export namespace iAccessAccountUserUsecase {
     export class Input implements Partial<AuthEntity> {
         public email: string;
         public password: string;

@@ -1,20 +1,20 @@
 import { AuthEntity } from "src/domain/entities/auth.entity";
 import { UnauthorizedError } from "../../../domain/errors";
 import { PayloadToken } from "src/domain/types";
-import { iCreateTokenAuthenticate, iGetAuthenticateRecord } from "src/domain/usecases/authenticate";
+import { iCreateTokenAuthenticateUsecase, iGetAuthenticateRecordUsecase } from "src/domain/usecases/authenticate";
 import { iHashAdapter, iTokenAdapter } from "src/infra/cryptography/contracts";
 
 
 
-export class CreateTokenAuthenticate implements iCreateTokenAuthenticate {
+export class CreateTokenAuthenticateData implements iCreateTokenAuthenticateUsecase {
 
     constructor(
         private readonly tokenAdapter: iTokenAdapter,
-        private readonly getAuthenticateRecord: iGetAuthenticateRecord,
+        private readonly getAuthenticateRecord: iGetAuthenticateRecordUsecase,
         private readonly hashAdapter: iHashAdapter
     ) { }
 
-    async exec(input: iCreateTokenAuthenticate.Input): Promise<iCreateTokenAuthenticate.Output> {
+    async exec(input: iCreateTokenAuthenticateUsecase.Input): Promise<iCreateTokenAuthenticateUsecase.Output> {
         let authenticate: AuthEntity = await this.getAuthenticateRecord.exec({
             email: input.email,
             associeted_id: input.associeted_id,

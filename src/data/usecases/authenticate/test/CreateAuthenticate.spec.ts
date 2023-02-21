@@ -1,20 +1,20 @@
 import { mock, MockProxy } from "jest-mock-extended";
 import { AuthEntity } from "src/domain/entities/auth.entity";
 import { BadRequestError } from "../../../../domain/errors/Http.error";
-import { iCreateAuthentication, iGetAuthenticateRecord  } from "src/domain/usecases/authenticate";
+import { iCreateAuthenticationUsecase, iGetAuthenticateRecordUsecase  } from "src/domain/usecases/authenticate";
 import { iAuthenticateRepository } from "src/infra/database/contracts/repositorys/iAuthenticate.repository";
-import { CreateAuthenticate } from "../CreateAuthenticate.data";
+import { CreateAuthenticateData } from "../CreateAuthenticate.data";
 import { iHashAdapter } from "src/infra/cryptography/contracts";
 
 describe('CreateTokenAuthenticate', () => {
-    let sut: iCreateAuthentication;
+    let sut: iCreateAuthenticationUsecase;
 
     let authenticateRepository: MockProxy<iAuthenticateRepository>;
-    let getAuthenticateRecord: MockProxy<iGetAuthenticateRecord >;
+    let getAuthenticateRecord: MockProxy<iGetAuthenticateRecordUsecase >;
     let hashAdapter : MockProxy<iHashAdapter>;
 
-    let fakeInputCredentials: iCreateAuthentication.Input;
-    let fakeOutput: iCreateAuthentication.Output;
+    let fakeInputCredentials: iCreateAuthenticationUsecase.Input;
+    let fakeOutput: iCreateAuthenticationUsecase.Output;
     let fakeAuth: AuthEntity
 
     beforeAll(() => {
@@ -24,7 +24,7 @@ describe('CreateTokenAuthenticate', () => {
     });
 
     beforeEach(() => {
-        sut = new CreateAuthenticate(authenticateRepository, getAuthenticateRecord, hashAdapter);
+        sut = new CreateAuthenticateData(authenticateRepository, getAuthenticateRecord, hashAdapter);
 
         fakeOutput = {
             id: "id_any"

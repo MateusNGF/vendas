@@ -1,23 +1,23 @@
 import {mock, MockProxy} from 'jest-mock-extended'
-import { iGetAuthenticateRecord } from 'src/domain/usecases/authenticate';
+import { iGetAuthenticateRecordUsecase } from 'src/domain/usecases/authenticate';
 import { iAuthenticateRepository } from "src/infra/database/contracts/repositorys/iAuthenticate.repository";
-import { GetAuthenticateRecord } from '../GetAuthenticateRecord.data';
+import { GetAuthenticateRecordData } from '../GetAuthenticateRecord.data';
 
 
 describe('CreateTokenAuthenticate', () => {
-  let sut: iGetAuthenticateRecord;
+  let sut: iGetAuthenticateRecordUsecase;
 
   let authenticateRepository: MockProxy<iAuthenticateRepository>;
 
-  let fakeInputCredentials: iGetAuthenticateRecord.Input;
-  let fakeOutput: iGetAuthenticateRecord.Output;
+  let fakeInputCredentials: iGetAuthenticateRecordUsecase.Input;
+  let fakeOutput: iGetAuthenticateRecordUsecase.Output;
 
   beforeAll(() => {
     authenticateRepository = mock();
   });
 
   beforeEach(() => {
-    sut = new GetAuthenticateRecord(authenticateRepository);
+    sut = new GetAuthenticateRecordData(authenticateRepository);
     
     fakeInputCredentials = {}
     fakeOutput = {

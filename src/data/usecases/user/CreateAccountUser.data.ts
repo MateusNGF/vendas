@@ -1,16 +1,16 @@
 import { UserEntity } from "../../../domain/entities";
 import { BadRequestError } from "../../../domain/errors";
-import { iCreateAuthentication, iCreateTokenAuthenticate } from "src/domain/usecases/authenticate";
-import { iCreateAccountUser } from "src/domain/usecases/user";
+import { iCreateAuthenticationUsecase, iCreateTokenAuthenticateUsecase } from "src/domain/usecases/authenticate";
+import { iCreateAccountUserUsecase } from "src/domain/usecases/user";
 import { iUserRepository } from "src/infra/database/contracts/repositorys/iUser.repository";
 
-export class CreateAccountUser implements iCreateAccountUser {
+export class CreateAccountUserData implements iCreateAccountUserUsecase {
     constructor(
         private readonly userRepository : iUserRepository,
-        private readonly createAuthentication : iCreateAuthentication,
-        private readonly createTokenAuthenticate : iCreateTokenAuthenticate
+        private readonly createAuthentication : iCreateAuthenticationUsecase,
+        private readonly createTokenAuthenticate : iCreateTokenAuthenticateUsecase
     ){}
-    async exec(input: iCreateAccountUser.Input): Promise<string> {
+    async exec(input: iCreateAccountUserUsecase.Input): Promise<string> {
 
         const userPartial = this.userRepository.makePartial({
             name : input.name

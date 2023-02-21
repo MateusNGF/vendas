@@ -1,17 +1,17 @@
 import { BadRequestError, InternalError } from "../../../domain/errors/Http.error";
-import { iCreateAuthentication, iGetAuthenticateRecord } from "src/domain/usecases/authenticate";
+import { iCreateAuthenticationUsecase, iGetAuthenticateRecordUsecase } from "src/domain/usecases/authenticate";
 import { iAuthenticateRepository } from "src/infra/database/contracts/repositorys/iAuthenticate.repository";
 import { iHashAdapter } from "src/infra/cryptography/contracts";
 import { AuthEntity } from "../../../domain/entities";
 
-export class CreateAuthenticate implements iCreateAuthentication {
+export class CreateAuthenticateData implements iCreateAuthenticationUsecase {
     constructor(
         private readonly authenticateRepository: iAuthenticateRepository,
-        private readonly getAuthenticateRecord: iGetAuthenticateRecord,
+        private readonly getAuthenticateRecord: iGetAuthenticateRecordUsecase,
         private readonly hashAdapter: iHashAdapter
     ) { }
 
-    async exec(input: iCreateAuthentication.Input): Promise<iCreateAuthentication.Output> {
+    async exec(input: iCreateAuthenticationUsecase.Input): Promise<iCreateAuthenticationUsecase.Output> {
         if (!input) return;
 
         const hasRecord = await this.getAuthenticateRecord.exec({

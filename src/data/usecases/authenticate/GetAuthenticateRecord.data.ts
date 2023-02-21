@@ -1,11 +1,11 @@
-import { iGetAuthenticateRecord  } from "src/domain/usecases/authenticate";
+import { iGetAuthenticateRecordUsecase  } from "src/domain/usecases/authenticate";
 import { iAuthenticateRepository } from "src/infra/database/contracts/repositorys/iAuthenticate.repository";
 
-export class GetAuthenticateRecord implements iGetAuthenticateRecord {
+export class GetAuthenticateRecordData implements iGetAuthenticateRecordUsecase {
     constructor(
         private readonly authenticateRepository: iAuthenticateRepository
     ) { }
-    async exec(input: iGetAuthenticateRecord.Input): Promise<iGetAuthenticateRecord.Output> {
+    async exec(input: iGetAuthenticateRecordUsecase.Input): Promise<iGetAuthenticateRecordUsecase.Output> {
         if (input.email) 
             return await this.authenticateRepository.findByEmail(input.email)
         else if (input.associeted_id) 

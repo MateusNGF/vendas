@@ -1,12 +1,12 @@
 import { iUsecase } from "src/domain/contracts";
 import { AuthEntity } from "src/domain/entities/auth.entity";
 
-export abstract class iGetAuthenticateRecord  implements iUsecase {
-    abstract exec(input : iGetAuthenticateRecord .Input) : Promise<iGetAuthenticateRecord .Output>
+export abstract class iGetAuthenticateRecordUsecase  implements iUsecase {
+    abstract exec(input : iGetAuthenticateRecordUsecase .Input) : Promise<iGetAuthenticateRecordUsecase .Output>
 }
 
 
-export namespace iGetAuthenticateRecord  {
+export namespace iGetAuthenticateRecordUsecase  {
     export class Input implements Partial<AuthEntity> {
         public id?: any;
         public email?: string;
