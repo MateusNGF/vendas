@@ -10,7 +10,7 @@ export class AuthenticateRepository implements iAuthenticateRepository {
         private readonly colletion: Collection<AuthEntity>
     ) {}
     async create(auth: AuthEntity): Promise<{ id: string }> {
-        const idGenerate = generateID();
+        const idGenerate = auth.id ? auth.id : generateID();
 
         const result = await this.colletion.insertOne({
             ...auth,
