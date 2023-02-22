@@ -1,8 +1,14 @@
 
 
+ 
+
+Para rodar o projeto utilize : 
+
+npm install
+npm run start:dev
 
 
-
+.
 
 
 
