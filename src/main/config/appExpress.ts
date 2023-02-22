@@ -18,10 +18,11 @@ class AppExpress {
     return this.app;
   }
 
-  private setupRoutes(router: Router = Router()): void {
+  private setupRoutes(): void {
     readdirSync(join(__dirname, '../routes'))
       .filter((file) => !file.endsWith('.map'))
       .map(async (file) => {
+        const router = Router();
         const prefix_route = file.split('.')[0];
         (await import(`../routes/${file}`)).default(router);
         this.app.use(`/${prefix_route}`, router);
