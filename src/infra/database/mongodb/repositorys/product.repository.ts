@@ -1,5 +1,6 @@
 import { Collection, Db, Filter } from "mongodb";
 import { ProductEntity } from "src/domain/entities";
+import { TransactionEntity } from "src/domain/entities/transaction.entity";
 import { generateID } from "../../../../domain/utils";
 import { iProductRepository } from "../../contracts/repositorys/iProduct.repository";
 
@@ -9,6 +10,21 @@ export class ProductRepository implements iProductRepository {
         private readonly database: Db,
         private readonly colletion: Collection<ProductEntity>
     ) {}
+    
+    findByIds(ids: string[]): ProductEntity[] {
+        throw new Error("Method not implemented.");
+    }
+
+    async productOutput(productDetails: TransactionEntity.ProductContent): Promise<boolean> {
+        const result = await this.colletion.updateOne({ id : productDetails.id }, {
+            $inc : {
+                stock : -productDetails.quantity
+            }
+        })
+
+        if (result.modifiedCount > 0) return true
+        else return false
+    }
 
     listProduct(filter: iProductRepository.FilterForList): Promise<ProductEntity[]> {
         let where: Filter<ProductEntity>;
