@@ -10,6 +10,14 @@ export class ProductRepository implements iProductRepository {
         private readonly colletion: Collection<ProductEntity>
     ) {}
 
+    listProduct(filter: iProductRepository.FilterForList): Promise<ProductEntity[]> {
+        return this.colletion.find({
+            $text : {
+                $search : filter.text
+            }
+        }).toArray()
+    }
+
 
     validDuplicatedProduct(produt: Partial<ProductEntity>): Promise<ProductEntity> {
         return this.findOneWithProjection({ name : produt.name })

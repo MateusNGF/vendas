@@ -2,6 +2,6 @@ export type BaseFilterForListing = {
   text?: string;
   limit?: number;
   offset?: number;
-  createdAt?: string | Date;
-  updatedAt?: string | Date;
+  created_at?: Date;
+  updated_at?: Date;
 };

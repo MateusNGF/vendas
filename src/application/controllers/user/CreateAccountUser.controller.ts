@@ -12,7 +12,6 @@ export class CreateAccountUserController extends iController {
     async exec(request: HttpRequest): Promise<HttpResponse>   {
         try{
             const incomingData = request.body
-
             ObjectManager.hasKeys<iCreateAccountUserUsecase.Input>(['email', 'name', 'password'], incomingData)
 
             const userCreated = await this.createAccountUserUsecase.exec({
