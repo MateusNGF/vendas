@@ -11,11 +11,18 @@ export class ProductRepository implements iProductRepository {
     ) {}
 
     listProduct(filter: iProductRepository.FilterForList): Promise<ProductEntity[]> {
-        return this.colletion.find({
-            $text : {
-                $search : filter.text
+        let where: Filter<ProductEntity>;
+          if (filter) {
+      
+            if (filter.text) {
+              where = {
+                ...where,
+                $text: { $search: filter.text },
+              };
             }
-        }).toArray()
+          }
+      
+          return this.colletion.find(where).limit(filter.limit ?? 50).skip(filter.offset ?? 0).toArray();
     }
 
 

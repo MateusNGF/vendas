@@ -1,5 +1,5 @@
 import { ProductEntity } from "src/domain/entities";
-import { iListProductUsecase } from "src/domain/usecases/product";
+import { BaseFilterForListing } from "src/domain/types";
 import { BaseRepository } from ".";
 
 export interface iProductRepository extends BaseRepository<ProductEntity> {
@@ -11,7 +11,5 @@ export interface iProductRepository extends BaseRepository<ProductEntity> {
 }
 
 export namespace iProductRepository {
-   export class FilterForList implements Partial<iListProductUsecase.Input> {
-      public text?: string;
-   } 
+   export interface FilterForList extends Partial<BaseFilterForListing> {}
 }

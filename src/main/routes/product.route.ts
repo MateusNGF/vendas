@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { PERMISSION } from '../../domain/types';
 import { adaptExpressMiddleware } from '../adapters/express-middleware';
 import { adaptExpressRoute } from '../adapters/express-route';
-import { makeArchiveOrUnarchiveProductController, makeRegisterProductController } from '../factories/application/controllers/product.factory';
+import { makeListProductController, makeArchiveOrUnarchiveProductController, makeRegisterProductController } from '../factories/application/controllers/product.factory';
 import { makeMiddlewareAuthentication, makeMiddlewareAuthorization } from '../factories/application/middlewares/authentication.middleware.factory';
 
 export default (router: Router): void => {
@@ -19,4 +19,12 @@ export default (router: Router): void => {
     adaptExpressMiddleware(makeMiddlewareAuthorization(PERMISSION.ADM)),
     adaptExpressRoute(makeArchiveOrUnarchiveProductController())
   )
+
+  router.get(
+    '/list/filter',
+    adaptExpressMiddleware(makeMiddlewareAuthentication()),
+    adaptExpressMiddleware(makeMiddlewareAuthorization(PERMISSION.USR)),
+    adaptExpressRoute(makeListProductController())
+  )
+
 };
