@@ -17,7 +17,7 @@ class Mongo implements iDatabase {
 
   public createSession(): iDatabase.iSession {
     if (!this.client) throw new Error('No has connection with database.');
-    return new MongoSession(this.client.startSession())
+    return new MongoSession(this.client.startSession());
   }
 
   public colletion<Schema>(name: string): Collection<Schema> {
@@ -29,29 +29,28 @@ class Mongo implements iDatabase {
 
   public getDatabase(): Db {
     if (!this.client) throw new Error('No has connection with database.');
-    return this.client.db(process.env.MONGO_DATABASE as string)
+    return this.client.db(process.env.MONGO_DATABASE as string);
   }
 }
 
 export const MongoDB = new Mongo();
 
-
 class MongoSession implements iDatabase.iSession {
-  constructor(
-    private readonly mongoSession: ClientSession
-  ) { }
+  constructor(private readonly mongoSession: ClientSession) {}
   startTransaction(): void {
-    this.mongoSession.startTransaction()
+    this.mongoSession.startTransaction();
   }
   async endSession(): Promise<void> {
-    await this.mongoSession.endSession()
+    await this.mongoSession.endSession();
   }
   async commitTransaction(): Promise<void> {
-    await this.mongoSession.commitTransaction()
+    await this.mongoSession.commitTransaction();
   }
   async abortTransaction(): Promise<void> {
-    await this.mongoSession.abortTransaction()
+    await this.mongoSession.abortTransaction();
   }
 
-  get() { return this.mongoSession}
+  get() {
+    return this.mongoSession;
+  }
 }

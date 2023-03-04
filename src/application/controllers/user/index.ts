@@ -1,2 +1,2 @@
-export * from './CreateAccountUser.controller'
-export * from './AccessAccountUser.controller'
+export * from './CreateAccountUser.controller';
+export * from './AccessAccountUser.controller';

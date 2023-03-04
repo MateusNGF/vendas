@@ -13,7 +13,6 @@ export class AuthEntity extends iEntity {
   }
 }
 
-
 export namespace AuthEntity {
-  export type AccessLevel = number
+  export type AccessLevel = number;
 }

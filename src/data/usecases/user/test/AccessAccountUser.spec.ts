@@ -1,43 +1,42 @@
-import { mock, MockProxy } from "jest-mock-extended";
-import { BadRequestError } from "../../../../domain/errors";
-import { iCreateTokenAuthenticateUsecase } from "src/domain/usecases/authenticate";
-import { iAccessAccountUserUsecase } from "src/domain/usecases/user";
-import { AccessAccountUserData } from "../AccessAccountUser.data";
+import { mock, MockProxy } from 'jest-mock-extended';
+import { BadRequestError } from '../../../../domain/errors';
+import { iCreateTokenAuthenticateUsecase } from 'src/domain/usecases/authenticate';
+import { iAccessAccountUserUsecase } from 'src/domain/usecases/user';
+import { AccessAccountUserData } from '../AccessAccountUser.data';
 
 describe('CreateTokenAuthenticate', () => {
-    let sut: iAccessAccountUserUsecase;
+  let sut: iAccessAccountUserUsecase;
 
-    let createTokenAuthenticate : MockProxy<iCreateTokenAuthenticateUsecase>;
+  let createTokenAuthenticate: MockProxy<iCreateTokenAuthenticateUsecase>;
 
-    let fakeInputCredentials: iAccessAccountUserUsecase.Input;
-    let fakeOutput: iAccessAccountUserUsecase.Output;
+  let fakeInputCredentials: iAccessAccountUserUsecase.Input;
+  let fakeOutput: iAccessAccountUserUsecase.Output;
 
-    beforeAll(() => {
-        createTokenAuthenticate = mock();
-    });
+  beforeAll(() => {
+    createTokenAuthenticate = mock();
+  });
 
-    beforeEach(() => {
-        sut = new AccessAccountUserData(createTokenAuthenticate);
+  beforeEach(() => {
+    sut = new AccessAccountUserData(createTokenAuthenticate);
 
-        fakeOutput =  "token_qualquer"
-        fakeInputCredentials = {
-            email: 'email_valid@gmail.com',
-            password: '123456'
-        };
+    fakeOutput = 'token_qualquer';
+    fakeInputCredentials = {
+      email: 'email_valid@gmail.com',
+      password: '123456',
+    };
+  });
 
-    });
+  it('Should return BadRequestError if authenticate not found.', async () => {
+    createTokenAuthenticate.exec.mockResolvedValue(null);
 
-    it('Should return BadRequestError if authenticate not found.', async () => {
-        createTokenAuthenticate.exec.mockResolvedValue(null);
+    const result = sut.exec(fakeInputCredentials);
+    await expect(result).rejects.toThrow(BadRequestError);
+  });
 
-        const result = sut.exec(fakeInputCredentials);
-        await expect(result).rejects.toThrow(BadRequestError);
-    });
+  it('Should return valid token when email and password is valid.', async () => {
+    createTokenAuthenticate.exec.mockResolvedValue(fakeOutput);
 
-    it('Should return valid token when email and password is valid.', async () => {
-        createTokenAuthenticate.exec.mockResolvedValue(fakeOutput);
-
-        const result = await sut.exec(fakeInputCredentials);
-        expect(result).toEqual(fakeOutput)
-    })
+    const result = await sut.exec(fakeInputCredentials);
+    expect(result).toEqual(fakeOutput);
+  });
 });

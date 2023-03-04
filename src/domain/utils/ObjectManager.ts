@@ -17,10 +17,9 @@ export class ObjectManager extends Object {
     content: any,
     security: boolean = false
   ) {
-
     if (Array.isArray(content)) {
-      content.forEach((i) => this.hasKeys(requireds, i, security))
-    }else{
+      content.forEach((i) => this.hasKeys(requireds, i, security));
+    } else {
       if (security) {
         ObjectManager.hasTheseProperties(requireds, content);
         ObjectManager.justTheseProperties(requireds, content);

@@ -6,5 +6,5 @@ export type PayloadToken = {
 
 export enum PERMISSION {
   ADM = 1,
-  USR = 0
+  USR = 0,
 }

@@ -1,42 +1,45 @@
-import { UserEntity } from "../../../domain/entities";
-import { BadRequestError } from "../../../domain/errors";
-import { iCreateAuthenticationUsecase, iCreateTokenAuthenticateUsecase } from "src/domain/usecases/authenticate";
-import { iCreateAccountUserUsecase } from "src/domain/usecases/user";
-import { iUserRepository } from "src/infra/database/contracts/repositorys/iUser.repository";
+import { UserEntity } from '../../../domain/entities';
+import { BadRequestError } from '../../../domain/errors';
+import {
+  iCreateAuthenticationUsecase,
+  iCreateTokenAuthenticateUsecase,
+} from 'src/domain/usecases/authenticate';
+import { iCreateAccountUserUsecase } from 'src/domain/usecases/user';
+import { iUserRepository } from 'src/infra/database/contracts/repositorys/iUser.repository';
 
 export class CreateAccountUserData implements iCreateAccountUserUsecase {
-    constructor(
-        private readonly userRepository : iUserRepository,
-        private readonly createAuthentication : iCreateAuthenticationUsecase,
-        private readonly createTokenAuthenticate : iCreateTokenAuthenticateUsecase
-    ){}
-    async exec(input: iCreateAccountUserUsecase.Input): Promise<string> {
+  constructor(
+    private readonly userRepository: iUserRepository,
+    private readonly createAuthentication: iCreateAuthenticationUsecase,
+    private readonly createTokenAuthenticate: iCreateTokenAuthenticateUsecase
+  ) {}
+  async exec(input: iCreateAccountUserUsecase.Input): Promise<string> {
+    const userPartial = this.userRepository.makePartial({
+      name: input.name,
+    });
 
-        const userPartial = this.userRepository.makePartial({
-            name : input.name
-        })
+    const authenticate = await this.createAuthentication.exec({
+      email: input.email,
+      password: input.password,
+      associeted_id: userPartial.id,
+    });
 
-        const authenticate = await this.createAuthentication.exec({
-            email : input.email,
-            password : input.password,
-            associeted_id : userPartial.id
-        })
+    if (!authenticate)
+      throw new BadRequestError('Unable to create an authenticator.');
 
-        if (!authenticate) 
-            throw new BadRequestError('Unable to create an authenticator.')
+    const user = new UserEntity({
+      id: userPartial.id,
+      name: userPartial.name,
+    });
 
-        const user = new UserEntity({
-            id : userPartial.id,
-            name : userPartial.name
-        })
+    const inserteded = await this.userRepository.create(user);
+    if (!inserteded || (inserteded && !inserteded.id))
+      throw new BadRequestError('Operation failed, please try again.');
 
-        const inserteded = await this.userRepository.create(user)
-        if (
-             !inserteded || inserteded && !inserteded.id
-        ) throw new BadRequestError('Operation failed, please try again.')
-        
-        const token = await this.createTokenAuthenticate.exec({associeted_id : inserteded.id})
-        if (!token) throw new BadRequestError('Token creation failed.')
-        return token
-    }
+    const token = await this.createTokenAuthenticate.exec({
+      associeted_id: inserteded.id,
+    });
+    if (!token) throw new BadRequestError('Token creation failed.');
+    return token;
+  }
 }
