@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 
 services:
   api_1:
@@ -11,8 +11,14 @@ services:
       - 3000
     networks:
       - vendas_networks
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 80M
     depends_on:
       - database
+  
   api_2:
     image: vendas_img
     container_name: api_2
@@ -23,8 +29,33 @@ services:
       - 3000
     networks:
       - vendas_networks
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 80M
     depends_on:
       - database
+
+  api_3:
+    image: vendas_img
+    container_name: api_3
+    env_file: .env
+    environment:
+      - MONGO_URI=mongodb://database:27017/vendas
+    ports:
+      - 3000
+    networks:
+      - vendas_networks
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 80M
+    depends_on:
+      - database
+
+
   database:
     image: mongodb/mongodb-community-server:latest
     container_name: mongo_db
@@ -32,9 +63,14 @@ services:
       - 27017:27017
     networks:
       - vendas_networks
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 100M
     volumes:
       - './src/infra/database/mongodb/scripts:/data/scripts:rw'
-    
+
   balanceador:
     image: nginx:latest
     container_name: nginx
@@ -44,9 +80,15 @@ services:
       - 8080:3000
     networks:
       - vendas_networks
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 200M
     depends_on:
       - api_1
       - api_2
+      - api_3
 
 networks:
   vendas_networks: {}
