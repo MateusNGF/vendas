@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  backend:
+    image : vendas_img
+    env_file: .env
+    environment:
+      - MONGO_URI=mongodb://database:27017/vendas
+    ports:
+      - 3000:3000
+    networks: 
+      - vendas_networks
+    depends_on:
+      - database
+  database:
+    image: mongodb/mongodb-community-server:latest
+    ports:
+      - 27017:27017
+    networks:
+      - vendas_networks
+    
+
+networks:
+  vendas_networks : {}
+    

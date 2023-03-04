@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && node -r dotenv/config dist/src/main/server.js",
+    "deploy-docker" : "npm run build && docker build -t vendas_img . && docker compose up",
+    "start": "node -r dotenv/config dist/src/main/server.js",
     "start:dev": "ts-node-dev -r dotenv/config src/main/server.ts",
     "build": "npx tsc",
     "style:fix": "prettier --write src/**/*.ts src/**/**/*.ts",
