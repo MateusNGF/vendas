@@ -1,12 +1,8 @@
 
-INICIALIZANDO O PROJETO
+#INICIALIZANDO O PROJETO
 
-Desenvolvimento : 
-    - npm run start:dev
-
-
-UTILIZANDO DOCKER :
-    - npm run deploy-docker
-
+####UTILIZANDO DOCKER :
+> Para gerar as novas imagens e construir o grupo, rode esse comando. 
+> `npm run deploy-docker` 
 
 URL : http://localhost:3000

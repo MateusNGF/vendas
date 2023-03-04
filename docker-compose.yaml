@@ -1,25 +1,52 @@
 version: '3'
 
 services:
-  backend:
-    image : vendas_img
+  api_1:
+    image: vendas_img
+    container_name: api_1
     env_file: .env
     environment:
       - MONGO_URI=mongodb://database:27017/vendas
     ports:
-      - 3000:3000
-    networks: 
+      - 3000
+    networks:
+      - vendas_networks
+    depends_on:
+      - database
+  api_2:
+    image: vendas_img
+    container_name: api_2
+    env_file: .env
+    environment:
+      - MONGO_URI=mongodb://database:27017/vendas
+    ports:
+      - 3000
+    networks:
       - vendas_networks
     depends_on:
       - database
   database:
     image: mongodb/mongodb-community-server:latest
+    container_name: mongo_db
     ports:
       - 27017:27017
     networks:
       - vendas_networks
+    volumes:
+      - './src/infra/database/mongodb/scripts:/data/scripts:rw'
     
+  balanceador:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./config/nginx:/etc/nginx/conf.d:rw
+    ports:
+      - 8080:3000
+    networks:
+      - vendas_networks
+    depends_on:
+      - api_1
+      - api_2
 
 networks:
-  vendas_networks : {}
-    
+  vendas_networks: {}
