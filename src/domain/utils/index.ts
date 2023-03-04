@@ -9,3 +9,5 @@ export function ternary(primaryProp: any, secundaryProp: any) {
 export function generateID(length = 10) {
   return randomBytes(length).toString('hex');
 }
+
+export type Writeable<T> = { -readonly [P in keyof T]: T[P] };

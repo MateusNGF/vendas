@@ -9,19 +9,24 @@ export class ObjectManager extends Object {
    * Essa função verifica se em um determinado objeto tem as chaves necessarias.
    * Security, true e false, ambos retornar MissingParam, mas somente true retorna UnexpectedParam.
    * @param requireds chaves que necessaririas
-   * @param object objecto de verificação
+   * @param content objecto de verificação
    * @param security true para deixar apenas os required no objeto, false verifica se tem pelo menos os requireds.
    */
   static hasKeys<TypeKeysRequireds = string>(
     requireds: Array<keyof TypeKeysRequireds>,
-    object: Object,
+    content: any,
     security: boolean = false
   ) {
-    if (security) {
-      ObjectManager.hasTheseProperties(requireds, object);
-      ObjectManager.justTheseProperties(requireds, object);
-    } else {
-      ObjectManager.hasTheseProperties(requireds, object);
+
+    if (Array.isArray(content)) {
+      content.forEach((i) => this.hasKeys(requireds, i, security))
+    }else{
+      if (security) {
+        ObjectManager.hasTheseProperties(requireds, content);
+        ObjectManager.justTheseProperties(requireds, content);
+      } else {
+        ObjectManager.hasTheseProperties(requireds, content);
+      }
     }
   }
 

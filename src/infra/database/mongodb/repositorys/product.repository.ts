@@ -2,6 +2,7 @@ import { Collection, Db, Filter } from "mongodb";
 import { ProductEntity } from "src/domain/entities";
 import { TransactionEntity } from "src/domain/entities/transaction.entity";
 import { generateID } from "../../../../domain/utils";
+import { BaseRepository } from "../../contracts/repositorys";
 import { iProductRepository } from "../../contracts/repositorys/iProduct.repository";
 
 export class ProductRepository implements iProductRepository {
@@ -15,15 +16,17 @@ export class ProductRepository implements iProductRepository {
         throw new Error("Method not implemented.");
     }
 
-    async productOutput(productDetails: TransactionEntity.ProductContent): Promise<boolean> {
-        const result = await this.colletion.updateOne({ id : productDetails.id }, {
+    async productOutput(productDetails: TransactionEntity.ProductIncomingTransaction, options ?: BaseRepository.QueryOptions): Promise<ProductEntity> {
+        const session =  options && options.session ?  options.session.get() : null
+
+        const result = await this.colletion.findOneAndUpdate({ id : productDetails.id }, {
             $inc : {
                 stock : -productDetails.quantity
             }
-        })
+        }, { session })
 
-        if (result.modifiedCount > 0) return true
-        else return false
+        if (!result.ok) return null
+        else return result.value
     }
 
     listProduct(filter: iProductRepository.FilterForList): Promise<ProductEntity[]> {

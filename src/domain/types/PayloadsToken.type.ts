@@ -4,7 +4,7 @@ export type PayloadToken = {
   access_level: number;
 };
 
-export const PERMISSION = {
-  ADM : 1,
-  USR : 0
+export enum PERMISSION {
+  ADM = 1,
+  USR = 0
 }

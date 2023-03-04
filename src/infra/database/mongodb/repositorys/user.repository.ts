@@ -2,6 +2,7 @@ import { Collection, Db, Filter } from "mongodb";
 import { AuthEntity, UserEntity } from "src/domain/entities";
 import { iGetAccountUserUsecase } from "src/domain/usecases/user";
 import { generateID } from "../../../../domain/utils";
+import { BaseRepository } from "../../contracts/repositorys";
 import { iAuthenticateRepository } from "../../contracts/repositorys/iAuthenticate.repository";
 import { iUserRepository } from "../../contracts/repositorys/iUser.repository";
 
@@ -57,13 +58,14 @@ export class UserRepository implements iUserRepository {
     }
 
 
-    findById(id: string): Promise<UserEntity> {
-        return this.findOneWithProjection({ id: id })
+    findById(id: string, options?: BaseRepository.QueryOptions): Promise<UserEntity> {
+        return this.findOneWithProjection({ id: id }, options)
     }
 
 
-    private findOneWithProjection(filter: Filter<UserEntity>): Promise<UserEntity> {
-        return this.colletionUser.findOne(filter, { projection: { _id: 0 } })
+    private findOneWithProjection(filter: Filter<UserEntity>, options?: BaseRepository.QueryOptions): Promise<UserEntity> {
+        const session = options && options.session ? options.session.get() : null
+        return this.colletionUser.findOne(filter, { session, projection: { _id: 0 } })
     }
 
 }

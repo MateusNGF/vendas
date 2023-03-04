@@ -1,5 +1,12 @@
 import { iEntity } from "src/domain/contracts";
+import { iDatabase } from "../iDatabase";
 
-export interface BaseRepository<Schema extends iEntity> {
-    findById(id : string) : Promise<Schema>
+export abstract class BaseRepository<Schema extends iEntity> {
+    abstract findById(id : string, options ?: BaseRepository.QueryOptions) : Promise<Schema>
+}
+
+export namespace BaseRepository {
+    export interface QueryOptions {
+        session ?: iDatabase.iSession
+    }
 }

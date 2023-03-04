@@ -12,3 +12,8 @@ export class AuthEntity extends iEntity {
     ObjectManager.assing(this, auth);
   }
 }
+
+
+export namespace AuthEntity {
+  export type AccessLevel = number
+}
