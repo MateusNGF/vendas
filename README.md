@@ -11,8 +11,8 @@ Alguns pontos de observação:
     4.3. `db.authenticates.update({ associeted_user : {SEU_ID}}, { access_level  : 1 })`
 
 ####REQUISISTOS
-> Node >=16.10.0
-> Docker
+> 1.1. Node >=16.10.0
+> 1.2.  Docker
 
 ####UTILIZANDO DOCKER :
 > Para gerar as novas imagens e construir o grupo, rode esse comando. 
