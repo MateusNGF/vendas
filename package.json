@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "deploy-docker" : "npm run build && docker build -t vendas_img . && docker compose up",
+    "deploy-docker" : "npm run build && docker build -t vendas_img . && npm run start:docker",
     "start": "node -r dotenv/config dist/src/main/server.js",
     "start:dev": "ts-node-dev -r dotenv/config src/main/server.ts",
     "start:docker" : "docker compose up -d",
