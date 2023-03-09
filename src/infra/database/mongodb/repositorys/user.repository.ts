@@ -13,16 +13,19 @@ export class UserRepository implements iUserRepository {
     private readonly authRepository: iAuthenticateRepository
   ) {}
 
-  async update(partialUser: Partial<UserEntity>, options?: BaseRepository.QueryOptions): Promise<UserEntity> {
-    const session = options && options.session ? options.session.get() : null
+  async update(
+    partialUser: Partial<UserEntity>,
+    options?: BaseRepository.QueryOptions
+  ): Promise<UserEntity> {
+    const session = options && options.session ? options.session.get() : null;
 
-    if (!partialUser.id) return null
+    if (!partialUser.id) return null;
     const result = await this.colletionUser.findOneAndUpdate(
       { id: partialUser.id },
-      { $set : { partialUser }},
+      { $set: { partialUser } },
       { session, ignoreUndefined: true }
-    )
-    return result?.value
+    );
+    return result?.value;
   }
 
   async getComplete(

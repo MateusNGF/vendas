@@ -18,7 +18,6 @@ describe('CreateTokenAuthenticate', () => {
   let createTokenAuthenticate: MockProxy<iCreateTokenAuthenticateUsecase>;
   let createCompanyUsecase: MockProxy<iCreateCompanyUsecase>;
 
-
   let fakeInputCredentials: iCreateAccountUserUsecase.Input;
   let fakeOutput: iCreateAccountUserUsecase.Output;
   let userPartial: Partial<UserEntity>;
@@ -83,7 +82,7 @@ describe('CreateTokenAuthenticate', () => {
     createAuthenticate.exec.mockResolvedValue({ id: 'authenticate_id' });
     userRepository.create.mockResolvedValue({ id: 'user_id' });
     createTokenAuthenticate.exec.mockResolvedValue(tokenValid);
-    createCompanyUsecase.exec.mockResolvedValue({ company_id : "123" })
+    createCompanyUsecase.exec.mockResolvedValue({ company_id: '123' });
 
     const result = await sut.exec(fakeInputCredentials);
     expect(result).toEqual(tokenValid);
@@ -96,9 +95,9 @@ describe('CreateTokenAuthenticate', () => {
     createAuthenticate.exec.mockResolvedValue({ id: 'authenticate_id' });
     userRepository.create.mockResolvedValue({ id: 'user_id' });
     createTokenAuthenticate.exec.mockResolvedValue(tokenValid);
-    createCompanyUsecase.exec.mockResolvedValue(null)
+    createCompanyUsecase.exec.mockResolvedValue(null);
 
     const result = sut.exec(fakeInputCredentials);
-    await expect(result).rejects.toThrowError(BadRequestError)
+    await expect(result).rejects.toThrowError(BadRequestError);
   });
 });

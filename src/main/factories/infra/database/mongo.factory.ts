@@ -59,10 +59,9 @@ export const makeTransactionRepository = (): iTransactionRepository => {
   return new TransactionRepository(transactionRepository);
 };
 
-
-export const makeCompanyRepository = () : iCompanyRepository => {
+export const makeCompanyRepository = (): iCompanyRepository => {
   const database = getConnection();
-  const companyRepository = database.collection<CompanyEntity>('companies')
+  const companyRepository = database.collection<CompanyEntity>('companies');
 
-  return new CompanyRepository(companyRepository)
-}
+  return new CompanyRepository(companyRepository);
+};

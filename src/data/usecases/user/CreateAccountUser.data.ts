@@ -14,7 +14,7 @@ export class CreateAccountUserData implements iCreateAccountUserUsecase {
     private readonly userRepository: iUserRepository,
     private readonly createAuthentication: iCreateAuthenticationUsecase,
     private readonly createTokenAuthenticate: iCreateTokenAuthenticateUsecase,
-    private readonly createCompanyUsecase : iCreateCompanyUsecase
+    private readonly createCompanyUsecase: iCreateCompanyUsecase
   ) {}
   async exec(input: iCreateAccountUserUsecase.Input): Promise<string> {
     const userPartial = this.userRepository.makePartial({
@@ -27,18 +27,19 @@ export class CreateAccountUserData implements iCreateAccountUserUsecase {
       associeted_id: userPartial.id,
     });
 
-    if (!authenticate) throw new BadRequestError('Unable to create an authenticator.');
+    if (!authenticate)
+      throw new BadRequestError('Unable to create an authenticator.');
 
     const new_company = await this.createCompanyUsecase.exec(
-      new CompanyEntity({owner : userPartial.id})
-    )
+      new CompanyEntity({ owner: userPartial.id })
+    );
 
-    if (!new_company) throw new BadRequestError("Create company failed.")
+    if (!new_company) throw new BadRequestError('Create company failed.');
 
     const user = new UserEntity({
       id: userPartial.id,
       name: userPartial.name,
-      company_id: new_company.company_id
+      company_id: new_company.company_id,
     });
 
     const inserteded = await this.userRepository.create(user);

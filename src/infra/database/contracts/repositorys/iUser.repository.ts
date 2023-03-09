@@ -8,5 +8,8 @@ export interface iUserRepository extends BaseRepository<UserEntity> {
   getComplete(
     input: iGetAccountUserUsecase.Input
   ): Promise<iGetAccountUserUsecase.Output>;
-  update(partialUser : Partial<UserEntity>, options ?: BaseRepository.QueryOptions) : Promise<UserEntity>
+  update(
+    partialUser: Partial<UserEntity>,
+    options?: BaseRepository.QueryOptions
+  ): Promise<UserEntity>;
 }
