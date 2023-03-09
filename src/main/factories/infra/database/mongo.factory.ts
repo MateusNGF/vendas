@@ -3,6 +3,7 @@ import { AuthEntity, ProductEntity, UserEntity } from 'src/domain/entities';
 import { iAuthenticateRepository } from 'src/infra/database/contracts/repositorys/iAuthenticate.repository';
 import {
   AuthenticateRepository,
+  CompanyRepository,
   ProductRepository,
 } from '../../../../infra/database/mongodb/repositorys';
 import { MongoDB } from '../../../../../src/infra/database/mongodb';
@@ -13,6 +14,8 @@ import { iTransactionRepository } from '../../../../infra/database/contracts/rep
 import { TransactionEntity } from '../../../../domain/entities/transaction.entity';
 import { TransactionRepository } from '../../../../infra/database/mongodb/repositorys/transaction.repository';
 import { iDatabase } from '../../../../infra/database/contracts';
+import { iCompanyRepository } from 'src/infra/database/contracts/repositorys/iCompany.repository';
+import { CompanyEntity } from 'src/domain/entities/company.entity';
 
 const getConnection = (): Db => {
   return MongoDB.getDatabase();
@@ -55,3 +58,11 @@ export const makeTransactionRepository = (): iTransactionRepository => {
 
   return new TransactionRepository(transactionRepository);
 };
+
+
+export const makeCompanyRepository = () : iCompanyRepository => {
+  const database = getConnection();
+  const companyRepository = database.collection<CompanyEntity>('companies')
+
+  return new CompanyRepository(companyRepository)
+}

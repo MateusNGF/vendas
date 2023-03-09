@@ -1,6 +1,6 @@
 import { Collection, Db, Filter } from 'mongodb';
-import { AuthEntity, UserEntity } from 'src/domain/entities';
-import { iGetAccountUserUsecase } from 'src/domain/usecases/user';
+import { AuthEntity, UserEntity } from '../../../../domain/entities';
+import { iGetAccountUserUsecase } from '../../../../domain/usecases/user';
 import { generateID } from '../../../../domain/utils';
 import { BaseRepository } from '../../contracts/repositorys';
 import { iAuthenticateRepository } from '../../contracts/repositorys/iAuthenticate.repository';
@@ -12,6 +12,18 @@ export class UserRepository implements iUserRepository {
     private readonly colletionUser: Collection<UserEntity>,
     private readonly authRepository: iAuthenticateRepository
   ) {}
+
+  async update(partialUser: Partial<UserEntity>, options?: BaseRepository.QueryOptions): Promise<UserEntity> {
+    const session = options && options.session ? options.session.get() : null
+
+    if (!partialUser.id) return null
+    const result = await this.colletionUser.findOneAndUpdate(
+      { id: partialUser.id },
+      { $set : { partialUser }},
+      { session, ignoreUndefined: true }
+    )
+    return result?.value
+  }
 
   async getComplete(
     input: iGetAccountUserUsecase.Input

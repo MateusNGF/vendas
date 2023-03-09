@@ -3,11 +3,12 @@ import { BadRequestError } from '../../../../domain/errors';
 import {
   iCreateAuthenticationUsecase,
   iCreateTokenAuthenticateUsecase,
-} from 'src/domain/usecases/authenticate';
-import { iCreateAccountUserUsecase } from 'src/domain/usecases/user';
-import { iUserRepository } from 'src/infra/database/contracts/repositorys/iUser.repository';
+} from '../../../../domain/usecases/authenticate';
+import { iCreateAccountUserUsecase } from '../../../../domain/usecases/user';
+import { iUserRepository } from '../../../../infra/database/contracts/repositorys/iUser.repository';
 import { CreateAccountUserData } from '../CreateAccountUser.data';
-import { UserEntity } from 'src/domain/entities';
+import { UserEntity } from '../../../../domain/entities';
+import { iCreateCompanyUsecase } from '../../../../domain/usecases/company/iCreateCompany.usecase';
 
 describe('CreateTokenAuthenticate', () => {
   let sut: iCreateAccountUserUsecase;
@@ -15,6 +16,8 @@ describe('CreateTokenAuthenticate', () => {
   let userRepository: MockProxy<iUserRepository>;
   let createAuthenticate: MockProxy<iCreateAuthenticationUsecase>;
   let createTokenAuthenticate: MockProxy<iCreateTokenAuthenticateUsecase>;
+  let createCompanyUsecase: MockProxy<iCreateCompanyUsecase>;
+
 
   let fakeInputCredentials: iCreateAccountUserUsecase.Input;
   let fakeOutput: iCreateAccountUserUsecase.Output;
@@ -24,13 +27,15 @@ describe('CreateTokenAuthenticate', () => {
     userRepository = mock();
     createAuthenticate = mock();
     createTokenAuthenticate = mock();
+    createCompanyUsecase = mock();
   });
 
   beforeEach(() => {
     sut = new CreateAccountUserData(
       userRepository,
       createAuthenticate,
-      createTokenAuthenticate
+      createTokenAuthenticate,
+      createCompanyUsecase
     );
 
     fakeOutput = 'tokken_qualquer';
@@ -78,8 +83,22 @@ describe('CreateTokenAuthenticate', () => {
     createAuthenticate.exec.mockResolvedValue({ id: 'authenticate_id' });
     userRepository.create.mockResolvedValue({ id: 'user_id' });
     createTokenAuthenticate.exec.mockResolvedValue(tokenValid);
+    createCompanyUsecase.exec.mockResolvedValue({ company_id : "123" })
 
     const result = await sut.exec(fakeInputCredentials);
     expect(result).toEqual(tokenValid);
+  });
+
+  it('Should return BadRequestError when create company return null.', async () => {
+    const tokenValid = 'token_valid';
+
+    userRepository.makePartial.mockReturnValue(userPartial);
+    createAuthenticate.exec.mockResolvedValue({ id: 'authenticate_id' });
+    userRepository.create.mockResolvedValue({ id: 'user_id' });
+    createTokenAuthenticate.exec.mockResolvedValue(tokenValid);
+    createCompanyUsecase.exec.mockResolvedValue(null)
+
+    const result = sut.exec(fakeInputCredentials);
+    await expect(result).rejects.toThrowError(BadRequestError)
   });
 });

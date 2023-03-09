@@ -13,12 +13,14 @@ import {
   makeCreateAuthenticateUsecase,
   makeCreateTokenAuthenticateUsecase,
 } from './authenticate.factory';
+import { makeCreateCompanyUsecase } from './company.factory';
 
 export function makeCreateAccountUserUsecase(): iCreateAccountUserUsecase {
   return new CreateAccountUserData(
     makeUserRepository(),
     makeCreateAuthenticateUsecase(),
-    makeCreateTokenAuthenticateUsecase()
+    makeCreateTokenAuthenticateUsecase(),
+    makeCreateCompanyUsecase()
   );
 }
 
