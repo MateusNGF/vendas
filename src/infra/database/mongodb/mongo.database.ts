@@ -1,4 +1,5 @@
 import { ClientSession, Collection, MongoClient, Db } from 'mongodb';
+import { InternalError } from '../../../domain/errors';
 import { iDatabase } from '../contracts';
 
 class Mongo implements iDatabase {
@@ -17,7 +18,7 @@ class Mongo implements iDatabase {
 
   public createSession(): iDatabase.iSession {
     if (!this.client) throw new Error('No has connection with database.');
-    return new MongoSession(this.client.startSession());
+    return new MongoSession(this.client);
   }
 
   public colletion<Schema>(name: string): Collection<Schema> {
@@ -36,18 +37,39 @@ class Mongo implements iDatabase {
 export const MongoDB = new Mongo();
 
 class MongoSession implements iDatabase.iSession {
-  constructor(private readonly mongoSession: ClientSession) {}
+
+  private mongoSession: ClientSession = null;
+
+  constructor(private readonly mongoClient : MongoClient) {}
+
   startTransaction(): void {
+    if (!this.mongoSession) 
+      throw new InternalError("Session not started.")
+
     this.mongoSession.startTransaction({
       maxTimeMS : 2000
     });
   }
-  async endSession(): Promise<void> {
-    await this.mongoSession.endSession();
+  
+  startSession(): iDatabase.iSession {
+    if (!this.mongoClient)
+      throw new InternalError("Client of session not sent.")
+
+    this.mongoSession = this.mongoClient.startSession()
+    return this
   }
+
+  async endSession(): Promise<void> {
+    if (this.mongoSession){
+      await this.mongoSession.endSession();
+      this.mongoSession = null;
+    }
+  }
+
   async commitTransaction(): Promise<void> {
     await this.mongoSession.commitTransaction();
   }
+
   async abortTransaction(): Promise<void> {
     await this.mongoSession.abortTransaction();
   }

@@ -7,6 +7,7 @@ export abstract class iDatabase {
 
 export namespace iDatabase {
   export interface iSession {
+    startSession() : iDatabase.iSession;
     startTransaction(): void;
     commitTransaction(): Promise<void>;
     abortTransaction(): Promise<void>;
