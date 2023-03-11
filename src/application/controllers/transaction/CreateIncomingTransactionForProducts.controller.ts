@@ -15,7 +15,8 @@ export class CreateTransactionController extends iController {
   }
 
   async exec(request: HttpRequest): Promise<HttpResponse> {
-    const session = this.sessionDatabse;
+    const sessionDriver = this.sessionDatabse;
+    const session = sessionDriver.startSession();
 
     try {
       session.startTransaction();

@@ -12,8 +12,9 @@ export class CreateAccountUserController extends iController {
     super();
   }
   async exec(request: HttpRequest): Promise<HttpResponse> {
-    const session = this.sessionDatabase;
-
+    const sessionDriver = this.sessionDatabase;
+    const session = sessionDriver.startSession();
+    
     try {
       const incomingData = request.body;
       ObjectManager.hasKeys<iCreateAccountUserUsecase.Input>(
