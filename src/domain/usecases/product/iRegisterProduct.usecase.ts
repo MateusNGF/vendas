@@ -3,7 +3,8 @@ import { ProductEntity, UserEntity } from 'src/domain/entities';
 
 export abstract class iRegisterProductUsecase implements iUsecase {
   abstract exec(
-    input: iRegisterProductUsecase.Input
+    input: iRegisterProductUsecase.Input,
+    settings ?: iRegisterProductUsecase.Settings
   ): Promise<iRegisterProductUsecase.Output>;
 }
 
@@ -14,6 +15,8 @@ export namespace iRegisterProductUsecase {
     public stock: number;
     public created_by: string;
   }
+
+  export interface Settings extends iUsecase.Configuration {};
 
   export type Output = {
     id: string;

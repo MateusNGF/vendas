@@ -5,7 +5,8 @@ export abstract class iCreateIncomingTransactionForProductsUsecase
   implements iUsecase
 {
   abstract exec(
-    input: iCreateIncomingTransactionForProductsUsecase.Input
+    input: iCreateIncomingTransactionForProductsUsecase.Input,
+    settings ?: iCreateIncomingTransactionForProductsUsecase.Settings
   ): Promise<iCreateIncomingTransactionForProductsUsecase.Output>;
 }
 
@@ -14,6 +15,8 @@ export namespace iCreateIncomingTransactionForProductsUsecase {
     user_id: string;
     products: Array<TransactionEntity.ProductIncomingTransaction>;
   };
+
+  export interface Settings extends iUsecase.Configuration {};
 
   export type Output = {
     id: string;
