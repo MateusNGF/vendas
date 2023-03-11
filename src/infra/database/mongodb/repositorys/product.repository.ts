@@ -16,7 +16,7 @@ export class ProductRepository implements iProductRepository {
   }
 
   async productOutput(
-    productDetails: TransactionEntity.ProductIncomingTransaction,
+    productDetails: TransactionEntity.ProductContentTransaction,
     options?: BaseRepository.QueryOptions
   ): Promise<ProductEntity> {
     const session = options && options.session ? options.session.get() : null;
@@ -32,7 +32,7 @@ export class ProductRepository implements iProductRepository {
     );
 
     if (!result.ok) return null;
-    else return result.value;
+    return result.value;
   }
 
   listProduct(

@@ -85,9 +85,8 @@ export class UserRepository implements iUserRepository {
     filter: Filter<UserEntity>,
     options?: BaseRepository.QueryOptions
   ): Promise<UserEntity> {
-    const session = options && options.session ? options.session.get() : null;
     return this.colletionUser.findOne(filter, {
-      session,
+      session : options?.session?.get(),
       projection: { _id: 0 },
     });
   }

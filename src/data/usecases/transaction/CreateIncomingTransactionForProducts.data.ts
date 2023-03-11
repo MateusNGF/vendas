@@ -9,74 +9,63 @@ import { Writeable } from 'src/domain/utils';
 import { ProductEntity } from 'src/domain/entities';
 
 export class CreateIncomingTransactionForProductsData
-  implements iCreateIncomingTransactionForProductsUsecase
-{
+  implements iCreateIncomingTransactionForProductsUsecase {
   constructor(
-    private readonly databaseSession: iDatabase.iSession,
     private readonly userRepository: iUserRepository,
     private readonly productRepository: iProductRepository,
     private readonly transactionRepository: iTransactionRepository
-  ) {}
-  async exec(input: iCreateIncomingTransactionForProductsUsecase.Input) {
-    const session = this.databaseSession;
-    try {
-      session.startTransaction();
+  ) { }
+  async exec(
+    input: iCreateIncomingTransactionForProductsUsecase.Input,
+    settings?: iCreateIncomingTransactionForProductsUsecase.Settings
+  ) {
+    const session = settings && settings.session ? settings.session : null;
 
-      const { products, user_id } = input;
+    const { buyer_id, products_sold} = input;
 
-      const user = await this.userRepository.findById(user_id, { session });
-      if (!user) throw new BadRequestError('User not found.');
+    const buyer_content = await this.userRepository.findById(buyer_id, { session });
 
-      let transactionPartial: Writeable<TransactionEntity> = {
-        type: 'incoming',
-        products: [],
-        user_id: user_id,
-        total_price: 0,
-      };
+    if (!buyer_content) 
+      throw new BadRequestError(`buyer with id ${buyer_id} not found.`);
 
-      for (let i = 0; i < products.length; i++) {
-        const productBasic: TransactionEntity.ProductIncomingTransaction =
-          products[i];
-        const productContent = await this.productRepository.productOutput(
-          productBasic,
-          { session }
-        );
-        if (!productContent)
-          throw new BadRequestError(`Product ${productBasic.id} not updated.`);
+    let transactionPartial: Writeable<TransactionEntity> = {
+      type: 'incoming',
+      products: [],
+      buyer_id,
+      total_price: 0,
+    };
 
-        transactionPartial.products.push(
-          this.makeProductContentTransaction(productBasic, productContent)
-        );
-        transactionPartial.total_price += Number(
-          productContent.sale_price * productBasic.quantity
-        );
-      }
+    for (let i = 0; i < products_sold.length; i++) {
 
-      const transaction = new TransactionEntity(transactionPartial);
+      const productBasic: TransactionEntity.ProductContentTransaction = products_sold[i];
+      
+      const productContent = await this.productRepository.productOutput(productBasic, { session });
 
-      const result = await this.transactionRepository.create(transaction);
+      if (!productContent)
+        throw new BadRequestError(`Operation failed because it was not possible to update product with id : ${productBasic.id}`);
 
-      return {
-        id: result.id,
-        created_at: transaction.created_at,
-      };
-    } catch (e) {
-      await session.abortTransaction();
-      throw new BadRequestError(e.message);
-    } finally {
-      await session.endSession();
+      const subtotal_this_product = productContent.sale_price * productBasic.quantity
+
+      transactionPartial.products.push({
+        id: productContent.id,
+        name: productContent.name,
+        sale_price: productContent.sale_price,
+        quantity: productBasic.quantity,
+        subtotal: subtotal_this_product
+      });
+
+      transactionPartial.total_price += Number(subtotal_this_product);
     }
-  }
 
-  private makeProductContentTransaction(
-    incomingProductData: TransactionEntity.ProductIncomingTransaction,
-    product: ProductEntity
-  ): TransactionEntity.ProductContentTransaction {
+    const transaction = new TransactionEntity(transactionPartial);
+
+    const result = await this.transactionRepository.create(transaction, { session });
+
+    if (!result || !result.id) return null;
+
     return {
-      id: product.id,
-      name: product.name,
-      sale_price: product.sale_price,
-      quantity: incomingProductData.quantity,
+      id: result.id,
+      created_at: transaction.created_at,
     };
   }
 }

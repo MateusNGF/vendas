@@ -8,8 +8,8 @@ export class TransactionRepository implements iTransactionRepository {
   constructor(
     private readonly colletionTransaction: Collection<TransactionEntity>
   ) {}
-  findById(id: string): Promise<TransactionEntity> {
-    return this.findOneWithProjection({ id });
+  findById(id: string, options?: BaseRepository.QueryOptions): Promise<TransactionEntity> {
+    return this.findOneWithProjection({ id }, options);
   }
 
   async create(
@@ -27,15 +27,18 @@ export class TransactionRepository implements iTransactionRepository {
       { session }
     );
 
-    if (result.insertedId) return { id: generateId };
-    else return null;
+    if (!result.insertedId) return null;
+
+    return { id: generateId };
   }
 
   private findOneWithProjection(
-    filter: Filter<TransactionEntity>
+    filter: Filter<TransactionEntity>,
+    options?: BaseRepository.QueryOptions
   ): Promise<TransactionEntity> {
     return this.colletionTransaction.findOne(filter, {
       projection: { _id: 0 },
+      session : options?.session?.get() ?? null
     });
   }
 }

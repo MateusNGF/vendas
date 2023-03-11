@@ -9,7 +9,6 @@ import {
 
 export function makeCreateTransactionUsecase(): iCreateIncomingTransactionForProductsUsecase {
   return new CreateIncomingTransactionForProductsData(
-    makeSessionDatabase(),
     makeUserRepository(),
     makeProductRepository(),
     makeTransactionRepository()

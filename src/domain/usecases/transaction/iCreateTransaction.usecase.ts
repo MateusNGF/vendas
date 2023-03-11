@@ -11,14 +11,14 @@ export abstract class iCreateIncomingTransactionForProductsUsecase
 }
 
 export namespace iCreateIncomingTransactionForProductsUsecase {
-  export type Input = {
-    user_id: string;
-    products: Array<TransactionEntity.ProductIncomingTransaction>;
+  export abstract class Input implements Partial<TransactionEntity> {
+    buyer_id: string;
+    products_sold: Array<TransactionEntity.ProductContentTransaction>;
   };
 
-  export interface Settings extends iUsecase.Configuration {};
+  export interface Settings extends iUsecase.Configuration { };
 
-  export type Output = {
+  export abstract class Output {
     id: string;
     created_at: Date;
   };
