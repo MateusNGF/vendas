@@ -3,7 +3,7 @@ import { iGetAccountUserUsecase } from 'src/domain/usecases/user';
 import { BaseRepository } from '.';
 
 export interface iUserRepository extends BaseRepository<UserEntity> {
-  create(user: UserEntity): Promise<{ id: string }>;
+  create(user: UserEntity, options?: BaseRepository.QueryOptions): Promise<{ id: string }>;
   makePartial(userPartial: Partial<UserEntity>): Partial<UserEntity>;
   getComplete(
     input: iGetAccountUserUsecase.Input

@@ -8,16 +8,23 @@ export class GetAuthenticateRecordData
     private readonly authenticateRepository: iAuthenticateRepository
   ) {}
   async exec(
-    input: iGetAuthenticateRecordUsecase.Input
+    input: iGetAuthenticateRecordUsecase.Input,
+    settings ?: iGetAuthenticateRecordUsecase.Settings
   ): Promise<iGetAuthenticateRecordUsecase.Output> {
-    if (input.email)
-      return await this.authenticateRepository.findByEmail(input.email);
-    else if (input.associeted_id)
-      return await this.authenticateRepository.findByAssocieted(
-        input.associeted_id
-      );
-    else if (input.id)
-      return await this.authenticateRepository.findById(input.id);
-    else return null;
+    const session = settings && settings.session ? settings.session : null;
+
+    if (input.email) {
+      return await this.authenticateRepository.findByEmail(input.email, { session });
+    }
+
+    if (input.associeted_id) {
+      return await this.authenticateRepository.findByAssocieted(input.associeted_id, { session });
+    }
+
+    if (input.id) {
+      return await this.authenticateRepository.findById(input.id, { session });
+    }
+
+    return null;
   }
 }

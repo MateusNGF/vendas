@@ -61,15 +61,17 @@ export class UserRepository implements iUserRepository {
     };
   }
 
-  async create(user: UserEntity): Promise<{ id: string }> {
+  async create(user: UserEntity,  options?: BaseRepository.QueryOptions): Promise<{ id: string }> {
     const generateId = user.id ? user.id : generateID();
+    
     const resutl = await this.colletionUser.insertOne({
       ...user,
       id: generateId,
-    });
-    if (resutl.acknowledged) {
-      return { id: generateId };
-    }
+    }, { session : options?.session?.get()});
+
+    if (!resutl.acknowledged) return null;
+
+    return { id: generateId };
   }
 
   findById(

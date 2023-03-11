@@ -18,8 +18,11 @@ export class CreateAuthenticateData implements iCreateAuthenticationUsecase {
   ) {}
 
   async exec(
-    input: iCreateAuthenticationUsecase.Input
+    input: iCreateAuthenticationUsecase.Input,
+    settings: iCreateAuthenticationUsecase.Settings
   ): Promise<iCreateAuthenticationUsecase.Output> {
+    const session = settings && settings.session ? settings.session : null;
+    
     if (!input) return;
 
     const hasRecord = await this.getAuthenticateRecord.exec({
@@ -35,13 +38,11 @@ export class CreateAuthenticateData implements iCreateAuthenticationUsecase {
       password: await this.hashAdapter.encrypt(input.password),
     });
 
-    const authenticate = await this.authenticateRepository.create(
-      incomingAuthenticate
-    );
-    if (authenticate) {
-      return {
-        id: authenticate.id,
-      };
-    }
+    const authenticate = await this.authenticateRepository.create(incomingAuthenticate, { session });
+    if (!authenticate) return null;
+
+    return {
+      id: authenticate.id,
+    };
   }
 }

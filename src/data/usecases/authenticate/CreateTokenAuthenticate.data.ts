@@ -17,13 +17,16 @@ export class CreateTokenAuthenticateData
   ) {}
 
   async exec(
-    input: iCreateTokenAuthenticateUsecase.Input
+    input: iCreateTokenAuthenticateUsecase.Input,
+    settings ?: iCreateTokenAuthenticateUsecase.Settings
   ): Promise<iCreateTokenAuthenticateUsecase.Output> {
+    const session = settings && settings.session ? settings.session : null;
+
     let authenticate: AuthEntity = await this.getAuthenticateRecord.exec({
       email: input.email,
       associeted_id: input.associeted_id,
       id: input.id,
-    });
+    }, { session });
 
     if (!authenticate) return null;
 

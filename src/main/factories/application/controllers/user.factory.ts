@@ -9,9 +9,13 @@ import {
   makeCreateAccountUserUsecase,
   makeGetAccountUserUsecase,
 } from '../usecases/user.factory';
+import { makeSessionDatabase } from '../../infra/database/mongo.factory';
 
 export function makeCreateAccountUserController(): iController {
-  return new CreateAccountUserController(makeCreateAccountUserUsecase());
+  return new CreateAccountUserController(
+    makeSessionDatabase(),
+    makeCreateAccountUserUsecase()
+  );
 }
 
 export function makeAccessAccountUserController(): iController {

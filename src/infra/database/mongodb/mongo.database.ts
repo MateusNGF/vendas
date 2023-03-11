@@ -38,7 +38,9 @@ export const MongoDB = new Mongo();
 class MongoSession implements iDatabase.iSession {
   constructor(private readonly mongoSession: ClientSession) {}
   startTransaction(): void {
-    this.mongoSession.startTransaction();
+    this.mongoSession.startTransaction({
+      maxTimeMS : 2000
+    });
   }
   async endSession(): Promise<void> {
     await this.mongoSession.endSession();

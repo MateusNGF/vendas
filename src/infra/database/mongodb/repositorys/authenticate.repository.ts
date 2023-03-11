@@ -1,6 +1,7 @@
 import { Collection, Db, Filter } from 'mongodb';
 import { AuthEntity } from 'src/domain/entities';
 import { generateID } from '../../../../domain/utils';
+import { BaseRepository } from '../../contracts/repositorys';
 import { iAuthenticateRepository } from '../../contracts/repositorys/iAuthenticate.repository';
 
 export class AuthenticateRepository implements iAuthenticateRepository {
@@ -8,37 +9,40 @@ export class AuthenticateRepository implements iAuthenticateRepository {
     private readonly database: Db,
     private readonly colletion: Collection<AuthEntity>
   ) {}
-  async create(auth: AuthEntity): Promise<{ id: string }> {
+  async create(auth: AuthEntity, options?: BaseRepository.QueryOptions): Promise<{ id: string }> {
     const idGenerate = auth.id ? auth.id : generateID();
 
     const result = await this.colletion.insertOne({
       ...auth,
       id: idGenerate,
-    });
+    }, { session : options?.session?.get()});
 
-    if (result.acknowledged) {
-      return {
-        id: idGenerate,
-      };
-    }
+    if (!result.acknowledged) return;
 
-    return;
+    return {
+      id: idGenerate,
+    };
   }
-  findByAssocieted(associetedId: string): Promise<AuthEntity> {
-    return this.findOneWithProjection({ associeted_id: associetedId });
-  }
-
-  findByEmail(email: string): Promise<AuthEntity> {
-    return this.findOneWithProjection({ email: email });
+  
+  findByAssocieted(associetedId: string, options?: BaseRepository.QueryOptions): Promise<AuthEntity> {
+    return this.findOneWithProjection({ associeted_id: associetedId }, options);
   }
 
-  findById(id: string): Promise<AuthEntity> {
-    return this.findOneWithProjection({ id: id });
+  findByEmail(email: string, options?: BaseRepository.QueryOptions): Promise<AuthEntity> {
+    return this.findOneWithProjection({ email: email }, options);
+  }
+
+  findById(id: string, options?: BaseRepository.QueryOptions): Promise<AuthEntity> {
+    return this.findOneWithProjection({ id: id }, options);
   }
 
   private findOneWithProjection(
-    filter: Filter<AuthEntity>
+    filter: Filter<AuthEntity>,
+    options?: BaseRepository.QueryOptions
   ): Promise<AuthEntity> {
-    return this.colletion.findOne(filter, { projection: { _id: 0 } });
+    return this.colletion.findOne(filter, {
+      session: options?.session?.get(),
+      projection: { _id: 0 }
+    });
   }
 }
