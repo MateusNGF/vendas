@@ -1,8 +1,7 @@
 
 export interface INotificationContent {
-    key ?: string
     message : string
-    context : string
+    context ?: string
 }
 
 export interface INotificationHandler {

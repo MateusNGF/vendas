@@ -8,17 +8,17 @@ export class NotificationError extends Error {
 }
 
 export class NotificationContent implements INotificationContent {
-    key?: string;
     message: string;
-    context: string;
+    context?: string;
+
+    constructor(message: string, context?: string) {
+        this.message = message;
+        this.context = context;
+    }
 
     [Symbol.toPrimitive](convertTo: string): string {
         if (convertTo === "string"){
-            if (this.key){
-                return `<${this.key.toUpperCase()}>${this.context.toUpperCase()}: ${this.message}`
-            }else{
-                return `${this.context.toUpperCase()}: ${this.message}`
-            }
+            return this.context ? `${this.context.toUpperCase()}: ${this.message.toLowerCase()}` : ` ${this.message.toLowerCase()}`
         }
     }
 }
@@ -26,7 +26,12 @@ export class NotificationContent implements INotificationContent {
 export class NotificationHandler implements INotificationHandler {
     private readonly stackNotifications: Array<INotificationContent> = [];
 
+    constructor(
+        private readonly _settings : { context : string }
+    ){}
+
     AddNotification(error: INotificationContent): void {
+        error.context = this._settings.context
         this.stackNotifications.push(error);
     }
     HasError(): boolean {
