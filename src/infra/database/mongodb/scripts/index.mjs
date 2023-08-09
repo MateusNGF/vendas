@@ -1,3 +1,4 @@
+import {MongoClient} from 'mongodb'
 (async ()=> {
     await Promise.all([
         createIndexes()
@@ -6,8 +7,9 @@
 
 
 async function createIndexes() {
+    let connection = null
     try {
-        connection = connect('mongodb://localhost:27017')
+        connection = await MongoClient.connect('mongodb://localhost:27017')
         
         await Promise.all([
             CreateIndexForUsers(),
