@@ -1,5 +1,6 @@
 
 export interface INotificationContent {
+    key : string
     message : string
     context ?: string
 }
@@ -9,5 +10,5 @@ export interface INotificationHandler {
     HasError(): boolean
     GetErrors() : Array<INotificationContent>
     CheckToNextStep() : void
-    GetHowToMessages() : string
+    GetHowToStrings() : string
 }

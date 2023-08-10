@@ -2,29 +2,34 @@ import { INotificationContent, INotificationHandler } from "../contracts/iNotifi
 
 export class NotificationError extends Error {
     name: string = "Notification Error"
-    constructor(content:string){
-        super(content)
+    notifications : Array<INotificationContent> = [];
+    constructor(stackNotification : Array<INotificationContent>){
+        super("");
+        this.notifications = stackNotification
     }
 }
 
 export class NotificationContent implements INotificationContent {
+    key: string;
     message: string;
     context?: string;
 
-    constructor(message: string, context?: string) {
-        this.message = message;
-        this.context = context;
+    constructor(notification : INotificationContent) {
+        this.message = notification.message;
+        this.key = notification.key;
+        this.context = notification.context;
     }
 
     [Symbol.toPrimitive](convertTo: string): string {
         if (convertTo === "string"){
-            return this.context ? `${this.context.toUpperCase()}: ${this.message.toLowerCase()}` : ` ${this.message.toLowerCase()}`
+            const body =  `<${this.key.toUpperCase()}> ${this.message.toLowerCase()}`
+            return this.context ? `${this.context.toUpperCase()} : ${body}` : body
         }
     }
 }
 
 export class NotificationHandler implements INotificationHandler {
-    private readonly stackNotifications: Array<INotificationContent> = [];
+    private stackNotifications: Array<INotificationContent> = [];
 
     constructor(
         private readonly _settings : { context : string }
@@ -32,7 +37,7 @@ export class NotificationHandler implements INotificationHandler {
 
     AddNotification(error: INotificationContent): void {
         error.context = this._settings.context
-        this.stackNotifications.push(error);
+        this.stackNotifications.push(new NotificationContent(error));
     }
     HasError(): boolean {
         return !!this.stackNotifications.length
@@ -40,15 +45,15 @@ export class NotificationHandler implements INotificationHandler {
 
     CheckToNextStep(){
         if (this.HasError()){
-            throw new NotificationError(this.GetHowToMessages())
+            throw new NotificationError(this.stackNotifications)
         }
     }
 
     GetErrors(): INotificationContent[] {
         return this.stackNotifications
     }
-    GetHowToMessages(): string {
-        return this.stackNotifications.map((error, index) => `${index+1}º ${String(error)}`).join(';\n')
+    GetHowToStrings(): string {
+        return this.stackNotifications.map((error, index) => `${index+1}º ${String(error)}`).join(';\n ')
     }
 
 }

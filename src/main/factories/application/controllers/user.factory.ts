@@ -9,15 +9,23 @@ import {
   makeCreateAccountUserUsecase,
   makeGetAccountUserUsecase,
 } from '../usecases/user.factory';
+import { makeCreateAccountUserNotification} from '../../main/errors/notification.factory';
 
 export function makeCreateAccountUserController(): iController {
-  return new CreateAccountUserController(makeCreateAccountUserUsecase());
+  return new CreateAccountUserController(
+    makeCreateAccountUserUsecase(),
+    makeCreateAccountUserNotification()
+  );
 }
 
 export function makeAccessAccountUserController(): iController {
-  return new AccessAccountUserController(makeAccessAccountUserUsecase());
+  return new AccessAccountUserController(
+    makeAccessAccountUserUsecase()
+  );
 }
 
 export function makeGetAccountUserController(): iController {
-  return new GetAccountUserController(makeGetAccountUserUsecase());
+  return new GetAccountUserController(
+    makeGetAccountUserUsecase()
+  );
 }
