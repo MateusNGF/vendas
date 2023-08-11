@@ -2,6 +2,7 @@ import { iController } from '../../../application/contracts';
 import { HttpRequest, HttpResponse } from 'src/application/helpers/http';
 import { iArchiveOrUnarchiveProductUsecase } from 'src/domain/usecases/product';
 import { ObjectManager } from '../../../domain/utils';
+import { NotificationHandlerArchiveOrUnarchiveProduct } from '../../../main/factories/main/errors';
 
 export class ArchiveOrUnarchiveProductController extends iController {
   constructor(
@@ -11,15 +12,21 @@ export class ArchiveOrUnarchiveProductController extends iController {
   }
   async exec(request: HttpRequest): Promise<HttpResponse> {
     try {
+
+      const notificationHandler = NotificationHandlerArchiveOrUnarchiveProduct()
+
       const content: iArchiveOrUnarchiveProductUsecase.Input = {
         action: request.params.action,
         product_id: request.params.productId,
       };
 
-      ObjectManager.hasKeys<iArchiveOrUnarchiveProductUsecase.Input>(
+      ObjectManager.hasKeysWithNotification<iArchiveOrUnarchiveProductUsecase.Input>(
         ['action', 'product_id'],
-        content
+        content,
+        notificationHandler
       );
+
+      notificationHandler.CheckToNextStep();
 
       const result = await this.archiveOrUnarchiveProduct.exec(content);
 

@@ -13,7 +13,7 @@ export class ArchiveOrUnarchiveProductData
       case 'unarchive':
         return this.unarchiveProduct(input);
       default:
-        throw new BadRequestError('Action not found.');
+        return Promise.resolve(false)
     }
   }
 

@@ -2,6 +2,7 @@ import { iController } from '../../../application/contracts';
 import { HttpRequest, HttpResponse } from 'src/application/helpers/http';
 import { iAccessAccountUserUsecase } from 'src/domain/usecases/user';
 import { ObjectManager } from '../../../domain/utils';
+import { NotificationHandlerAccessAccountUser } from '../../../main/factories/main/errors';
 
 export class AccessAccountUserController extends iController {
   constructor(
@@ -12,12 +13,17 @@ export class AccessAccountUserController extends iController {
 
   async exec(request: HttpRequest): Promise<HttpResponse> {
     try {
+      const notificationErrorHandler = NotificationHandlerAccessAccountUser()
+      
       const content: iAccessAccountUserUsecase.Input = request.body;
 
-      ObjectManager.hasKeys<iAccessAccountUserUsecase.Input>(
+      ObjectManager.hasKeysWithNotification<iAccessAccountUserUsecase.Input>(
         ['email', 'password'],
-        content
+        content,
+        notificationErrorHandler
       );
+
+      notificationErrorHandler.CheckToNextStep()
 
       const token = await this.accessAccountUserUsecase.exec({
         email: content.email,

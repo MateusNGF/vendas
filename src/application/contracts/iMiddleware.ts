@@ -1,4 +1,4 @@
-import { HTTP_ERROR } from '../../../src/domain/errors';
+import { HTTPError } from '../../../src/domain/errors';
 import { HttpRequest, HttpResponse } from '../helpers/http';
 
 export abstract class iMiddleware {
@@ -9,7 +9,7 @@ export abstract class iMiddleware {
   }
 
   protected sendError(error: any): HttpResponse<{ message: string }> {
-    if (error instanceof HTTP_ERROR) {
+    if (error instanceof HTTPError) {
       return makeBodyResponseError(
         error.code ? error.code : 400,
         error.message

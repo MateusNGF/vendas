@@ -1,21 +1,27 @@
 import { HTTP_STATUS } from '../../../src/domain/types/Http.status';
-import { HTTP_ERROR } from '../../../src/domain/errors';
+import { HTTPError, NotificationError } from '../../../src/domain/errors';
 import { HttpRequest, HttpResponse } from '../helpers/http';
 
 export abstract class iController {
   abstract exec<T = any>(request: HttpRequest): Promise<HttpResponse<T>>;
 
   protected sendError(error: any): HttpResponse<{ message: string }> {
-    if (error instanceof HTTP_ERROR) {
+    if (error instanceof HTTPError) {
       return makeBodyResponseError(
         error.code ? error.code : HTTP_STATUS.BAD_REQUEST,
-        error.message
+        { message: error.message }
+      );
+    } else if (error instanceof NotificationError) {
+      console.log(error)
+      return makeBodyResponseError(
+        HTTP_STATUS.BAD_REQUEST,
+       { message : 'Some errors were found .', stack : error.notifications }
       );
     } else {
-      console.error(error);
+      console.log(error)
       return makeBodyResponseError(
         HTTP_STATUS.INTERNAL_SERVER_ERROR,
-        'Internal Error. try later.'
+        { message : 'Internal Error. try later.' }
       );
     }
   }
@@ -38,6 +44,6 @@ export abstract class iController {
   }
 }
 
-const makeBodyResponseError = (status: any, message: any) => {
-  return { status: status, data: { message } };
+const makeBodyResponseError = (status: any, data: any) => {
+  return { status: status, data };
 };

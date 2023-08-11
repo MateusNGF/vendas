@@ -1,1 +1,1 @@
-export * from '.'
+export * from './notification.factory'

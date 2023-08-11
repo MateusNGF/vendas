@@ -36,7 +36,7 @@ export class NotificationHandler implements INotificationHandler {
     ){}
 
     AddNotification(error: INotificationContent): void {
-        error.context = this._settings.context
+        error.context = error.context ? error.context : this._settings.context
         this.stackNotifications.push(new NotificationContent(error));
     }
     HasError(): boolean {

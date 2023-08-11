@@ -1,48 +1,55 @@
-import {
-  EmptyParamError,
-  MissingParamError,
-  UnexpectedParamError,
-} from '../errors/validation.error';
+import { INotificationHandler } from '../contracts/iNotificationError';
 
 export class ObjectManager extends Object {
   /**
    * Essa função verifica se em um determinado objeto tem as chaves necessarias.
-   * Security, true e false, ambos retornar MissingParam, mas somente true retorna UnexpectedParam.
+   * Security, true e false.
    * @param requireds chaves que necessaririas
    * @param content objecto de verificação
+   * @param notification instancia que armazena os erros encontrados
    * @param security true para deixar apenas os required no objeto, false verifica se tem pelo menos os requireds.
    */
-  static hasKeys<TypeKeysRequireds = string>(
+ 
+  static hasKeysWithNotification<TypeKeysRequireds = string>(
     requireds: Array<keyof TypeKeysRequireds>,
     content: any,
+    notification : INotificationHandler,
     security: boolean = false
   ) {
     if (Array.isArray(content)) {
-      content.forEach((i) => this.hasKeys(requireds, i, security));
+      content.forEach((i) => this.hasKeysWithNotification(requireds, i, notification, security));
     } else {
       if (security) {
-        ObjectManager.hasTheseProperties(requireds, content);
-        ObjectManager.justTheseProperties(requireds, content);
+        ObjectManager.hasThesePropertiesNotification(requireds, content, notification);
+        ObjectManager.justThesePropertiesNotification(requireds, content, notification);
       } else {
-        ObjectManager.hasTheseProperties(requireds, content);
+        ObjectManager.hasThesePropertiesNotification(requireds, content, notification);
       }
     }
   }
 
-  static justTheseProperties(requireds: Array<any>, object: object) {
+  static justThesePropertiesNotification(requireds: Array<any>, object: object, notification : INotificationHandler) {
     for (const key in object) {
       if (!requireds.find((element) => element == key)) {
-        throw new UnexpectedParamError(key);
+         // UnexpectedParamError
+        notification.AddNotification({ key: key, message: `It's param not is required.` });
       }
     }
   }
 
-  static hasTheseProperties(requireds: Array<any>, object: object) {
+  static hasThesePropertiesNotification(requireds: Array<any>, object: object, notification : INotificationHandler) {
     requireds.forEach((element: any) => {
-      if (!(element in object)) throw new MissingParamError(element);
-      if (!object[element]) throw new EmptyParamError(element);
+      if (!(element in object)){
+        // MissingParamError
+       return notification.AddNotification({ key: element, message: `it's key is required.` });
+      }
+      if (!object[element]) {
+        // EmptyParamError
+        return notification.AddNotification({ key: element, message: `It's key can't be empty.` });
+      }
     });
   }
+
 
   /**
    * Faz uma assinatura das chaves que tem interceção entre os dois objectos.

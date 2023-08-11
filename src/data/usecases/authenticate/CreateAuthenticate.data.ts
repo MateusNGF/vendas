@@ -1,6 +1,5 @@
 import {
-  BadRequestError,
-  InternalError,
+  BadRequestError
 } from '../../../domain/errors/Http.error';
 import {
   iCreateAuthenticationUsecase,

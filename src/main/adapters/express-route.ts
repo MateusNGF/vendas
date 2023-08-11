@@ -11,6 +11,6 @@ export const adaptExpressRoute: Adapter =
       headers: req.headers as any,
       query: req.query,
     });
-    const json = [200, 204].includes(status) ? data : { error: data.message };
+    const json = [200, 204].includes(status) ? data : { error: data };
     res.status(status).json(json);
   };

@@ -4,6 +4,7 @@ import { TransactionEntity } from 'src/domain/entities/transaction.entity';
 import { iCreateIncomingTransactionForProductsUsecase } from 'src/domain/usecases/transaction/iCreateTransaction.usecase';
 import { ObjectManager } from '../../../domain/utils';
 import { BadRequestError } from '../../../domain/errors';
+import { NotificationHandlerCreateIncomingTransactionForProducts } from '../../../main/factories/main/errors';
 
 export class CreateTransactionController extends iController {
   constructor(
@@ -14,23 +15,31 @@ export class CreateTransactionController extends iController {
 
   async exec(request: HttpRequest): Promise<HttpResponse> {
     try {
-      const content: iCreateIncomingTransactionForProductsUsecase.Input =
-        request.body;
+      const content: iCreateIncomingTransactionForProductsUsecase.Input = request.body;
+      const notificationErrorHandler = NotificationHandlerCreateIncomingTransactionForProducts()
+      
 
-      ObjectManager.hasKeys<iCreateIncomingTransactionForProductsUsecase.Input>(
+      ObjectManager.hasKeysWithNotification<iCreateIncomingTransactionForProductsUsecase.Input>(
         ['user_id', 'products'],
-        content
+        content,
+        notificationErrorHandler
       );
+
+      notificationErrorHandler.CheckToNextStep();
 
       if (content.products.length < 1)
         throw new BadRequestError(
           'Need one or more products for creating transaction.'
         );
 
-      ObjectManager.hasKeys<TransactionEntity.ProductIncomingTransaction>(
+      ObjectManager.hasKeysWithNotification<TransactionEntity.ProductIncomingTransaction>(
         ['id', 'quantity'],
-        content.products
+        content.products,
+        notificationErrorHandler
       );
+
+      notificationErrorHandler.CheckToNextStep();
+
 
       const transactionPartialData = await this.createTransactionUsecase.exec({
         user_id: content.user_id,
