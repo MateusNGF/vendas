@@ -10,5 +10,5 @@ export interface INotificationHandler {
     HasError(): boolean
     GetErrors() : Array<INotificationContent>
     CheckToNextStep() : void
-    GetHowToStrings() : string
+    GetToStrings() : string
 }

@@ -52,7 +52,7 @@ export class NotificationHandler implements INotificationHandler {
     GetErrors(): INotificationContent[] {
         return this.stackNotifications
     }
-    GetHowToStrings(): string {
+    GetToStrings(): string {
         return this.stackNotifications.map((error, index) => `${index+1}º ${String(error)}`).join(';\n ')
     }
 
