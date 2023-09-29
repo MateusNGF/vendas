@@ -1,4 +1,3 @@
-import { BadRequestError } from 'src/domain/errors';
 import { iGetAccountUserUsecase } from 'src/domain/usecases/user';
 import { iUserRepository } from 'src/infra/database/contracts/repositorys/iUser.repository';
 

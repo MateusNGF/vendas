@@ -1,12 +1,12 @@
 import { HTTP_STATUS } from '../../../src/domain/types/Http.status';
-import { HTTPError, NotificationError } from '../../../src/domain/errors';
+import { CustomError, NotificationError } from '../../../src/domain/errors';
 import { HttpRequest, HttpResponse } from '../helpers/http';
 
 export abstract class iController {
   abstract exec<T = any>(request: HttpRequest): Promise<HttpResponse<T>>;
 
   protected sendError(error: any): HttpResponse<{ message: string }> {
-    if (error instanceof HTTPError) {
+    if (error instanceof CustomError) {
       return makeBodyResponseError(
         error.code ? error.code : HTTP_STATUS.BAD_REQUEST,
         { message: error.message }

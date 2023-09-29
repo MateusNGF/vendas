@@ -1,4 +1,3 @@
-import { BadRequestError } from '../../../domain/errors';
 import { iArchiveOrUnarchiveProductUsecase } from 'src/domain/usecases/product';
 import { iProductRepository } from 'src/infra/database/contracts/repositorys/iProduct.repository';
 

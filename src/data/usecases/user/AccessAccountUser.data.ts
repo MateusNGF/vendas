@@ -1,4 +1,4 @@
-import { BadRequestError } from '../../../domain/errors';
+import { OperationFailed } from '../../../domain/errors';
 import { iCreateTokenAuthenticateUsecase } from 'src/domain/usecases/authenticate';
 import { iAccessAccountUserUsecase } from 'src/domain/usecases/user';
 
@@ -12,7 +12,7 @@ export class AccessAccountUserData implements iAccessAccountUserUsecase {
       password: input.password,
     });
 
-    if (!token) throw new BadRequestError('Account not found.');
+    if (!token) throw new OperationFailed('Account not found.');
 
     return token;
   }
