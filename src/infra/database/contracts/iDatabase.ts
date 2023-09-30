@@ -14,3 +14,10 @@ export namespace iDatabase {
     get(): any;
   }
 }
+
+export abstract class iDatabaseCached {
+  abstract connect(): Promise<void>
+  abstract get<type = any>(key: string): Promise<type>
+  abstract set(key: string, data: any): Promise<void>
+  abstract del(key: string): Promise<boolean>
+}

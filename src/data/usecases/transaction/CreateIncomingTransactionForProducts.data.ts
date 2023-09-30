@@ -7,7 +7,7 @@ import { iTransactionRepository } from 'src/infra/database/contracts/repositorys
 import { iUserRepository } from 'src/infra/database/contracts/repositorys/iUser.repository';
 import { Writeable } from 'src/domain/utils';
 import { ProductEntity } from 'src/domain/entities';
-import { NotificationHandlerCreateIncomingTransactionForProducts, NotificationHandlerGetAccountUser } from 'src/main/factories/main/errors';
+import { NotificationHandlerCreateIncomingTransactionForProducts } from '../../../main/factories/main/errors';
 
 export class CreateIncomingTransactionForProductsData
   implements iCreateIncomingTransactionForProductsUsecase
@@ -63,7 +63,7 @@ export class CreateIncomingTransactionForProductsData
       }
 
       NotificationError.CheckToNextStep();
-      
+
       const transaction = new TransactionEntity(transactionPartial);
       const result = await this.transactionRepository.create(transaction);
 

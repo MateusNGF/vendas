@@ -3,13 +3,15 @@ import { Server } from 'http';
 import { readdirSync } from 'fs';
 import express, { Express, json, Router } from 'express';
 
-import { iDatabase } from '../../infra/database/contracts';
+import { iDatabase, iDatabaseCached } from '../../infra/database/contracts';
 import { MongoDB } from '../../infra/database/mongodb';
+import { RedisDB } from '../../infra/database/redis';
 
 class AppExpress {
   private app: Express = express();
   private server: Server | null = null;
-  private database: iDatabase | null = null;
+  private database: iDatabase = null;
+  private memoryCache: iDatabaseCached = null
 
   async init(): Promise<Express> {
     await this.setupDatabase();
@@ -46,8 +48,17 @@ class AppExpress {
 
   private async setupDatabase() {
     if (!this.database) {
+
+      this.database = MongoDB
+      this.memoryCache = RedisDB
+
       try {
-        this.database = MongoDB;
+        await this.memoryCache.connect();
+      } catch (e) {
+        console.error("MemoryCache not started : ", e.message)
+      }
+
+      try {
         await this.database.connect();
       } catch (e) {
         throw new Error('Database not has configurated or database is down.');

@@ -33,7 +33,7 @@ class Mongo implements iDatabase {
   }
 }
 
-export const MongoDB = new Mongo();
+export const MongoDB : iDatabase = new Mongo();
 
 class MongoSession implements iDatabase.iSession {
   constructor(private readonly mongoSession: ClientSession) {}

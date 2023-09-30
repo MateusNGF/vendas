@@ -71,6 +71,15 @@ services:
     volumes:
       - './src/infra/database/mongodb/scripts:/data/scripts:rw'
 
+  cache:
+    image: 'redis:alpine'
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server
+    networks:
+      - vendas_networks
+
   balanceador:
     image: nginx:latest
     container_name: nginx
