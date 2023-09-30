@@ -6,19 +6,18 @@ export abstract class iController {
   abstract exec<T = any>(request: HttpRequest): Promise<HttpResponse<T>>;
 
   protected sendError(error: any): HttpResponse<{ message: string }> {
+    console.log(error)
     if (error instanceof CustomError) {
       return makeBodyResponseError(
-        error.code ? error.code : HTTP_STATUS.BAD_REQUEST,
+        HTTP_STATUS.BAD_REQUEST,
         { message: error.message }
       );
     } else if (error instanceof NotificationError) {
-      console.log(error)
       return makeBodyResponseError(
         HTTP_STATUS.BAD_REQUEST,
        { message : 'Some errors were found .', stack : error.notifications }
       );
     } else {
-      console.log(error)
       return makeBodyResponseError(
         HTTP_STATUS.INTERNAL_SERVER_ERROR,
         { message : 'Internal Error. try later.' }

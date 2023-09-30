@@ -33,7 +33,7 @@ export class AuthorizationMiddleware extends iMiddleware {
 
   private defaultValidation(decodedTokenUser: PayloadToken) {
     if (decodedTokenUser.access_level < this.necessary_level)
-      throw new ForbiddenError();
+      throw new ForbiddenError('Access level not enough.');
   }
 
   private onlyAccessLevelValidation(decodedTokenUser: PayloadToken) {
