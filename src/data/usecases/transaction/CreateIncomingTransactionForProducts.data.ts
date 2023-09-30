@@ -7,6 +7,7 @@ import { iTransactionRepository } from 'src/infra/database/contracts/repositorys
 import { iUserRepository } from 'src/infra/database/contracts/repositorys/iUser.repository';
 import { Writeable } from 'src/domain/utils';
 import { ProductEntity } from 'src/domain/entities';
+import { NotificationHandlerCreateIncomingTransactionForProducts, NotificationHandlerGetAccountUser } from 'src/main/factories/main/errors';
 
 export class CreateIncomingTransactionForProductsData
   implements iCreateIncomingTransactionForProductsUsecase
@@ -34,6 +35,9 @@ export class CreateIncomingTransactionForProductsData
         total_price: 0,
       };
 
+      const NotificationError = NotificationHandlerCreateIncomingTransactionForProducts();
+
+
       for (let i = 0; i < products.length; i++) {
         const productBasic: TransactionEntity.ProductIncomingTransaction = products[i];
 
@@ -42,7 +46,13 @@ export class CreateIncomingTransactionForProductsData
           { session }
         );
 
-        if (!productContent) throw new OperationFailed(`Product ${productBasic.id} not updated.`);
+        if (!productContent) {
+          NotificationError.AddNotification({
+            key : "id",
+            message: `Product ${productBasic.id} not updated.`
+          })
+          return;
+        }
 
         transactionPartial.products.push(
           this.makeProductContentTransaction(productBasic, productContent)
@@ -52,8 +62,9 @@ export class CreateIncomingTransactionForProductsData
         );
       }
 
+      NotificationError.CheckToNextStep();
+      
       const transaction = new TransactionEntity(transactionPartial);
-
       const result = await this.transactionRepository.create(transaction);
 
       return {
