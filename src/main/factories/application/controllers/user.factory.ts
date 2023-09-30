@@ -11,13 +11,19 @@ import {
 } from '../usecases/user.factory';
 
 export function makeCreateAccountUserController(): iController {
-  return new CreateAccountUserController(makeCreateAccountUserUsecase());
+  return new CreateAccountUserController(
+    makeCreateAccountUserUsecase()
+  );
 }
 
 export function makeAccessAccountUserController(): iController {
-  return new AccessAccountUserController(makeAccessAccountUserUsecase());
+  return new AccessAccountUserController(
+    makeAccessAccountUserUsecase()
+  );
 }
 
 export function makeGetAccountUserController(): iController {
-  return new GetAccountUserController(makeGetAccountUserUsecase());
+  return new GetAccountUserController(
+    makeGetAccountUserUsecase()
+  );
 }

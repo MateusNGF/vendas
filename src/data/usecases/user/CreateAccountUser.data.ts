@@ -1,5 +1,5 @@
 import { UserEntity } from '../../../domain/entities';
-import { BadRequestError } from '../../../domain/errors';
+import { OperationFailed } from '../../../domain/errors';
 import {
   iCreateAuthenticationUsecase,
   iCreateTokenAuthenticateUsecase,
@@ -24,8 +24,7 @@ export class CreateAccountUserData implements iCreateAccountUserUsecase {
       associeted_id: userPartial.id,
     });
 
-    if (!authenticate)
-      throw new BadRequestError('Unable to create an authenticator.');
+    if (!authenticate) throw new OperationFailed('Unable to create an authenticator.');
 
     const user = new UserEntity({
       id: userPartial.id,
@@ -34,12 +33,12 @@ export class CreateAccountUserData implements iCreateAccountUserUsecase {
 
     const inserteded = await this.userRepository.create(user);
     if (!inserteded || (inserteded && !inserteded.id))
-      throw new BadRequestError('Operation failed, please try again.');
+      throw new OperationFailed('Operation failed, please try again.');
 
     const token = await this.createTokenAuthenticate.exec({
       associeted_id: inserteded.id,
     });
-    if (!token) throw new BadRequestError('Token creation failed.');
+    if (!token) throw new OperationFailed('Token creation failed.');
     return token;
   }
 }

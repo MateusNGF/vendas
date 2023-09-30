@@ -3,6 +3,7 @@ import { HttpRequest, HttpResponse } from 'src/application/helpers/http';
 import { BadRequestError } from '../../../domain/errors';
 import { iRegisterProductUsecase } from 'src/domain/usecases/product';
 import { ObjectManager } from '../../../domain/utils';
+import { NotificationHandlerRegisterProduct } from '../../../main/factories/main/errors';
 
 export class RegisterProductController extends iController {
   constructor(
@@ -15,10 +16,15 @@ export class RegisterProductController extends iController {
       const content: iRegisterProductUsecase.Input = request.body;
       const currentUser = request.headers.decodedTokenUser.user_id;
 
-      ObjectManager.hasKeys<iRegisterProductUsecase.Input>(
+      const notificationHandler = NotificationHandlerRegisterProduct();
+
+      ObjectManager.hasKeysWithNotification<iRegisterProductUsecase.Input>(
         ['name', 'sale_price', 'stock'],
-        content
+        content,
+        notificationHandler
       );
+
+      notificationHandler.CheckToNextStep();
 
       const inserted = await this.registerProductUsecase.exec({
         name: content.name,

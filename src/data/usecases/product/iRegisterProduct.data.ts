@@ -1,5 +1,5 @@
 import { ProductEntity } from '../../../domain/entities';
-import { BadRequestError } from '../../../domain/errors';
+import { OperationFailed } from '../../../domain/errors';
 import { iRegisterProductUsecase } from '../../../domain/usecases/product';
 import { iProductRepository } from '../../../infra/database/contracts/repositorys/iProduct.repository';
 
@@ -15,7 +15,7 @@ export class RegisterProductData implements iRegisterProductUsecase {
       incomingProduct
     );
     if (isDuplicated)
-      throw new BadRequestError(
+      throw new OperationFailed(
         `Product ${incomingProduct.name} is already registered`
       );
 
@@ -27,7 +27,7 @@ export class RegisterProductData implements iRegisterProductUsecase {
     });
 
     const { id } = await this.productRepository.create(product);
-    if (!id) throw new BadRequestError('Error in register product.');
+    if (!id) throw new OperationFailed('Error in register product.');
 
     return { id };
   }

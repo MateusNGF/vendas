@@ -1,5 +1,5 @@
 import { TransactionEntity } from '../../../domain/entities/transaction.entity';
-import { BadRequestError } from '../../../domain/errors';
+import { OperationFailed } from '../../../domain/errors';
 import { iCreateIncomingTransactionForProductsUsecase } from 'src/domain/usecases/transaction/iCreateTransaction.usecase';
 import { iDatabase } from 'src/infra/database/contracts';
 import { iProductRepository } from 'src/infra/database/contracts/repositorys/iProduct.repository';
@@ -25,7 +25,7 @@ export class CreateIncomingTransactionForProductsData
       const { products, user_id } = input;
 
       const user = await this.userRepository.findById(user_id, { session });
-      if (!user) throw new BadRequestError('User not found.');
+      if (!user) throw new OperationFailed('User not found.');
 
       let transactionPartial: Writeable<TransactionEntity> = {
         type: 'incoming',
@@ -35,14 +35,14 @@ export class CreateIncomingTransactionForProductsData
       };
 
       for (let i = 0; i < products.length; i++) {
-        const productBasic: TransactionEntity.ProductIncomingTransaction =
-          products[i];
+        const productBasic: TransactionEntity.ProductIncomingTransaction = products[i];
+
         const productContent = await this.productRepository.productOutput(
           productBasic,
           { session }
         );
-        if (!productContent)
-          throw new BadRequestError(`Product ${productBasic.id} not updated.`);
+
+        if (!productContent) throw new OperationFailed(`Product ${productBasic.id} not updated.`);
 
         transactionPartial.products.push(
           this.makeProductContentTransaction(productBasic, productContent)
@@ -62,7 +62,7 @@ export class CreateIncomingTransactionForProductsData
       };
     } catch (e) {
       await session.abortTransaction();
-      throw new BadRequestError(e.message);
+      throw e
     } finally {
       await session.endSession();
     }
