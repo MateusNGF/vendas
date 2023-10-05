@@ -8,7 +8,7 @@ export class AuthenticateRepository implements iAuthenticateRepository {
   constructor(
     private readonly database: Db,
     private readonly colletion: Collection<AuthEntity>,
-    private readonly memoryCache: iDatabaseCached
+    private readonly memoryCache: iDatabaseCached.iManager
   ) {}
   async create(auth: AuthEntity): Promise<{ id: string }> {
     const idGenerate = auth.id ? auth.id : generateID();

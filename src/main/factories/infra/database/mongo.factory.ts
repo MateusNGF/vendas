@@ -13,15 +13,11 @@ import { iTransactionRepository } from '../../../../infra/database/contracts/rep
 import { TransactionEntity } from '../../../../domain/entities/transaction.entity';
 import { TransactionRepository } from '../../../../infra/database/mongodb/repositorys/transaction.repository';
 import { iDatabase, iDatabaseCached } from '../../../../infra/database/contracts';
-import { RedisDB } from '../../../../infra/database/redis';
+import { GetMemoryCached } from './redis.factory';
 
 const getConnection = (): Db => {
   return MongoDB.getDatabase();
 };
-
-const getDriveMemoryCache = () : iDatabaseCached => {
-  return RedisDB
-}
 
 export const makeSessionDatabase = (): iDatabase.iSession => {
   return MongoDB.createSession();
@@ -29,9 +25,12 @@ export const makeSessionDatabase = (): iDatabase.iSession => {
 
 export const makeAuthenticateRepository = (): iAuthenticateRepository => {
   const database = getConnection();
-  const authenticateColletion =
-    database.collection<AuthEntity>('authenticates');
-  const memoryCache = getDriveMemoryCache()
+  const authenticateColletion = database.collection<AuthEntity>('authenticates');
+
+  const memoryCache = GetMemoryCached({ 
+    context: 'ATH',
+  })
+
   return new AuthenticateRepository(database, authenticateColletion, memoryCache);
 };
 

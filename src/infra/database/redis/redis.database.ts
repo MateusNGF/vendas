@@ -2,8 +2,8 @@ import { RedisClientType, createClient} from 'redis'
 import { iDatabaseCached } from '../contracts'
 
 
-class RedisDriveDatabase implements iDatabaseCached {
-    private client: RedisClientType = null
+class RedisDriveDatabase implements iDatabaseCached<RedisClientType> {
+    public client: RedisClientType
 
     async connect(){
         if (!this.client){
@@ -14,26 +14,48 @@ class RedisDriveDatabase implements iDatabaseCached {
             await this.client.connect()
         } 
     }
+}
+
+
+export class RedisManagerDatabase implements iDatabaseCached.iManager {
+
+    constructor(
+        private readonly drive: iDatabaseCached<RedisClientType>,
+        private readonly configuration: iDatabaseCached.iConfiguration
+    ){}
 
     async set(key: string, value : any, options = { expire : 60 * 5 }){
-        if ( !this.client || ( !key || !value ) ) return null
+        if ( !this.drive.client || ( !key || !value ) ) return null
 
-        await this.client.set(key, JSON.stringify(value), {
+        key = this.BuildContext(key)
+
+        await this.drive.client?.set(key, JSON.stringify(value), {
             EX : options.expire
         })
     }
 
     async get<type=any>(key : string) : Promise<type> {
-        if (!this.client || !key) return null
-        const content = await this.client.get(key)
+        if (!this.drive.client || !key) return null
+
+        key = this.BuildContext(key)
+
+        const content = await this.drive.client?.get(key)
         return JSON.parse(content) 
     }
 
 
     async del(key : string){
-        if (!this.client || !key) return null
-        await this.client.del(key)
+        key = this.BuildContext(key)
+
+        if (!this.drive.client || !key) return null
+        await this.drive.client?.del(key)
     }
+
+
+    private BuildContext(key : string){
+        return this.configuration.context ? `${this.configuration.context.toUpperCase()}|${key}` : key
+    }
+
 }
 
 
