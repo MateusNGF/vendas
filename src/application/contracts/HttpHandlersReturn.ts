@@ -9,9 +9,9 @@ export abstract class HTTPHandlerReturns {
     };
 
     sendError(error: any): HttpResponse<{ message: string }> {
+        console.error(error)
        
         if (error instanceof CustomError) {
-            console.log(1 , { message: error.message })
             return this.makeBodyResponseError(
                 HTTP_STATUS.BAD_REQUEST,
                 { message: error.message }
