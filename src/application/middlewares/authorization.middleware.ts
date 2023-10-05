@@ -1,8 +1,8 @@
-import { AuthEntity } from 'src/domain/entities';
 import { PayloadToken } from 'src/domain/types';
 import { ForbiddenError, UnauthorizedError } from '../../domain/errors';
 import { iMiddleware } from '../contracts/iMiddleware';
 import { HttpRequest, HttpResponse } from '../helpers/http';
+import { HTTP_STATUS } from '../../domain/types/Http.status';
 
 export class AuthorizationMiddleware extends iMiddleware {
   constructor(
@@ -25,7 +25,7 @@ export class AuthorizationMiddleware extends iMiddleware {
         this.defaultValidation(decodedTokenUser);
       }
 
-      return this.sendSucess({});
+      return this.sendSucess(HTTP_STATUS.OK, {});
     } catch (e) {
       return this.sendError(e);
     }

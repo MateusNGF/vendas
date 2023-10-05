@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { iMiddleware } from 'src/application/contracts/iMiddleware';
+import { makeBodyResponse } from '.';
 
 export const adaptExpressMiddleware =
   (middleware: iMiddleware) =>
@@ -18,6 +19,6 @@ export const adaptExpressMiddleware =
       };
       next();
     } else {
-      res.status(status).json({ error: data.message });
+      res.status(status).json(makeBodyResponse(status, data));
     }
   };

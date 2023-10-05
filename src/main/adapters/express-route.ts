@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express';
 import { iController } from '../../application/contracts';
+import { makeBodyResponse } from '.';
 
 type Adapter = (controller: iController) => RequestHandler;
 
@@ -11,6 +12,5 @@ export const adaptExpressRoute: Adapter =
       headers: req.headers as any,
       query: req.query,
     });
-    const json = [200, 204].includes(status) ? data : { error: data };
-    res.status(status).json(json);
+    res.status(status).json(makeBodyResponse(status, data));
   };

@@ -1,3 +1,4 @@
+import { HTTP_STATUS } from '../../domain/types/Http.status';
 import { UnauthorizedError } from '../../domain/errors';
 import { PayloadToken } from '../../domain/types';
 import { iTokenAdapter } from '../../infra/cryptography/contracts';
@@ -11,13 +12,16 @@ export class AuthenticationMiddleware extends iMiddleware {
 
   async run(request: HttpRequest): Promise<HttpResponse> {
     const token = request.headers['x-access-token'];
+    const content: HttpRequest.Headers = { decodedTokenUser : null }
+
     try {
       if (!token) throw new UnauthorizedError('Token required.');
-      const payload = await this.tokenAdapter.verify<PayloadToken>(token);
-      const content: HttpRequest.Headers = { decodedTokenUser: payload };
-      return this.sendSucess(content);
+
+      content.decodedTokenUser = await this.tokenAdapter.verify<PayloadToken>(token);
+
+      return this.sendSucess(HTTP_STATUS.OK, content);
     } catch (e) {
-      return this.sendError(e);
+      return this.sendError(new UnauthorizedError(e.message));
     }
   }
 }
