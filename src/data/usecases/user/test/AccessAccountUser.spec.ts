@@ -1,5 +1,5 @@
 import { mock, MockProxy } from 'jest-mock-extended';
-import { BadRequestError } from '../../../../domain/errors';
+import { OperationFailed } from '../../../../domain/errors';
 import { iCreateTokenAuthenticateUsecase } from 'src/domain/usecases/authenticate';
 import { iAccessAccountUserUsecase } from 'src/domain/usecases/user';
 import { AccessAccountUserData } from '../AccessAccountUser.data';
@@ -26,11 +26,11 @@ describe('CreateTokenAuthenticate', () => {
     };
   });
 
-  it('Should return BadRequestError if authenticate not found.', async () => {
+  it('Should return OperationFailed if authenticate not found.', async () => {
     createTokenAuthenticate.exec.mockResolvedValue(null);
 
     const result = sut.exec(fakeInputCredentials);
-    await expect(result).rejects.toThrow(BadRequestError);
+    await expect(result).rejects.toThrow(OperationFailed);
   });
 
   it('Should return valid token when email and password is valid.', async () => {

@@ -1,5 +1,5 @@
 import { AuthEntity } from 'src/domain/entities/auth.entity';
-import { UnauthorizedError } from '../../../domain/errors';
+import { OperationFailed } from '../../../domain/errors';
 import { PayloadToken } from 'src/domain/types';
 import {
   iCreateTokenAuthenticateUsecase,
@@ -33,7 +33,7 @@ export class CreateTokenAuthenticateData
         authenticate.password
       );
 
-      if (!matchPassword) throw new UnauthorizedError('Password invalid.');
+      if (!matchPassword) throw new OperationFailed('Password invalid.');
     }
 
     return await this.makeTokenByAuthenticate(authenticate);

@@ -4,7 +4,7 @@ import {
 } from 'src/domain/usecases/authenticate';
 import { mock, MockProxy } from 'jest-mock-extended';
 import { AuthEntity } from 'src/domain/entities/auth.entity';
-import { UnauthorizedError } from '../../../../domain/errors';
+import { OperationFailed, UnauthorizedError } from '../../../../domain/errors';
 import { iHashAdapter, iTokenAdapter } from 'src/infra/cryptography/contracts';
 import { CreateTokenAuthenticateData } from '../CreateTokenAuthenticate.data';
 
@@ -79,14 +79,14 @@ describe('CreateTokenAuthenticate', () => {
     expect(result).toEqual(token);
   });
 
-  it('Should return UnauthorizedError if password not match.', async () => {
+  it('Should return OperationFailed if password not match.', async () => {
     fakeInputCredentials.password = 'senha invalida';
 
     getAuthenticateRecord.exec.mockResolvedValue(fakeAuth);
     hashAdapter.compare.mockResolvedValue(false);
 
     const result = sut.exec(fakeInputCredentials);
-    await expect(result).rejects.toThrow(UnauthorizedError);
+    await expect(result).rejects.toThrow(OperationFailed);
   });
 
   it('Should return token when password match.', async () => {

@@ -1,6 +1,5 @@
 import { mock, MockProxy } from 'jest-mock-extended';
 import { AuthEntity } from 'src/domain/entities/auth.entity';
-import { BadRequestError } from '../../../../domain/errors/Http.error';
 import {
   iCreateAuthenticationUsecase,
   iGetAuthenticateRecordUsecase,
@@ -8,6 +7,7 @@ import {
 import { iAuthenticateRepository } from 'src/infra/database/contracts/repositorys/iAuthenticate.repository';
 import { CreateAuthenticateData } from '../CreateAuthenticate.data';
 import { iHashAdapter } from 'src/infra/cryptography/contracts';
+import { OperationFailed } from '../../../../domain/errors';
 
 describe('CreateTokenAuthenticate', () => {
   let sut: iCreateAuthenticationUsecase;
@@ -45,11 +45,11 @@ describe('CreateTokenAuthenticate', () => {
     fakeAuth = fakeInputCredentials;
   });
 
-  it('Should return BadRequestError if email of authenticate has record.', async () => {
+  it('Should return OperationFailed if email of authenticate has record.', async () => {
     getAuthenticateRecord.exec.mockResolvedValue(fakeAuth);
 
     const result = sut.exec(fakeInputCredentials);
-    await expect(result).rejects.toThrow(BadRequestError);
+    await expect(result).rejects.toThrow(OperationFailed);
   });
 
   it('Should return new authenticate id if email has valid.', async () => {
