@@ -1,3 +1,4 @@
+import { LoggerProvider } from '../infra/logger';
 import AppExpress from './config/appExpress';
 
 (async () => {
@@ -6,6 +7,9 @@ import AppExpress from './config/appExpress';
     await AppExpress.start();
   } catch (erro) {
     await AppExpress.close();
-    console.error('Error', erro);
+    LoggerProvider.error({
+      message : erro.message,
+      stack : erro.stack
+    })
   }
 })();

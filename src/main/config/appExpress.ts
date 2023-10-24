@@ -6,6 +6,7 @@ import express, { Express, json, Router } from 'express';
 import { iDatabase, iDatabaseCached } from '../../infra/database/contracts';
 import { MongoDB } from '../../infra/database/mongodb';
 import { RedisDB } from '../../infra/database/redis';
+import { LoggerProvider } from '../../infra/logger';
 
 class AppExpress {
   private app: Express = express();
@@ -29,7 +30,7 @@ class AppExpress {
         (await import(`../routes/${file}`)).default(router);
 
         router.stack.map((layer) => {
-          console.log(this.makePathOverview(layer, prefix_route));
+          LoggerProvider.info({message : this.makePathOverview(layer, prefix_route)});
         });
 
         this.app.use(`/${prefix_route}`, router);
@@ -55,7 +56,7 @@ class AppExpress {
       try {
         await this.memoryCache.connect();
       } catch (e) {
-        console.error("MemoryCache not started : ", e.message)
+        LoggerProvider.warn({ message : `MemoryCache not started : ${e.message}`})
       }
 
       try {
@@ -68,7 +69,7 @@ class AppExpress {
 
   public async start(): Promise<void> {
     this.server = this.app.listen(process.env.PORT, () => {
-      console.log(`Server Running at ${process.env.PORT}`);
+      LoggerProvider.info({ message : `Server Running at ${process.env.PORT}`});
     });
   }
 
