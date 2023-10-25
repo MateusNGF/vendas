@@ -14,7 +14,7 @@ export default (router: Router): void => {
     adaptExpressRoute(makeCreateAccountUserController())
   );
 
-  router.get('/access', adaptExpressRoute(makeAccessAccountUserController()));
+  router.post('/access', adaptExpressRoute(makeAccessAccountUserController()));
 
   router.get(
     '/account',
