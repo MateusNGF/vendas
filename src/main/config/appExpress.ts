@@ -1,7 +1,8 @@
 import { join } from 'path';
 import { Server } from 'http';
 import { readdirSync } from 'fs';
-import express, { Express, json, Router } from 'express';
+import express, { Express, Router } from 'express';
+import bodyParser from 'body-parser'
 
 import { iDatabase, iDatabaseCached } from '../../infra/database/contracts';
 import { MongoDB } from '../../infra/database/mongodb';
@@ -44,7 +45,8 @@ class AppExpress {
   }
 
   private setupMiddlewares(): void {
-    this.app.use(json());
+    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.urlencoded({ extended: true }));
   }
 
   private async setupDatabase() {
