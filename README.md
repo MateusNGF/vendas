@@ -18,14 +18,23 @@
 
 # USING DOCKER (production)
 > How to run project using docker ? In root director, run ```npm run docker-deploy```.
-> That command build the project to js and image to docker, then trigger the command to compose all depency from project, run start:docker.
+> That command build the project to js and image to docker, then trigger the command to compose all depency from project, run ```start:docker```.
+>
+> >  ☑️ LoadBalance:Nginx
+> >  ☑️ MemoryCache:Reddis
+> >  ☑️ DiskMemory:Mongo
+> > 
 
 > Finally, Access endpoint using : http://localhost:8080, with port 8080.
 
 
 # USING DEVELOPER
- > For using project how to developer, need compose depency of project using docker, necessaring the Reddis,database in memory, and MongoDB, disk in database, only. 
+ > For using project how to developer, need compose depency of project using docker: MongoDB, disk in database, only. And Reddis optional. 
  > Then, run command ```rpm run start:dev```.
+> 
+> >  ◻️ LoadBalance:Nginx
+> >  ❓ MemoryCache:Reddis
+> >  ☑️ DiskMemory:Mongo
 
  > Finaly, access endpoint using http://localhost:3000, with port 3000.
 
