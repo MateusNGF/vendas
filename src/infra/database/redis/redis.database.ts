@@ -14,6 +14,10 @@ class RedisDriveDatabase implements iDatabaseCached<RedisClientType> {
             await this.client.connect()
         } 
     }
+
+    async onError(callback: any){
+        this.client.on('error', callback)
+    }
 }
 
 

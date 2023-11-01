@@ -57,12 +57,21 @@ class AppExpress {
 
       try {
         await this.memoryCache.connect();
+
+        this.memoryCache.onError((...args : Array<any>) => {
+          LoggerProvider.warn({ message : `MemoryCache error listing : ${args}`})
+        })
+        
       } catch (e) {
         LoggerProvider.warn({ message : `MemoryCache not started : ${e.message}`})
       }
 
       try {
         await this.database.connect();
+
+        this.database.onError((...args : Array<any>) => {
+          LoggerProvider.warn({ message : `Database Error Connection : ${args}`})
+        })
       } catch (e) {
         throw new Error('Database not has configurated or database is down.');
       }

@@ -18,6 +18,7 @@ export namespace iDatabase {
 export abstract class iDatabaseCached<TypeMemmoryCached=any> {
   client: TypeMemmoryCached
   abstract connect(): Promise<void>
+  abstract onError(callback : any) : Promise<void>
 }
 
 export namespace iDatabaseCached {
