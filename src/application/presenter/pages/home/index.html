@@ -93,7 +93,8 @@
     const token = localStorage.getItem("token")
 
     const references = {
-        headerUserName: document.getElementById("headerUserName")
+        headerUserName: document.getElementById("headerUserName"),
+        itensConteiner: document.getElementById("product-list")
     }
 
     if (!token) {
@@ -114,8 +115,6 @@
     async function RenderItensContent() {
         const data = await API_Fetch("GET", "product/list/filter")
 
-        const ItensConteiner = document.getElementById("product-list");
-
         data.products.forEach(product => {
                 const cardProduct = document.createElement("div");
                 cardProduct.className = "product";
@@ -124,7 +123,7 @@
                     <p>Price: ${product.sale_price}</p>
                     <p>Stock : ${product.stock}</p>
                 `;
-                ItensConteiner.appendChild(cardProduct);
+                references.itensConteiner.appendChild(cardProduct);
         });
         return;
      }
