@@ -35,38 +35,28 @@
             margin: 0 auto;
             padding: 20px;
         }
-        .product {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: inline-block;
-            width: calc(33.33% - 20px);
-            text-align: center;
-            transition: transform 0.2s;
-        }
-        .product:hover {
-            transform: scale(1.05);
-        }
-        .product img {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 10px;
-        }
-        .product h3 {
-            font-size: 18px;
-            margin: 10px 0;
-        }
-        .product p {
-            font-size: 14px;
-            margin: 10px 0;
-        }
+
         .filters {
             text-align: center;
             margin-bottom: 20px;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table tr {
+            border-bottom: 1px solid #ddd;
+            justify-content: center;
+        }
+
+       table tr td {
+            padding-top: 8px;
+            padding-bottom: 8px;
+            text-align: center;
+            justify-content: center;
+
+       }
     </style>
 </head>
 
@@ -86,6 +76,19 @@
                 <button>Alimentos</button>
             </div>
             <div id="product-list"></div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Preço</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="itensTableView">
+                    <!-- Initial rows go here, if any -->
+                </tbody>
+            </table>
         </div>
     </main>
 </body>
@@ -116,17 +119,10 @@
         const data = await API_Fetch("GET", "product/list/filter")
 
         data.products.forEach(product => {
-                const cardProduct = document.createElement("div");
-                cardProduct.className = "product";
-                cardProduct.innerHTML = `
-                    <h3>${product.name}</h3>
-                    <p>Price: ${product.sale_price}</p>
-                    <p>Stock : ${product.stock}</p>
-                `;
-                references.itensConteiner.appendChild(cardProduct);
+            addItemInView(product)
         });
         return;
-     }
+    }
 
 
     function redirectTo(path) {
@@ -135,22 +131,61 @@
 
 
 
-    async function API_Fetch(method, url, body = null) {
-        let request = await fetch(`http://localhost:3000/${url}`, {
-            method: method,
-            headers: {
-                'Content-Type': 'application/json',
-                'x-access-token': `${token}`
-            }, 
-            body: body ? JSON.stringify(body) : null
-        })
-        const response = await request.json()
-        if (!response.ok) {
-            throw new Error(response.error.message)
+        async function API_Fetch(method, url, body = null) {
+            let request = await fetch(`http://localhost:3000/${url}`, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': `${token}`
+                },
+                body: body ? JSON.stringify(body) : null
+            })
+
+            const response = await request.json()
+
+            if (!response.ok && [401, 403].includes(request.status)) {
+                confirm("Sua sessão expirou. Por favor, realize o login novamente.")
+                setTimeout(() => {
+                    localStorage.removeItem('token');
+                    redirectTo("signin");
+                }, 1000)
+            }
+
+            return response.content
         }
 
-        return response.content
+    function addItemInView(item){
+        const itensTableView = document.getElementById("itensTableView");
+        const row = itensTableView.insertRow();
+
+        row.innerHTML = `
+                <td>${item.id}</td>
+                <td>${item.name}</td>
+                <td>${formartCurrency(item.sale_price, 'BRL')}</td>
+                <td>
+                    <a class="edit-btn" href="#">Editar</a>
+                    <a class="delete-btn" href="#">Excluir</a>
+                </td>
+            `;
+    }
+
+    function formartCurrency(value, currency){
+        const informationCurrency = { location : 'pt-BR', currency : 'BRL' }
+
+        switch (currency) {
+            case 'BRL':
+                informationCurrency.location = 'pt-BR'
+                informationCurrency.currency = 'BRL'
+                break;
+            case 'USD':
+                informationCurrency.location = 'en-US'
+                informationCurrency.currency = 'USD'
+                break;
+            default:
+                throw new Error('Currencty not found -> ' + currency + '<->' +  e.message)
+        }
+
+        return new Intl.NumberFormat(informationCurrency.location, { style: 'currency', currency: informationCurrency.currency }).format(value);
     }
 </script>
-
 </html>

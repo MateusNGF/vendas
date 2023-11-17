@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            align-items: center;
+            justify-content: center;
+            align-self: center;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+        #container-create-product {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-bottom: 20px;
+            padding-top: 20px;
+            width: 100%;
+            border: 2px solid black;
+        }
+
+        .input-content > label {
+            background-color: aquamarine;
+        } 
+    </style>
+</head>
+<body>
+    <div>
+        <div id="container-create-product">
+            <h1>Create Product</h1>
+            <form id="form-create-product">
+                <div class="input-content">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div class="input-content">
+                <div>
+                    <label for="description">Description</label>
+                    <input type="text" id="description" name="description" required>
+                </div class="input-content">
+                <div>
+                    <label for="price">Price</label>
+                    <input type="number" id="price" name="price" required>
+                </div class="input-content">
+                <div class="input-content">
+                    <label for="stock">Stock</label>
+                    <input type="number" id="stock" name="stock" required>
+                </div>
+                <div class="input-content">
+                    <label for="image">Image</label>
+                    <input type="file" id="image" name="image" required>
+                </div>
+            <div>
+        </div>
+        <div>
+            
+        </div>
+    </div>
+</body>
+</html>

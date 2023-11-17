@@ -9,17 +9,16 @@ export abstract class HTTPHandlerReturns {
     };
 
     sendError(error: any): HttpResponse<{ message: string }> {
-        console.error(error)
        
         if (error instanceof CustomError) {
             return this.makeBodyResponseError(
-                HTTP_STATUS.BAD_REQUEST,
-                { message: error.message }
+                error.code || HTTP_STATUS.BAD_REQUEST,
+                { message: error.message, code : error.code }
             );
         } else if (error instanceof NotificationError) {
             return this.makeBodyResponseError(
                 HTTP_STATUS.BAD_REQUEST,
-                { message: 'Some errors were found .', stack: error.notifications }
+                { message: 'Some errors were found .', stack: error.notifications}
             );
         } else {
             return this.makeBodyResponseError(
