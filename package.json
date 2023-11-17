@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "deploy-docker": "npm run build && docker build -t vendas_img .",
     "start": "node -r dotenv/config dist/src/main/server.js",
     "start:dev": "ts-node-dev -r dotenv/config src/main/server.ts",
-    "start:docker": "npm run deploy-docker && docker compose up -d",
+    "start:docker": "npm run docker:build && npm run docker:compose",
+    "docker:compose": "docker compose up -d",
+    "docker:build": "npm run build && docker build -t vendas_img .",
     "update-versions": "npm update && npm upgrade && npm install",
     "build": "npx tsc",
     "style:fix": "prettier --write src/**/*.ts src/**/**/*.ts",
