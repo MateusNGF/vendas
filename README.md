@@ -16,25 +16,31 @@
 
 ---
 
+#### CATALOG OF SERVICE STATUS SYMBOLS
+❓ -> Service is Optional <br>
+◻️ -> Service not started <br>
+☑️ -> Service Started <br>
+
+---
 # USING DOCKER (production)
-> How to run project using docker ? In root director, run ```npm run docker-deploy```.
+> How to run project using docker ? 
 > That command build the project to js and image to docker, then trigger the command to compose all depency from project, run ```start:docker```.
 >
-> >  ☑️ LoadBalance:Nginx
-> >  ☑️ MemoryCache:Reddis
-> >  ☑️ DiskMemory:Mongo
-> > 
+> ☑️ LoadBalance:Nginx <br> 
+> ☑️ MemoryCache:Reddis <br>
+> ☑️ DiskMemory:Mongo <br>
+>  
 
 > Finally, Access endpoint using : http://localhost:8080, with port 8080.
 
 
 # USING DEVELOPER
- > For using project how to developer, need compose depency of project using docker: MongoDB, disk in database, only. And Reddis optional. 
+ > For using project how to developer, need compose depency of project using docker: MongoDB, disk in database, only. And Reddis optional. Using command ```npm run docker:build``` and  ```npm run docker:compose```.
  > Then, run command ```rpm run start:dev```.
 > 
-> >  ◻️ LoadBalance:Nginx
-> >  ❓ MemoryCache:Reddis
-> >  ☑️ DiskMemory:Mongo
+> ◻️ LoadBalance:Nginx <br> 
+> ❓ MemoryCache:Reddis <br> 
+> ☑️ DiskMemory:Mongo <br>
 
  > Finaly, access endpoint using http://localhost:3000, with port 3000.
 
