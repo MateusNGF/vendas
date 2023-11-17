@@ -131,7 +131,7 @@
 
 
 
-    async function API_Fetch(method, url, body = null) {
+        async function API_Fetch(method, url, body = null) {
             let request = await fetch(`http://localhost:3000/${url}`, {
                 method: method,
                 headers: {
@@ -140,13 +140,19 @@
                 },
                 body: body ? JSON.stringify(body) : null
             })
+
             const response = await request.json()
-            if (!response.ok) {
-                throw new Error(response.error.message)
+
+            if (!response.ok && [401, 403].includes(request.status)) {
+                confirm("Sua sessão expirou. Por favor, realize o login novamente.")
+                setTimeout(() => {
+                    localStorage.removeItem('token');
+                    redirectTo("signin");
+                }, 1000)
             }
 
             return response.content
-    }
+        }
 
     function addItemInView(item){
         const itensTableView = document.getElementById("itensTableView");
