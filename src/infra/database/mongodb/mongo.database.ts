@@ -1,5 +1,6 @@
 import { ClientSession, Collection, MongoClient, Db } from 'mongodb';
 import { iDatabase } from '../contracts';
+import { LoggerProvider } from '../../../infra/logger';
 
 class Mongo implements iDatabase {
   private client: MongoClient | null = null;

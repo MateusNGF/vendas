@@ -1,12 +1,21 @@
+import { ExpressHttp } from '../infra/http/express.http';
 import { LoggerProvider } from '../infra/logger';
-import AppExpress from './config/appExpress';
+import { MongoDB } from '../infra/database/mongodb';
+import { RedisDB } from '../infra/database/redis';
+import { AplicationDrive } from '../main/apps/application';
 
 (async () => {
+
+  const Aplication = new AplicationDrive(ExpressHttp, MongoDB, RedisDB);
+
   try {
-    await AppExpress.init();
-    await AppExpress.start();
+
+    await Aplication.init();
+    await Aplication.start();
+
   } catch (erro) {
-    await AppExpress.close();
+
+    await Aplication.stop();
     LoggerProvider.error({
       message : erro.message,
       stack : erro.stack
