@@ -2,13 +2,13 @@ import { Collection, Db, Filter } from 'mongodb';
 import { AuthEntity } from 'src/domain/entities';
 import { generateID } from '../../../../domain/utils';
 import { iAuthenticateRepository } from '../../contracts/repositorys/iAuthenticate.repository';
-import { iDatabaseCached } from '../../contracts';
+import { iMemoryCachedDriver } from '../../contracts';
 
 export class AuthenticateRepository implements iAuthenticateRepository {
   constructor(
     private readonly database: Db,
     private readonly colletion: Collection<AuthEntity>,
-    private readonly memoryCache: iDatabaseCached.iManager
+    private readonly memoryCache: iMemoryCachedDriver.iManager
   ) {}
   async create(auth: AuthEntity): Promise<{ id: string }> {
     const idGenerate = auth.id ? auth.id : generateID();

@@ -1,6 +1,9 @@
 import { iDateProvider } from './contracts/iDateProvider.contract';
 
 class DateManager implements iDateProvider {
+
+  name: string = 'SystemDate'
+
   constructor(
     private readonly dateRef: string | number | Date = new Date(),
     private readonly locateFormart: iDateProvider.Locates = 'en-US'

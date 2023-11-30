@@ -1,7 +1,7 @@
 import { TransactionEntity } from '../../../domain/entities/transaction.entity';
 import { OperationFailed } from '../../../domain/errors';
 import { iCreateIncomingTransactionForProductsUsecase } from 'src/domain/usecases/transaction/iCreateTransaction.usecase';
-import { iDatabase } from 'src/infra/database/contracts';
+import { iDatabaseDriver } from 'src/infra/database/contracts';
 import { iProductRepository } from 'src/infra/database/contracts/repositorys/iProduct.repository';
 import { iTransactionRepository } from 'src/infra/database/contracts/repositorys/iTransaction.repository';
 import { iUserRepository } from 'src/infra/database/contracts/repositorys/iUser.repository';
@@ -13,7 +13,7 @@ export class CreateIncomingTransactionForProductsData
   implements iCreateIncomingTransactionForProductsUsecase
 {
   constructor(
-    private readonly databaseSession: iDatabase.iSession,
+    private readonly databaseSession: iDatabaseDriver.iSession,
     private readonly userRepository: iUserRepository,
     private readonly productRepository: iProductRepository,
     private readonly transactionRepository: iTransactionRepository

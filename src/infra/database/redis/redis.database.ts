@@ -1,8 +1,11 @@
 import { RedisClientType, createClient} from 'redis'
-import { iDatabaseCached } from '../contracts'
+import { iMemoryCachedDriver } from '../contracts'
 
 
-class RedisDriveDatabase implements iDatabaseCached<RedisClientType> {
+class RedisDriveDatabase implements iMemoryCachedDriver<RedisClientType> {
+    
+    name: string = 'RedisDB'
+
     public client: RedisClientType
 
     async connect(){
@@ -21,11 +24,11 @@ class RedisDriveDatabase implements iDatabaseCached<RedisClientType> {
 }
 
 
-export class RedisManagerDatabase implements iDatabaseCached.iManager {
+export class RedisManagerDatabase implements iMemoryCachedDriver.iManager {
 
     constructor(
-        private readonly drive: iDatabaseCached<RedisClientType>,
-        private readonly configuration: iDatabaseCached.iConfiguration
+        private readonly drive: iMemoryCachedDriver<RedisClientType>,
+        private readonly configuration: iMemoryCachedDriver.iConfiguration
     ){}
 
     async set(key: string, value : any, options = { expire : 60 * 5 }){
@@ -63,4 +66,4 @@ export class RedisManagerDatabase implements iDatabaseCached.iManager {
 }
 
 
-export const MemoryCacheDriver : iDatabaseCached = new RedisDriveDatabase()
+export const MemoryCacheDriver : iMemoryCachedDriver = new RedisDriveDatabase()

@@ -1,12 +1,13 @@
-import { ExpressHttp } from '../infra/http/express.http';
+import { HTTPDriver } from '../infra/http/express.http';
 import { LoggerProvider } from '../infra/logger';
-import { MongoDB } from '../infra/database/mongodb';
-import { RedisDB } from '../infra/database/redis';
+import { DatabaseDriver  } from '../infra/database/mongodb';
+import { MemoryCacheDriver } from '../infra/database/redis';
 import { AplicationDrive } from '../main/apps/application';
+import { QueueDriver } from '../infra/queue/rabbitmq.queue';
 
 (async () => {
 
-  const Aplication = new AplicationDrive(ExpressHttp, MongoDB, RedisDB);
+  const Aplication = new AplicationDrive(HTTPDriver, DatabaseDriver, MemoryCacheDriver, QueueDriver);
 
   try {
 

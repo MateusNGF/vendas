@@ -1,5 +1,5 @@
 import { iEntity } from 'src/domain/contracts';
-import { iDatabase } from '../iDatabase';
+import { iDatabaseDriver } from '../iDatabase';
 
 export abstract class BaseRepository<Schema extends iEntity> {
   abstract findById(
@@ -10,6 +10,6 @@ export abstract class BaseRepository<Schema extends iEntity> {
 
 export namespace BaseRepository {
   export interface QueryOptions {
-    session?: iDatabase.iSession;
+    session?: iDatabaseDriver.iSession;
   }
 }

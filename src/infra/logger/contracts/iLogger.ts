@@ -1,14 +1,15 @@
+import { iDriver } from "../../../infra/contracts/driver.interface"
 
 
-export interface iLogger<EngineType=any> {
-    info(content : iLogger.Content): void
-    error(content : iLogger.Content): void
-    warn(content : iLogger.Content): void
+export interface iLoggerDriver<EngineType=any> extends iDriver {
+    info(content : iLoggerDriver.Content): void
+    error(content : iLoggerDriver.Content): void
+    warn(content : iLoggerDriver.Content): void
     get() : EngineType
 }
 
 
-export namespace iLogger {
+export namespace iLoggerDriver {
     export interface Content {
         message : string
         description ?: any

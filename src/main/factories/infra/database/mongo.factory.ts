@@ -12,14 +12,14 @@ import { iProductRepository } from '../../../../infra/database/contracts/reposit
 import { iTransactionRepository } from '../../../../infra/database/contracts/repositorys/iTransaction.repository';
 import { TransactionEntity } from '../../../../domain/entities/transaction.entity';
 import { TransactionRepository } from '../../../../infra/database/mongodb/repositorys/transaction.repository';
-import { iDatabase, iDatabaseCached } from '../../../../infra/database/contracts';
+import { iDatabaseDriver } from '../../../../infra/database/contracts';
 import { GetMemoryCached } from './redis.factory';
 
 const getConnection = (): Db => {
   return DatabaseDriver.getDatabase();
 };
 
-export const makeSessionDatabase = (): iDatabase.iSession => {
+export const makeSessionDatabase = (): iDatabaseDriver.iSession => {
   return DatabaseDriver.createSession();
 };
 

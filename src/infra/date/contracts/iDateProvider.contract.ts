@@ -1,4 +1,6 @@
-export interface iDateProvider {
+import { iDriver } from "src/infra/contracts/driver.interface";
+
+export interface iDateProvider extends iDriver {
   now(): iDateProvider;
   isBefore(dateToCompare: string | Date): boolean;
   isAfter(dateToCompare: string | Date): boolean;

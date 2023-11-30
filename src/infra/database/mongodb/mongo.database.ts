@@ -1,8 +1,10 @@
 import { ClientSession, Collection, MongoClient, Db } from 'mongodb';
-import { iDatabase } from '../contracts';
-import { LoggerProvider } from '../../../infra/logger';
+import { iDatabaseDriver } from '../contracts';
 
-class Mongo implements iDatabase {
+class Mongo implements iDatabaseDriver {
+  
+  name: string = 'MongoDB';
+
   private client: MongoClient | null = null;
 
   public async connect(): Promise<void> {
@@ -16,7 +18,7 @@ class Mongo implements iDatabase {
     this.client = null;
   }
 
-  public createSession(): iDatabase.iSession {
+  public createSession(): iDatabaseDriver.iSession {
     if (!this.client) throw new Error('No has connection with database.');
     return new MongoSession(this.client.startSession());
   }
@@ -34,9 +36,9 @@ class Mongo implements iDatabase {
   }
 }
 
-export const DatabaseDriver : iDatabase = new Mongo();
+export const DatabaseDriver : iDatabaseDriver = new Mongo();
 
-class MongoSession implements iDatabase.iSession {
+class MongoSession implements iDatabaseDriver.iSession {
   constructor(private readonly mongoSession: ClientSession) {}
   startTransaction(): void {
     this.mongoSession.startTransaction();

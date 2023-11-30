@@ -1,4 +1,4 @@
-import { DateProvider } from '../DateProvider.date';
+import { DateProvider } from '../date-provider.date';
 
 describe('Date Provider', () => {
   it('Should return true if dateA is before dateB', () => {

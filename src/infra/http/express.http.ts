@@ -4,10 +4,12 @@ import { readdirSync } from "fs";
 import bodyParser from 'body-parser'
 import express, { Express, Router } from 'express';
 
-import { LoggerProvider } from "../logger";
-import { iHttp } from "./contracts/iHttp.interface";
+import { iHttpDriver } from "./contracts/iHttp.interface";
 
-class ExpressDriverHttp implements iHttp<Express> {
+class ExpressHttpDriver implements iHttpDriver<Express> {
+
+    name: string = 'Express';
+
     private app: Express = express();
     private serverInstance : Server = null
 
@@ -54,4 +56,4 @@ class ExpressDriverHttp implements iHttp<Express> {
     }
 }
 
-export const HTTPDriver : iHttp = new ExpressDriverHttp()
+export const HTTPDriver : iHttpDriver = new ExpressHttpDriver()

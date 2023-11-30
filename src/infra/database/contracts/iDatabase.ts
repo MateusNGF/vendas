@@ -1,11 +1,16 @@
-export abstract class iDatabase {
+import { iDriver } from "../../../infra/contracts/driver.interface";
+
+export abstract class iDatabaseDriver implements iDriver {
+
+  readonly name: string
+
   abstract connect(): Promise<void>;
   abstract close(): Promise<void>;
-  abstract createSession(): iDatabase.iSession;
+  abstract createSession(): iDatabaseDriver.iSession;
   abstract getDatabase(): any;
 }
 
-export namespace iDatabase {
+export namespace iDatabaseDriver {
   export interface iSession {
     startTransaction(): void;
     commitTransaction(): Promise<void>;
@@ -15,13 +20,16 @@ export namespace iDatabase {
   }
 }
 
-export abstract class iDatabaseCached<TypeMemmoryCached=any> {
+export abstract class iMemoryCachedDriver<TypeMemmoryCached=any> implements iDriver {
+  
+  readonly name : string
+
   client: TypeMemmoryCached
   abstract connect(): Promise<void>
   abstract onError(callback : any) : Promise<void>
 }
 
-export namespace iDatabaseCached {
+export namespace iMemoryCachedDriver {
   export abstract class iManager {
     abstract get<type = any>(key: string): Promise<type>
     abstract set(key: string, data: any): Promise<void>
