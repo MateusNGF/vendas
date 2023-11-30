@@ -26,7 +26,7 @@ export abstract class iMemoryCachedDriver<TypeMemmoryCached=any> implements iDri
 
   client: TypeMemmoryCached
   abstract connect(): Promise<void>
-  abstract onError(callback : any) : Promise<void>
+  abstract onError(callback : (error : any) => void) : Promise<void>
 }
 
 export namespace iMemoryCachedDriver {

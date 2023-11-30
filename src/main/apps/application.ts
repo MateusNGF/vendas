@@ -50,6 +50,10 @@ export class AplicationDrive implements iApplication {
       try{
         await this.QueueDriver.connect();
 
+        this.QueueDriver.onError( (error) => {
+          LoggerProvider.error({ message : ` ${module_name} : ${error.message}`})
+        })
+
         LoggerProvider.info({ message : `CONNECTED : ${module_name}`})
       }catch(e){
 
@@ -72,9 +76,9 @@ export class AplicationDrive implements iApplication {
 
         await this.MemoryCacheDriver.connect();
 
-        // this.memoryCache.onError((...args : Array<any>) => {
-        //   LoggerProvider.warn({ message : `MemoryCache error listing : ${args}`})
-        // })
+        this.MemoryCacheDriver.onError((error) => {
+          LoggerProvider.warn({ message : ` ${module_name} : ${error.message}`})
+        })
 
         LoggerProvider.info({ message: `CONNECTED : ${module_name};` })
 

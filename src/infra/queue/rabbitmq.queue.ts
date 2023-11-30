@@ -13,6 +13,12 @@ class RabbitmqDriver implements iQueueDriver {
 
     get() { return this }
 
+
+    onError(callback : (error : any) => void) {
+        this.connection.once('close', callback)
+        this.connection.on('error', callback)
+    }
+
     async disconnect(): Promise<void> {
         this.connection && this.connection.close()
         this.channel && this.channel.close()
@@ -23,7 +29,6 @@ class RabbitmqDriver implements iQueueDriver {
             const uriToConnectServerAmqp = uri ? uri : process.env.RABBITMQ_URI
             this.connection = await connect(uriToConnectServerAmqp)
             this.channel = await this.connection.createChannel()
-                
         }
 
         return this

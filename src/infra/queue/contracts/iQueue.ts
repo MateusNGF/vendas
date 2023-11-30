@@ -6,6 +6,7 @@ export interface iQueueDriver<TYPE = any> extends iDriver {
 
     connect(uri ?: string): Promise<this>
     disconnect(): Promise<void>
+    onError(callback : (error : any) => void): void
 
     publishInQueue(queue: string, content: any): boolean;
     consumeInQueue(queue: string, callback: (content: any) => void): void;
