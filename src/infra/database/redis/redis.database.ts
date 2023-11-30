@@ -63,4 +63,4 @@ export class RedisManagerDatabase implements iDatabaseCached.iManager {
 }
 
 
-export const RedisDB : iDatabaseCached = new RedisDriveDatabase()
+export const MemoryCacheDriver : iDatabaseCached = new RedisDriveDatabase()

@@ -5,7 +5,7 @@ import {
   AuthenticateRepository,
   ProductRepository,
 } from '../../../../infra/database/mongodb/repositorys';
-import { MongoDB } from '../../../../../src/infra/database/mongodb';
+import { DatabaseDriver } from '../../../../../src/infra/database/mongodb';
 import { iUserRepository } from 'src/infra/database/contracts/repositorys/iUser.repository';
 import { UserRepository } from '../../../../infra/database/mongodb/repositorys/user.repository';
 import { iProductRepository } from '../../../../infra/database/contracts/repositorys/iProduct.repository';
@@ -16,11 +16,11 @@ import { iDatabase, iDatabaseCached } from '../../../../infra/database/contracts
 import { GetMemoryCached } from './redis.factory';
 
 const getConnection = (): Db => {
-  return MongoDB.getDatabase();
+  return DatabaseDriver.getDatabase();
 };
 
 export const makeSessionDatabase = (): iDatabase.iSession => {
-  return MongoDB.createSession();
+  return DatabaseDriver.createSession();
 };
 
 export const makeAuthenticateRepository = (): iAuthenticateRepository => {

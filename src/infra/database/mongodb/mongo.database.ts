@@ -34,7 +34,7 @@ class Mongo implements iDatabase {
   }
 }
 
-export const MongoDB : iDatabase = new Mongo();
+export const DatabaseDriver : iDatabase = new Mongo();
 
 class MongoSession implements iDatabase.iSession {
   constructor(private readonly mongoSession: ClientSession) {}
