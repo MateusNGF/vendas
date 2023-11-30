@@ -5,14 +5,14 @@ import { HttpResponse } from '../helpers/http';
 
 export abstract class HTTPHandlerReturns {
     private makeBodyResponseError(status: any, data: any){
-        return { status: status, ok : 0, data };
+        return { status: status, data };
     };
 
     sendError(error: any): HttpResponse<{ message: string }> {
        
         if (error instanceof CustomError) {
             return this.makeBodyResponseError(
-                error.code || HTTP_STATUS.BAD_REQUEST,
+                HTTP_STATUS.BAD_REQUEST,
                 { message: error.message, code : error.code }
             );
         } else if (error instanceof NotificationError) {

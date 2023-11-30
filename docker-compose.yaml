@@ -7,6 +7,7 @@ services:
     env_file: .env
     environment:
       - MONGO_URI=mongodb://database:27017/vendas
+      - REDIS_URI=redis://cache:6379
     ports:
       - 3000
     networks:
@@ -25,6 +26,7 @@ services:
     env_file: .env
     environment:
       - MONGO_URI=mongodb://database:27017/vendas
+      - REDIS_URI=redis://cache:6379
     ports:
       - 3000
     networks:
@@ -43,6 +45,7 @@ services:
     env_file: .env
     environment:
       - MONGO_URI=mongodb://database:27017/vendas
+      - REDIS_URI=redis://cache:6379
     ports:
       - 3000
     networks:
@@ -98,6 +101,19 @@ services:
       - api_1
       - api_2
       - api_3
+  
+  queue_service:
+    image: 'rabbitmq:management'
+    container_name: 'queue_service'
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=vendas123
+      - RABBITMQ_DEFAULT_PASS=vendas123
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - vendas_networks
 
 networks:
   vendas_networks: {}
