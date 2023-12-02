@@ -6,15 +6,16 @@ export abstract class iDatabaseDriver implements iDriver {
 
   abstract connect(): Promise<void>;
   abstract close(): Promise<void>;
-  abstract createSession(): iDatabaseDriver.iSession;
+  abstract getSession(): iDatabaseDriver.iSessionManager;
   abstract getDatabase(): any;
 }
 
 export namespace iDatabaseDriver {
-  export interface iSession {
+  export interface iSessionManager {
     startTransaction(): void;
     commitTransaction(): Promise<void>;
     abortTransaction(): Promise<void>;
+    createSession() : Promise<this>;
     endSession(): Promise<void>;
     get(): any;
   }

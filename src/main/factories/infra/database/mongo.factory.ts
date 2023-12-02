@@ -19,8 +19,8 @@ const getConnection = (): Db => {
   return DatabaseDriver.getDatabase();
 };
 
-export const makeSessionDatabase = (): iDatabaseDriver.iSession => {
-  return DatabaseDriver.createSession();
+export const makeSessionManagerDatabase = (): iDatabaseDriver.iSessionManager => {
+  return DatabaseDriver.getSession();
 };
 
 export const makeAuthenticateRepository = (): iAuthenticateRepository => {

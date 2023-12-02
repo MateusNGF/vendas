@@ -10,6 +10,6 @@ export abstract class BaseRepository<Schema extends iEntity> {
 
 export namespace BaseRepository {
   export interface QueryOptions {
-    session?: iDatabaseDriver.iSession;
+    session?: iDatabaseDriver.iSessionManager;
   }
 }
