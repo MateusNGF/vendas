@@ -4,10 +4,11 @@ import { DatabaseDriver  } from '../infra/database/mongodb';
 import { MemoryCacheDriver } from '../infra/database/redis';
 import { AplicationDrive } from '../main/apps/application';
 import { QueueDriver } from '../infra/queue/rabbitmq.queue';
+import { iApplication } from './apps/app.interface';
 
 (async () => {
 
-  const Aplication = new AplicationDrive(HTTPDriver, DatabaseDriver, MemoryCacheDriver, QueueDriver);
+  const Aplication : iApplication = new AplicationDrive(HTTPDriver, DatabaseDriver, MemoryCacheDriver, QueueDriver);
 
   try {
 
@@ -17,6 +18,7 @@ import { QueueDriver } from '../infra/queue/rabbitmq.queue';
   } catch (erro) {
 
     await Aplication.stop();
+    console.log(erro)
     LoggerProvider.error({
       message : erro.message,
       stack : erro.stack

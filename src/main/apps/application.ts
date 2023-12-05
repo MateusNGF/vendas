@@ -27,16 +27,22 @@ export class AplicationDrive implements iApplication {
   }
 
   public async start(): Promise<void> {
-    this.HTTPDriver.start(process.env.PORT, () => {
-      const module_name = `MODULE HTTP (${this.HTTPDriver.name})`
-      LoggerProvider.info({ message : `CONNECTED : ${module_name}::${process.env.PORT}`});
+    this.HTTPDriver.connect({
+      port: process.env.PORT,
+      callback: () => {
+        const module_name = `MODULE HTTP (${this.HTTPDriver.name})`
+        LoggerProvider.info({ message : `CONNECTED : ${module_name}::${process.env.PORT};`});
+      }
     });
   }
 
   public async stop(): Promise<void> {
-    this.HTTPDriver && this.HTTPDriver.stop();
-    this.DatabaseDriver && this.DatabaseDriver.close();
-    this.QueueDriver && this.QueueDriver.disconnect()
+    await Promise.all([
+      this.HTTPDriver && this.HTTPDriver.disconnect(),
+      this.DatabaseDriver && this.DatabaseDriver.disconnect(),
+      this.QueueDriver && this.QueueDriver.disconnect(),
+      this.MemoryCacheDriver && this.MemoryCacheDriver.disconnect()
+    ])
   }
 
 
@@ -54,7 +60,7 @@ export class AplicationDrive implements iApplication {
           LoggerProvider.error({ message : ` ${module_name} : ${error.message}`})
         })
 
-        LoggerProvider.info({ message : `CONNECTED : ${module_name}`})
+        LoggerProvider.info({ message : `CONNECTED : ${module_name};`})
       }catch(e){
 
         // we threw an error because the system doesn't work without the queue service

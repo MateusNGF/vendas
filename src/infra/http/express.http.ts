@@ -5,10 +5,11 @@ import bodyParser from 'body-parser'
 import express, { Express, Router } from 'express';
 
 import { iHttpDriver } from "./contracts/iHttp.interface";
+import { iDriver } from "../contracts/driver.interface";
 
 class ExpressHttpDriver implements iHttpDriver<Express> {
 
-    name: string = 'Express';
+    readonly name: string = 'Express';
 
     private app: Express = express();
     private serverInstance : Server = null
@@ -18,12 +19,21 @@ class ExpressHttpDriver implements iHttpDriver<Express> {
         this.app.use(bodyParser.urlencoded({ extended: true }));
     }
 
-    start(port: string, callback: () => void) : void {
-        this.serverInstance = this.app.listen(port, callback);
+    public async connect(config?: iDriver.ConnectionOptions): Promise<this> {
+        this.serverInstance = this.app.listen(config?.port, config?.callback);
+        return this
     }
 
-    stop(): void {
+    public async disconnect(): Promise<void> {
         this.serverInstance && this.serverInstance.close();
+    }
+
+
+    public get() { return this }
+
+    onError(callback: (error: any) => void): void {
+        this.serverInstance.on('error', callback);
+        this.serverInstance.once('close', callback)
     }
 
     use(...args : Array<any>): void {

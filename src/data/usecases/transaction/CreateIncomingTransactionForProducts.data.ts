@@ -14,7 +14,7 @@ export class CreateIncomingTransactionForProductsData
   implements iCreateIncomingTransactionForProductsUsecase
 {
   constructor(
-    private readonly queueDriver: iQueueDriver,
+    private readonly queueDriver: iQueueDriver.iQueueManager,
     private readonly databaseSession: iDatabaseDriver.iSessionManager,
     private readonly notificationErrorHandler : INotificationErrorHandler, 
     private readonly userRepository: iUserRepository,

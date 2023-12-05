@@ -4,7 +4,7 @@ import pino from "pino";
 
 class PinoLoggerDriver implements iLoggerDriver<pino.Logger> {
 
-    name: string = "Pino";
+    readonly name: string = "Pino";
 
     private readonly engine = pino({
         transport: {
@@ -26,9 +26,7 @@ class PinoLoggerDriver implements iLoggerDriver<pino.Logger> {
     warn(content: iLoggerDriver.Content): void {
         this.engine.warn(content.message, content)
     }
-    get() : pino.Logger {
-        return this.engine
-    }
+    get() { return this }
     
 }
 

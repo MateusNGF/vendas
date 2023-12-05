@@ -1,13 +1,12 @@
 import { iDriver } from "../../../infra/contracts/driver.interface";
 
 
-export interface iQueueDriver<TYPE = any> extends iDriver {
-    get(): TYPE
-
-    connect(uri ?: string): Promise<this>
-    disconnect(): Promise<void>
-    onError(callback : (error : any) => void): void
-
-    publishInQueue(queue: string, content: any): boolean;
-    consumeInQueue(queue: string, callback: (content: any) => void): void;
+export interface iQueueDriver<type_driver = any> extends iDriver<type_driver>, iDriver.iConnection {
+    getManager() : iQueueDriver.iQueueManager
+}
+export namespace iQueueDriver{
+    export interface iQueueManager {
+        publishInQueue(queue: string, content: any): boolean;
+        consumeInQueue(queue: string, callback: (content: any) => void): void;
+    }
 }

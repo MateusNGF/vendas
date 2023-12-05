@@ -1,13 +1,10 @@
 import { iDriver } from "../../../infra/contracts/driver.interface";
 
-export abstract class iDatabaseDriver implements iDriver {
-
+export interface iDatabaseDriver<type_driver = any> extends iDriver<type_driver>, iDriver.iConnection {
   readonly name: string
 
-  abstract connect(): Promise<void>;
-  abstract close(): Promise<void>;
-  abstract getSession(): iDatabaseDriver.iSessionManager;
-  abstract getDatabase(): any;
+  getSession(): iDatabaseDriver.iSessionManager;
+  getDatabase(): any;
 }
 
 export namespace iDatabaseDriver {
@@ -21,13 +18,10 @@ export namespace iDatabaseDriver {
   }
 }
 
-export abstract class iMemoryCachedDriver<TypeMemmoryCached=any> implements iDriver {
-  
+export interface iMemoryCachedDriver<TypeMemmoryCached=any> extends iDriver, iDriver.iConnection {
   readonly name : string
 
   client: TypeMemmoryCached
-  abstract connect(): Promise<void>
-  abstract onError(callback : (error : any) => void) : Promise<void>
 }
 
 export namespace iMemoryCachedDriver {

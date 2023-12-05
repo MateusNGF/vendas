@@ -106,9 +106,6 @@ services:
     image: 'rabbitmq:management'
     container_name: 'queue_service'
     restart: always
-    environment:
-      - RABBITMQ_DEFAULT_USER=adm
-      - RABBITMQ_DEFAULT_PASS=adm
     ports:
       - "5672:5672"
       - "15672:15672"

@@ -1,26 +1,37 @@
 import { RedisClientType, createClient} from 'redis'
 import { iMemoryCachedDriver } from '../contracts'
+import { iDriver } from 'src/infra/contracts/driver.interface'
 
 
 class RedisDriveDatabase implements iMemoryCachedDriver<RedisClientType> {
-    
-    name: string = 'RedisDB'
+    readonly name: string = 'RedisDB'
 
     public client: RedisClientType
 
-    async connect(){
+    public async connect(config?: iDriver.ConnectionOptions): Promise<this> {
         if (!this.client){
             this.client = createClient({
-                url: process.env.REDIS_URL
+                url: config?.uri ?? process.env.REDIS_URL
             })
 
             await this.client.connect()
-        } 
+        }
+
+        return this
+    }
+
+    public get() { return this }
+
+
+    public async disconnect(): Promise<void> {
+        if (this.client) {
+            await this.client.disconnect()
+        }
     }
 
     async onError(callback: (error : any) => void){
-        this.client.once('close', callback)
-        this.client.on('error', callback)
+        this.client.on('close', callback)
+        this.client.once('error', callback)
     }
 }
 

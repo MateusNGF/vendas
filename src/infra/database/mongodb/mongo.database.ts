@@ -1,23 +1,32 @@
 import { ClientSession, Collection, MongoClient, Db } from 'mongodb';
 import { iDatabaseDriver } from '../contracts';
-import { InternalError } from 'src/domain/errors';
+import { iDriver } from 'src/infra/contracts/driver.interface';
 
-class Mongo implements iDatabaseDriver {
-  
-  name: string = 'MongoDB';
+class Mongo implements iDatabaseDriver<MongoClient> {
+  readonly name: string = 'MongoDB';
 
   private client: MongoClient | null = null;
 
-  public async connect(): Promise<void> {
+  async connect(config?: iDriver.ConnectionOptions): Promise<this> {
     if (!this.client) {
-      this.client = await MongoClient.connect(process.env.MONGO_URI as string);
+      this.client = await MongoClient.connect(config?.uri ?? process.env.MONGO_URI as string);
     }
+
+    return this
   }
 
-  public async close(): Promise<void> {
+  public async disconnect(): Promise<void> {
     if (this.client) await this.client.close();
     this.client = null;
   }
+
+  public get() { return this }
+
+  public onError(callback: (error: any) => void): void {
+    this.client.on('close', callback)
+    this.client.once('error', callback)
+  }
+  
 
   public getSession(): iDatabaseDriver.iSessionManager {
     if (!this.client) throw new Error('No has connection with database.');
