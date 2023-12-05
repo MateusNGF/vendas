@@ -22,13 +22,18 @@ export class ProductRepository implements iProductRepository {
     const session = options && options.session ? options.session.get() : null;
 
     const result = await this.colletion.findOneAndUpdate(
-      { id: productDetails.id },
+      {
+        id: productDetails.id,
+        stock: { $gte: productDetails.quantity } // Verifica se a quantidade de estoque é suficiente
+      },
       {
         $inc: {
           stock: -productDetails.quantity,
         },
       },
-      { session }
+      { 
+        session, returnDocument : 'after'
+      }
     );
 
     if (!result.ok) return null;

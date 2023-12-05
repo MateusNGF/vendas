@@ -7,19 +7,22 @@ import { iTransactionRepository } from 'src/infra/database/contracts/repositorys
 import { iUserRepository } from 'src/infra/database/contracts/repositorys/iUser.repository';
 import { Writeable } from 'src/domain/utils';
 import { ProductEntity } from 'src/domain/entities';
-import { NotificationHandlerCreateIncomingTransactionForProducts } from '../../../main/factories/main/errors';
+import { iQueueDriver } from 'src/infra/queue/contracts/iQueue';
+import { INotificationErrorHandler } from 'src/domain/contracts';
 
 export class CreateIncomingTransactionForProductsData
   implements iCreateIncomingTransactionForProductsUsecase
 {
   constructor(
-    private readonly databaseSession: iDatabaseDriver.iSession,
+    private readonly queueDriver: iQueueDriver,
+    private readonly databaseSession: iDatabaseDriver.iSessionManager,
+    private readonly notificationErrorHandler : INotificationErrorHandler, 
     private readonly userRepository: iUserRepository,
     private readonly productRepository: iProductRepository,
     private readonly transactionRepository: iTransactionRepository
   ) {}
   async exec(input: iCreateIncomingTransactionForProductsUsecase.Input) {
-    const session = this.databaseSession;
+    const session = await this.databaseSession.createSession();
     try {
       session.startTransaction();
 
@@ -35,8 +38,6 @@ export class CreateIncomingTransactionForProductsData
         total_price: 0,
       };
 
-      const NotificationError = NotificationHandlerCreateIncomingTransactionForProducts();
-
 
       for (let i = 0; i < products.length; i++) {
         const productBasic: TransactionEntity.ProductIncomingTransaction = products[i];
@@ -47,11 +48,11 @@ export class CreateIncomingTransactionForProductsData
         );
 
         if (!productContent) {
-          NotificationError.AddNotification({
+          this.notificationErrorHandler.AddNotification({
             key : "id",
             message: `Product ${productBasic.id} not updated.`
           })
-          return;
+          break;
         }
 
         transactionPartial.products.push(
@@ -62,10 +63,17 @@ export class CreateIncomingTransactionForProductsData
         );
       }
 
-      NotificationError.CheckToNextStep();
+      this.notificationErrorHandler.CheckToNextStep();
 
       const transaction = new TransactionEntity(transactionPartial);
-      const result = await this.transactionRepository.create(transaction);
+      const result = await this.transactionRepository.create(transaction, { session });
+
+      this.queueDriver.publishInQueue('transaction', {
+        id: result.id,
+        ...transaction,
+      })
+
+      await session.commitTransaction()
 
       return {
         id: result.id,

@@ -1,4 +1,4 @@
-import { INotificationHandler } from '../contracts/iNotificationError';
+import { INotificationErrorHandler } from '../contracts/iNotificationError';
 
 export class ObjectManager extends Object {
   /**
@@ -13,7 +13,7 @@ export class ObjectManager extends Object {
   static hasKeysWithNotification<TypeKeysRequireds = string>(
     requireds: Array<keyof TypeKeysRequireds>,
     content: any,
-    notification : INotificationHandler,
+    notification : INotificationErrorHandler,
     security: boolean = false
   ) {
     if (Array.isArray(content)) {
@@ -28,7 +28,7 @@ export class ObjectManager extends Object {
     }
   }
 
-  static justThesePropertiesNotification(requireds: Array<any>, object: object, notification : INotificationHandler) {
+  static justThesePropertiesNotification(requireds: Array<any>, object: object, notification : INotificationErrorHandler) {
     for (const key in object) {
       if (!requireds.find((element) => element == key)) {
          // UnexpectedParamError
@@ -37,7 +37,7 @@ export class ObjectManager extends Object {
     }
   }
 
-  static hasThesePropertiesNotification(requireds: Array<any>, object: object, notification : INotificationHandler) {
+  static hasThesePropertiesNotification(requireds: Array<any>, object: object, notification : INotificationErrorHandler) {
     requireds.forEach((element: any) => {
       if (!(element in object)){
         // MissingParamError

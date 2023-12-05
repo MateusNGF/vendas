@@ -5,7 +5,7 @@ export interface INotificationContent {
     context ?: string
 }
 
-export interface INotificationHandler {
+export interface INotificationErrorHandler {
     AddNotification(error : INotificationContent) : void
     HasError(): boolean
     GetErrors() : Array<INotificationContent>

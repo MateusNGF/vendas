@@ -1,39 +1,39 @@
-import { INotificationHandler } from "../../../../domain/contracts"
+import { INotificationErrorHandler } from "../../../../domain/contracts"
 import { NotificationHandler } from "../../../../domain/errors"
 
-export const NotificationHandlerCreateAccountUser = () : INotificationHandler => {
+export const NotificationHandlerCreateAccountUser = () : INotificationErrorHandler => {
     return new NotificationHandler({
         context : "CREATE_ACCOUNT_USER"
     })
 }
 
-export const NotificationHandlerAccessAccountUser = () : INotificationHandler => {
+export const NotificationHandlerAccessAccountUser = () : INotificationErrorHandler => {
     return new NotificationHandler({
         context : "ACCESS_ACCOUNT_USER"
     })
 }
 
-export const NotificationHandlerGetAccountUser = () : INotificationHandler => {
+export const NotificationHandlerGetAccountUser = () : INotificationErrorHandler => {
     return new NotificationHandler({
         context : "GET_ACCOUNT_USER"
     })
 }
 
 
-export const NotificationHandlerCreateIncomingTransactionForProducts = () : INotificationHandler => {
+export const NotificationHandlerCreateIncomingTransactionForProducts = () : INotificationErrorHandler => {
     return new NotificationHandler({
         context : "CREATE_INCOMING_TRANSACTION_PRODUCTS"
     })
 }
 
 
-export const NotificationHandlerArchiveOrUnarchiveProduct = () : INotificationHandler => {
+export const NotificationHandlerArchiveOrUnarchiveProduct = () : INotificationErrorHandler => {
     return new NotificationHandler({
         context : "ARCHIVE_UNARCHIVE_PRODUCT"
     })
 }
 
-export const NotificationHandlerRegisterProduct = () : INotificationHandler => {
+export const NotificationHandlerRegisterProduct = () : INotificationErrorHandler => {
     return new NotificationHandler({
         context : "REGISTER_PRODUCT"
     })
