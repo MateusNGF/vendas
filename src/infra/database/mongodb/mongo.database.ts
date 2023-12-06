@@ -10,6 +10,7 @@ class Mongo implements iDatabaseDriver<MongoClient> {
   async connect(config?: iDriver.ConnectionOptions): Promise<this> {
     if (!this.client) {
       this.client = await MongoClient.connect(config?.uri ?? process.env.MONGO_URI as string);
+      config?.callback && config.callback();
     }
 
     return this

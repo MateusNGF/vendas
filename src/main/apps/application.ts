@@ -54,13 +54,16 @@ export class AplicationDrive implements iApplication {
       const module_name = `MODULE QUEUE SERVICE (${this.QueueDriver.name})`
       const observingAttemptsConnectionWithQueueService = observingAttempts(`Try Connection with ${module_name.toLowerCase()}`);
       try{
-        await this.QueueDriver.connect();
+        await this.QueueDriver.connect({
+          callback: () => {
+            LoggerProvider.info({ message : `CONNECTED : ${module_name};`})
+          }
+        });
 
         this.QueueDriver.onError( (error) => {
           LoggerProvider.error({ message : ` ${module_name} : ${error.message}`})
         })
 
-        LoggerProvider.info({ message : `CONNECTED : ${module_name};`})
       }catch(e){
 
         // we threw an error because the system doesn't work without the queue service
@@ -80,13 +83,15 @@ export class AplicationDrive implements iApplication {
       const observingAttemptsConnectionWithCached = observingAttempts(`Try Connection with ${module_name.toLocaleLowerCase()}`);
       try {
 
-        await this.MemoryCacheDriver.connect();
+        await this.MemoryCacheDriver.connect({
+          callback: () => {
+              LoggerProvider.info({ message: `CONNECTED : ${module_name};` })
+          }
+        });
 
         this.MemoryCacheDriver.onError((error) => {
-          LoggerProvider.warn({ message : ` ${module_name} : ${error.message}`})
+          LoggerProvider.error({ message : ` ${module_name} : ${error.message}`})
         })
-
-        LoggerProvider.info({ message: `CONNECTED : ${module_name};` })
 
       } catch (e) {
         LoggerProvider.warn({ message: `NOT CONNECTED : ${module_name} -> ${e.message}` })
@@ -101,8 +106,16 @@ export class AplicationDrive implements iApplication {
       const observerConnectionWithDatabase = observingAttempts(`Try Connection with ${module_name.toLocaleLowerCase()}`);
       try {
 
-        await this.DatabaseDriver.connect();
-        LoggerProvider.info({ message: `CONNECTED : ${module_name};` });
+        await this.DatabaseDriver.connect({
+          callback: () => {
+            LoggerProvider.info({ message: `CONNECTED : ${module_name};` })
+          }
+        });
+
+        this.DatabaseDriver.onError((error) => {
+          LoggerProvider.error({ message: ` ${module_name} : ${error.message}` })
+        })
+        
 
       } catch (e) {
 
@@ -121,8 +134,6 @@ export class AplicationDrive implements iApplication {
   }
 
 }
-
-
 
 
 

@@ -28,8 +28,11 @@ class RabbitmqDriver implements iQueueDriver {
     async connect(config?: iDriver.ConnectionOptions): Promise<this> {
         if (!this.connection) {
             const uriToConnectServerAmqp = config?.uri ? config?.uri : process.env.RABBITMQ_URI
+
             this.connection = await connect(uriToConnectServerAmqp)
             this.channel = await this.connection.createChannel()
+
+            config?.callback && config.callback()
         }
 
         return this

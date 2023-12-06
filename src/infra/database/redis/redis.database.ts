@@ -15,6 +15,7 @@ class RedisDriveDatabase implements iMemoryCachedDriver<RedisClientType> {
             })
 
             await this.client.connect()
+            config?.callback && config.callback();
         }
 
         return this
