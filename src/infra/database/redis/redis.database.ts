@@ -31,7 +31,7 @@ class RedisDriveDatabase implements iMemoryCachedDriver<RedisClientType> {
     }
 
     async onError(callback: (error : any) => void){
-        this.client.on('close', callback)
+        this.client.once('close', callback)
         this.client.once('error', callback)
     }
 }

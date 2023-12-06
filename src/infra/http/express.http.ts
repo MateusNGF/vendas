@@ -32,7 +32,7 @@ class ExpressHttpDriver implements iHttpDriver<Express> {
     public get() { return this }
 
     onError(callback: (error: any) => void): void {
-        this.serverInstance.on('error', callback);
+        this.serverInstance.once('error', callback);
         this.serverInstance.once('close', callback)
     }
 

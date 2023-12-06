@@ -17,7 +17,7 @@ class RabbitmqDriver implements iQueueDriver {
 
     onError(callback : (error : any) => void) {
         this.connection.once('close', callback)
-        this.connection.on('error', callback)
+        this.connection.once('error', callback)
     }
 
     async disconnect(): Promise<void> {

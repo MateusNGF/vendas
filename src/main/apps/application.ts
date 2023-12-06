@@ -13,27 +13,16 @@ export class AplicationDrive implements iApplication {
     private QueueDriver : iQueueDriver
   ){}
 
-  async init(callback ?: Function): Promise<this> {
+  async start(callback ?: Function): Promise<void> {
 
     await Promise.all([
-      this.setupDatabase(),
-      this.setupQueue(),
+      this.startDatabase(),
+      this.startQueue(),
     ])
     
-    await this.setupRoutes()
+    await this.startHTTP()
 
     callback && callback(this);
-    return this
-  }
-
-  public async start(): Promise<void> {
-    this.HTTPDriver.connect({
-      port: process.env.PORT,
-      callback: () => {
-        const module_name = `MODULE HTTP (${this.HTTPDriver.name})`
-        LoggerProvider.info({ message : `CONNECTED : ${module_name}::${process.env.PORT};`});
-      }
-    });
   }
 
   public async stop(): Promise<void> {
@@ -46,7 +35,7 @@ export class AplicationDrive implements iApplication {
   }
 
 
-  private async setupQueue() {
+  private async startQueue() {
 
     
     if (this.QueueDriver) {
@@ -76,7 +65,7 @@ export class AplicationDrive implements iApplication {
 
   }
 
-  private async setupDatabase() {
+  private async startDatabase() {
 
     if (this.MemoryCacheDriver) {
       const module_name = `MODULE MEMORYCACHE (${this.MemoryCacheDriver.name})`
@@ -129,8 +118,16 @@ export class AplicationDrive implements iApplication {
 
   }
 
-  private async setupRoutes(){
-    return this.HTTPDriver.setupRoutes();
+  private async startHTTP(){
+    await this.HTTPDriver.setupRoutes();
+
+    this.HTTPDriver.connect({
+      port: process.env.PORT,
+      callback: () => {
+        const module_name = `MODULE HTTP (${this.HTTPDriver.name})`
+        LoggerProvider.info({ message : `CONNECTED : ${module_name}::${process.env.PORT};`});
+      }
+    });
   }
 
 }

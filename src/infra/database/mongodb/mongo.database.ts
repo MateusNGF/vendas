@@ -10,6 +10,7 @@ class Mongo implements iDatabaseDriver<MongoClient> {
   async connect(config?: iDriver.ConnectionOptions): Promise<this> {
     if (!this.client) {
       this.client = await MongoClient.connect(config?.uri ?? process.env.MONGO_URI as string);
+      
       config?.callback && config.callback();
     }
 
@@ -24,7 +25,7 @@ class Mongo implements iDatabaseDriver<MongoClient> {
   public get() { return this }
 
   public onError(callback: (error: any) => void): void {
-    this.client.on('close', callback)
+    this.client.once('close', callback)
     this.client.once('error', callback)
   }
   

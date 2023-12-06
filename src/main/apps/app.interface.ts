@@ -1,6 +1,5 @@
 
 export interface iApplication {
-    start(): Promise<void>;
+    start(callback ?: Function) : Promise<void>;
     stop(): Promise<void>;
-    init(callback ?: Function) : Promise<this>;
 }

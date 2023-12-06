@@ -12,7 +12,6 @@ import { iApplication } from './apps/app.interface';
 
   try {
 
-    await Aplication.init();
     await Aplication.start();
 
   } catch (erro) {
