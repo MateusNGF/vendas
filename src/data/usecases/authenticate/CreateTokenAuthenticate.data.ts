@@ -19,7 +19,7 @@ export class CreateTokenAuthenticateData
   async exec(
     input: iCreateTokenAuthenticateUsecase.Input
   ): Promise<iCreateTokenAuthenticateUsecase.Output> {
-    let authenticate: AuthEntity = await this.getAuthenticateRecord.exec({
+    const authenticate: AuthEntity = await this.getAuthenticateRecord.exec({
       email: input.email,
       associeted_id: input.associeted_id,
       id: input.id,

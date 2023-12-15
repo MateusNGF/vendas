@@ -39,7 +39,7 @@ export class CreateTransactionForProductsData
         throw new OperationFailed(`User with id ${user_id} not found.`);
       }
 
-      let transactionPartial: Writeable<TransactionEntity> = {
+      const transactionPartial: Writeable<TransactionEntity> = {
         type: input.type,
         products: [],
         user_id: user_content.id,
