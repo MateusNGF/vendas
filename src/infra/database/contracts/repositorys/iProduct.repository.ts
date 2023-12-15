@@ -4,10 +4,11 @@ import { BaseFilterForListing } from 'src/domain/types';
 import { BaseRepository } from '.';
 
 export interface iProductRepository extends BaseRepository<ProductEntity> {
-  validDuplicatedProduct(
-    produt: Partial<ProductEntity>
+  isDuplicatedProduct(
+    product: Partial<ProductEntity>,
+    options?: iProductRepository.Options
   ): Promise<ProductEntity>;
-  create(product: ProductEntity): Promise<{ id: string }>;
+  registerProduct(product: Array<ProductEntity>, options ?: iProductRepository.Options): Promise<boolean>;
   archiveProduct(productId: string): Promise<boolean>;
   unarchiveProduct(productId: string): Promise<boolean>;
   listProduct(
@@ -15,11 +16,13 @@ export interface iProductRepository extends BaseRepository<ProductEntity> {
   ): Promise<Array<ProductEntity>>;
   productOutput(
     productDetails: TransactionEntity.ProductIncomingTransaction,
-    options?: BaseRepository.QueryOptions
+    options?: iProductRepository.Options
   ): Promise<ProductEntity>;
-  findByIds(ids: Array<string>): Array<ProductEntity>;
+  
+  findByIds(ids: Array<string>, options?: iProductRepository.Options): Promise<Array<ProductEntity>>;
 }
 
 export namespace iProductRepository {
   export interface FilterForList extends Partial<BaseFilterForListing> {}
+  export interface Options extends BaseRepository.QueryOptions {}
 }

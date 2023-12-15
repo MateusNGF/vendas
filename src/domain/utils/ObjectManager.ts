@@ -1,19 +1,19 @@
-import { INotificationErrorHandler } from '../contracts/iNotificationError';
+import { INotificationErrorManager } from '../contracts/iNotificationError';
 
 export class ObjectManager extends Object {
   /**
    * Essa função verifica se em um determinado objeto tem as chaves necessarias.
    * Security, true e false.
-   * @param requireds chaves que necessaririas
-   * @param content objecto de verificação
-   * @param notification instancia que armazena os erros encontrados
+   * @param requireds chaves que tem que existir
+   * @param content objeto a ser verificado 
+   * @param notification instancia de INotificationErrorHandler  
    * @param security true para deixar apenas os required no objeto, false verifica se tem pelo menos os requireds.
    */
  
   static hasKeysWithNotification<TypeKeysRequireds = string>(
     requireds: Array<keyof TypeKeysRequireds>,
     content: any,
-    notification : INotificationErrorHandler,
+    notification : INotificationErrorManager,
     security: boolean = false
   ) {
     if (Array.isArray(content)) {
@@ -28,7 +28,7 @@ export class ObjectManager extends Object {
     }
   }
 
-  static justThesePropertiesNotification(requireds: Array<any>, object: object, notification : INotificationErrorHandler) {
+  static justThesePropertiesNotification(requireds: Array<any>, object: object, notification : INotificationErrorManager) {
     for (const key in object) {
       if (!requireds.find((element) => element == key)) {
          // UnexpectedParamError
@@ -37,7 +37,7 @@ export class ObjectManager extends Object {
     }
   }
 
-  static hasThesePropertiesNotification(requireds: Array<any>, object: object, notification : INotificationErrorHandler) {
+  static hasThesePropertiesNotification(requireds: Array<any>, object: object, notification : INotificationErrorManager) {
     requireds.forEach((element: any) => {
       if (!(element in object)){
         // MissingParamError

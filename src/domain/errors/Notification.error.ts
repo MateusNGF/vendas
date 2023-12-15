@@ -1,4 +1,4 @@
-import { INotificationContent, INotificationErrorHandler } from "../contracts/iNotificationError";
+import { INotificationContent, INotificationErrorManager } from "../contracts/iNotificationError";
 
 export class NotificationError extends Error {
     name: string = "Notification Error"
@@ -28,7 +28,7 @@ export class NotificationContent implements INotificationContent {
     }
 }
 
-export class NotificationHandler implements INotificationErrorHandler {
+export class NotificationErrorManager implements INotificationErrorManager {
     private stackNotifications: Array<INotificationContent> = [];
 
     constructor(

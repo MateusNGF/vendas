@@ -6,7 +6,7 @@ export interface iQueueDriver<type_driver = any> extends iDriver<type_driver>, i
 }
 export namespace iQueueDriver{
     export interface iQueueManager {
-        publishInQueue(queue: string, content: any): boolean;
+        publishInQueue<type_content=any>(queue: string, content: type_content): boolean;
         consumeInQueue(queue: string, callback: (content: any) => void): void;
     }
 }

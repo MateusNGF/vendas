@@ -9,7 +9,7 @@ export abstract class HTTPHandlerReturns {
     };
 
     sendError(error: any): HttpResponse<{ message: string }> {
-       
+       console.log(error)
         if (error instanceof CustomError) {
             return this.makeBodyResponseError(
                 HTTP_STATUS.BAD_REQUEST,

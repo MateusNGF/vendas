@@ -1,40 +1,40 @@
-import { INotificationErrorHandler } from "../../../../domain/contracts"
-import { NotificationHandler } from "../../../../domain/errors"
+import { INotificationErrorManager } from "../../../../domain/contracts"
+import { NotificationErrorManager } from "../../../../domain/errors"
 
-export const NotificationHandlerCreateAccountUser = () : INotificationErrorHandler => {
-    return new NotificationHandler({
+export const NotificationHandlerCreateAccountUser = () : INotificationErrorManager => {
+    return new NotificationErrorManager({
         context : "CREATE_ACCOUNT_USER"
     })
 }
 
-export const NotificationHandlerAccessAccountUser = () : INotificationErrorHandler => {
-    return new NotificationHandler({
+export const NotificationHandlerAccessAccountUser = () : INotificationErrorManager => {
+    return new NotificationErrorManager({
         context : "ACCESS_ACCOUNT_USER"
     })
 }
 
-export const NotificationHandlerGetAccountUser = () : INotificationErrorHandler => {
-    return new NotificationHandler({
+export const NotificationHandlerGetAccountUser = () : INotificationErrorManager => {
+    return new NotificationErrorManager({
         context : "GET_ACCOUNT_USER"
     })
 }
 
 
-export const NotificationHandlerCreateIncomingTransactionForProducts = () : INotificationErrorHandler => {
-    return new NotificationHandler({
+export const NotificationHandlerCreateIncomingTransactionForProducts = () : INotificationErrorManager => {
+    return new NotificationErrorManager({
         context : "CREATE_INCOMING_TRANSACTION_PRODUCTS"
     })
 }
 
 
-export const NotificationHandlerArchiveOrUnarchiveProduct = () : INotificationErrorHandler => {
-    return new NotificationHandler({
+export const NotificationHandlerArchiveOrUnarchiveProduct = () : INotificationErrorManager => {
+    return new NotificationErrorManager({
         context : "ARCHIVE_UNARCHIVE_PRODUCT"
     })
 }
 
-export const NotificationHandlerRegisterProduct = () : INotificationErrorHandler => {
-    return new NotificationHandler({
+export const NotificationHandlerRegisterProduct = () : INotificationErrorManager => {
+    return new NotificationErrorManager({
         context : "REGISTER_PRODUCT"
     })
 }

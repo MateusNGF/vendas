@@ -3,19 +3,30 @@ import { ProductEntity, UserEntity } from 'src/domain/entities';
 
 export abstract class iRegisterProductUsecase implements iUsecase {
   abstract exec(
-    input: iRegisterProductUsecase.Input
+    input: iRegisterProductUsecase.Input,
+    options ?: iRegisterProductUsecase.Options
   ): Promise<iRegisterProductUsecase.Output>;
+  
 }
 
 export namespace iRegisterProductUsecase {
-  export class Input implements ProductEntity {
-    public name: string;
-    public sale_price: number;
-    public stock: number;
-    public created_by: string;
+  export interface Input {
+    user_id: string;
+    products: Array<ProductContent>
+  } 
+
+  export interface Options extends iUsecase.Options {
+    createTransaction ?: boolean
+  }
+  
+  export interface ProductContent { 
+      name: string;
+      sale_price: number;
+      stock: number;
   }
 
-  export type Output = {
-    id: string;
-  };
+  export interface Output {
+    productsIds: Array<string>;
+    transaction : any
+  } 
 }

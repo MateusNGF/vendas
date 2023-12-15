@@ -2,10 +2,9 @@ import { iController } from '../../../application/contracts';
 import { HttpRequest, HttpResponse } from 'src/application/helpers/http';
 import { BadRequestError, OperationFailed } from '../../../domain/errors';
 import { iRegisterProductUsecase } from 'src/domain/usecases/product';
-import { ObjectManager } from '../../../domain/utils';
-import { NotificationHandlerRegisterProduct } from '../../../main/factories/main/errors';
 
-export class RegisterProductController extends iController {
+
+export class RemoveProductController extends iController {
   constructor(
     private readonly registerProductUsecase: iRegisterProductUsecase
   ) {

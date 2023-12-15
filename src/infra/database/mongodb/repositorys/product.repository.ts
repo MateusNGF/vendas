@@ -1,8 +1,6 @@
 import { Collection, Db, Filter } from 'mongodb';
 import { ProductEntity } from 'src/domain/entities';
 import { TransactionEntity } from 'src/domain/entities/transaction.entity';
-import { generateID } from '../../../../domain/utils';
-import { BaseRepository } from '../../contracts/repositorys';
 import { iProductRepository } from '../../contracts/repositorys/iProduct.repository';
 
 export class ProductRepository implements iProductRepository {
@@ -11,25 +9,28 @@ export class ProductRepository implements iProductRepository {
     private readonly colletion: Collection<ProductEntity>
   ) {}
 
-  findByIds(ids: string[]): ProductEntity[] {
-    throw new Error('Method not implemented.');
+  async findByIds(ids: string[]): Promise<ProductEntity[]> {
+    return await this.colletion.find({ id: { $in: ids } }).toArray()
   }
 
   async productOutput(
     productDetails: TransactionEntity.ProductIncomingTransaction,
-    options?: BaseRepository.QueryOptions
+    options?: iProductRepository.Options
   ): Promise<ProductEntity> {
     const session = options && options.session ? options.session.get() : null;
 
     const result = await this.colletion.findOneAndUpdate(
       {
         id: productDetails.id,
-        stock: { $gte: productDetails.quantity } // Verifica se a quantidade de estoque é suficiente
+        stock: { $gte: productDetails.quantity }, // Verifica se a quantidade de estoque é suficiente
       },
       {
         $inc: {
           stock: -productDetails.quantity,
         },
+        $set: {
+          updated_at: new Date(),
+        }
       },
       { 
         session, returnDocument : 'after'
@@ -60,25 +61,17 @@ export class ProductRepository implements iProductRepository {
       .toArray();
   }
 
-  validDuplicatedProduct(
+  isDuplicatedProduct(
     produt: Partial<ProductEntity>
   ): Promise<ProductEntity> {
     return this.findOneWithProjection({ name: produt.name });
   }
 
-  async create(product: ProductEntity): Promise<{ id: string }> {
-    const generateId = product.id ? product.id : generateID();
+  async registerProduct(products: Array<ProductEntity>, options ?: iProductRepository.Options): Promise<boolean> {
+    console.log(products)
+    const result = await this.colletion.insertMany(products, { session : options?.session.get() });
 
-    const inserted = await this.colletion.insertOne({
-      ...product,
-      id: generateId,
-    });
-
-    if (inserted.insertedId) {
-      return {
-        id: generateId,
-      };
-    }
+    return result.insertedCount >= products.length
   }
   async archiveProduct(productId: string): Promise<boolean> {
     const result = await this.colletion.updateOne(

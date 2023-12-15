@@ -1,5 +1,5 @@
-import { CreateIncomingTransactionForProductsData } from '../../../../data/usecases/transaction/CreateIncomingTransactionForProducts.data';
-import { iCreateIncomingTransactionForProductsUsecase } from 'src/domain/usecases/transaction/iCreateTransaction.usecase';
+import { CreateTransactionForProductsData } from '../../../../data/usecases/transaction/CreateTransaction.data';
+import { iCreateTransactionUsecase } from '../../../../domain/usecases/transaction/iCreateTransaction.usecase';
 import {
   makeProductRepository,
   makeSessionManagerDatabase,
@@ -9,8 +9,8 @@ import {
 import { QueueDriver } from '../../../../infra/queue/rabbitmq.queue';
 import { NotificationHandlerCreateIncomingTransactionForProducts } from '../../main/errors';
 
-export function makeCreateTransactionUsecase(): iCreateIncomingTransactionForProductsUsecase {
-  return new CreateIncomingTransactionForProductsData(
+export function makeCreateTransactionUsecase(): iCreateTransactionUsecase {
+  return new CreateTransactionForProductsData(
     QueueDriver.getManager(),
     makeSessionManagerDatabase(),
     NotificationHandlerCreateIncomingTransactionForProducts(),
