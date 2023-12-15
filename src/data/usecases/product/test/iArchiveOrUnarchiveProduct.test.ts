@@ -1,6 +1,6 @@
 import { MockProxy, mock } from 'jest-mock-extended';
 import { iArchiveOrUnarchiveProductUsecase } from 'src/domain/usecases/product';
-import { ArchiveOrUnarchiveProductData } from '../iArchiveOrUnarchiveProduct.data';
+import { ArchiveOrUnarchiveProductData } from '../ArchiveOrUnarchiveProduct.data';
 import { iProductRepository } from 'src/infra/database/contracts/repositorys/iProduct.repository';
 
 describe('CreateTokenAuthenticate', () => {
