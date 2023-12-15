@@ -9,15 +9,19 @@ export class ProductRepository implements iProductRepository {
     private readonly colletion: Collection<ProductEntity>
   ) {}
 
-  async findByIds(ids: string[]): Promise<ProductEntity[]> {
-    return await this.colletion.find({ id: { $in: ids } }).toArray()
+  async findByIds(ids: string[], options?: iProductRepository.Options): Promise<ProductEntity[]> {
+    return await this.colletion.find({ id: { $in: ids } }, { session : options?.session.get() }).toArray()
+  }
+
+  findById(id: string, options ?: iProductRepository.Options): Promise<ProductEntity> {
+    return this.findOneWithProjection({ id }, options);
   }
 
   async productOutput(
     productDetails: TransactionEntity.ProductIncomingTransaction,
     options?: iProductRepository.Options
   ): Promise<ProductEntity> {
-    const session = options && options.session ? options.session.get() : null;
+    const session = options?.session.get();
 
     const result = await this.colletion.findOneAndUpdate(
       {
@@ -62,21 +66,22 @@ export class ProductRepository implements iProductRepository {
   }
 
   isDuplicatedProduct(
-    produt: Partial<ProductEntity>
+    produt: Partial<ProductEntity>,
+    options ?: iProductRepository.Options
   ): Promise<ProductEntity> {
-    return this.findOneWithProjection({ name: produt.name });
+    return this.findOneWithProjection({ name: produt.name }, options);
   }
 
   async registerProduct(products: Array<ProductEntity>, options ?: iProductRepository.Options): Promise<boolean> {
-    console.log(products)
     const result = await this.colletion.insertMany(products, { session : options?.session.get() });
 
     return result.insertedCount >= products.length
   }
-  async archiveProduct(productId: string): Promise<boolean> {
+  async archiveProduct(productId: string, options ?: iProductRepository.Options): Promise<boolean> {
     const result = await this.colletion.updateOne(
       { id: productId },
-      { $set: { archived_date: new Date() } }
+      { $set: { archived_date: new Date() } },
+      { session : options?.session.get() }
     );
     if (result.modifiedCount > 0) {
       return true;
@@ -84,24 +89,22 @@ export class ProductRepository implements iProductRepository {
     return false;
   }
 
-  async unarchiveProduct(productId: string): Promise<boolean> {
+  async unarchiveProduct(productId: string, options ?: iProductRepository.Options): Promise<boolean> {
     const result = await this.colletion.updateOne(
       { id: productId },
-      { $set: { archived_date: null } }
+      { $set: { archived_date: null } },
+      { session : options?.session.get() }
     );
     if (result.modifiedCount > 0) {
       return true;
     }
     return false;
-  }
-
-  findById(id: string): Promise<ProductEntity> {
-    return this.findOneWithProjection({ id });
   }
 
   private findOneWithProjection(
-    filter: Filter<ProductEntity>
+    filter: Filter<ProductEntity>,
+    options ?: iProductRepository.Options
   ): Promise<ProductEntity> {
-    return this.colletion.findOne(filter, { projection: { _id: 0 } });
+    return this.colletion.findOne(filter, { projection: { _id: 0 }, session : options?.session.get() });
   }
 }
