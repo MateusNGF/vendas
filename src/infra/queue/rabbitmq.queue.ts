@@ -50,14 +50,16 @@ export const QueueDriver : iQueueDriver = new RabbitmqDriver()
 export class QueueManager  implements iQueueDriver.iQueueManager {
 
     constructor(
-        private readonly channel: Channel,
+        private readonly channel: Channel
     ){}
 
     publishInQueue(queue: string, content: any): boolean {
+        if (!this.channel) return;
         return this.channel.sendToQueue(queue, Buffer.from(JSON.stringify(content)))
      }
  
      consumeInQueue(queue: string, callback: (content: ConsumeMessage) => void): void {
+        if (!this.channel) return;
          this.channel.consume(queue, (msg) => {
              if (msg !== null) {
                  const content = JSON.parse(msg.content.toString())
