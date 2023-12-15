@@ -15,25 +15,26 @@ export class CreateTransactionForProductsData
   constructor(
     private readonly queueDriver: iQueueDriver.iQueueManager,
     private readonly databaseSession: iDatabaseDriver.iSessionManager,
-    private readonly notificationErrorHandler : INotificationErrorManager, 
+    private readonly notificationErrorHandler: INotificationErrorManager,
     private readonly userRepository: iUserRepository,
     private readonly productRepository: iProductRepository,
     private readonly transactionRepository: iTransactionRepository
   ) {}
   async exec(
     input: iCreateTransactionUsecase.Input,
-    options ?: iCreateTransactionUsecase.Options
-    ) {
+    options?: iCreateTransactionUsecase.Options
+  ) {
+    this.Validation(input);
 
-    this.Validation(input)
-
-    const session = options?.session
+    const session = options?.session;
 
     try {
       const { products, user_id } = input;
 
       // Os dados desse usuário remetem a um funcionario ou vendedor que vai operar a transação.
-      const user_content = await this.userRepository.findById(user_id, { session });
+      const user_content = await this.userRepository.findById(user_id, {
+        session,
+      });
       if (!user_content) {
         throw new OperationFailed(`User with id ${user_id} not found.`);
       }
@@ -45,42 +46,52 @@ export class CreateTransactionForProductsData
         total_price: 0,
       };
 
-      
       for (let i = 0; i < products.length; i++) {
-        const productBasic: TransactionEntity.ProductIncomingTransaction = products[i];
-        
-        const productContent = await this.productRepository.findById(productBasic.id, { session });
+        const productBasic: TransactionEntity.ProductIncomingTransaction =
+          products[i];
 
-        transactionPartial.products.push( {
+        const productContent = await this.productRepository.findById(
+          productBasic.id,
+          { session }
+        );
+
+        transactionPartial.products.push({
           id: productBasic.id,
           name: productContent.name,
           sale_price: productContent.sale_price,
           quantity: productBasic.quantity,
-        } );
+        });
 
-        transactionPartial.total_price += Number( productContent.sale_price * productBasic.quantity );
+        transactionPartial.total_price += Number(
+          productContent.sale_price * productBasic.quantity
+        );
       }
 
       this.notificationErrorHandler.CheckToNextStep();
 
       const transaction = new TransactionEntity(transactionPartial);
-      const resultOperation = await this.transactionRepository.create(transaction, { session });
-      
+      const resultOperation = await this.transactionRepository.create(
+        transaction,
+        { session }
+      );
 
-      this.queueDriver.publishInQueue<Partial<TransactionEntity>>('transaction', {
-        id: resultOperation.id,
-        user_id: transaction.user_id,
-        customer_id: transaction.customer_id,
-        created_at : transaction.created_at,
-        products: transaction.products,
-      })
-      
+      this.queueDriver.publishInQueue<Partial<TransactionEntity>>(
+        'transaction',
+        {
+          id: resultOperation.id,
+          user_id: transaction.user_id,
+          customer_id: transaction.customer_id,
+          created_at: transaction.created_at,
+          products: transaction.products,
+        }
+      );
+
       return {
         id: resultOperation.id,
         created_at: transaction.created_at,
       };
     } catch (e) {
-      throw e
+      throw e;
     }
   }
 
@@ -88,13 +99,10 @@ export class CreateTransactionForProductsData
     incomingProductData: TransactionEntity.ProductIncomingTransaction,
     product: ProductEntity
   ): TransactionEntity.ProductContentTransaction {
-    return ;
+    return;
   }
 
-
-  private Validation(input: iCreateTransactionUsecase.Input){
-
-
+  private Validation(input: iCreateTransactionUsecase.Input) {
     ObjectManager.hasKeysWithNotification<iCreateTransactionUsecase.Input>(
       ['type', 'products'],
       input,
@@ -103,14 +111,17 @@ export class CreateTransactionForProductsData
 
     if (!['incoming', 'outgoing'].includes(input.type)) {
       this.notificationErrorHandler.AddNotification({
-        key: 'type', message: 'Invalid type, accept incoming or outgoing.'
+        key: 'type',
+        message: 'Invalid type, accept incoming or outgoing.',
       });
     }
 
     this.notificationErrorHandler.CheckToNextStep();
 
     if (input.products.length < 1) {
-      throw new OperationFailed('Need one or more products for creating transaction.');
+      throw new OperationFailed(
+        'Need one or more products for creating transaction.'
+      );
     }
 
     ObjectManager.hasKeysWithNotification<TransactionEntity.ProductIncomingTransaction>(

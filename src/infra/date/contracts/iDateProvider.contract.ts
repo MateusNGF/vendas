@@ -1,4 +1,4 @@
-import { iDriver } from "src/infra/contracts/driver.interface";
+import { iDriver } from 'src/infra/contracts/driver.interface';
 
 export interface iDateProvider extends iDriver {
   now(): iDateProvider;

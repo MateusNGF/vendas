@@ -27,8 +27,8 @@ export function makeRemoveProductUsecase(): iRemoveProductUsecase {
     makeProductRepository(),
     makeCreateTransactionUsecase(),
     NotificationHandlerRegisterProduct(),
-    DatabaseDriver.getSession(),
-  )
+    DatabaseDriver.getSession()
+  );
 }
 
 export function makeArchiveOrUnarchiveProductUsecase(): iArchiveOrUnarchiveProductUsecase {

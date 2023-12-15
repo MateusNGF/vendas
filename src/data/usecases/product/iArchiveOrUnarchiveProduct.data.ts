@@ -12,7 +12,7 @@ export class ArchiveOrUnarchiveProductData
       case 'unarchive':
         return this.unarchiveProduct(input);
       default:
-        return Promise.resolve(false)
+        return Promise.resolve(false);
     }
   }
 

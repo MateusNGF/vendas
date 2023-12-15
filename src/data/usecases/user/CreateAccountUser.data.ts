@@ -24,7 +24,8 @@ export class CreateAccountUserData implements iCreateAccountUserUsecase {
       associeted_id: userPartial.id,
     });
 
-    if (!authenticate) throw new OperationFailed('Unable to create an authenticator.');
+    if (!authenticate)
+      throw new OperationFailed('Unable to create an authenticator.');
 
     const user = new UserEntity({
       id: userPartial.id,

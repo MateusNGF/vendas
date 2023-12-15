@@ -19,19 +19,25 @@ const getConnection = (): Db => {
   return DatabaseDriver.getDatabase();
 };
 
-export const makeSessionManagerDatabase = (): iDatabaseDriver.iSessionManager => {
-  return DatabaseDriver.getSession();
-};
+export const makeSessionManagerDatabase =
+  (): iDatabaseDriver.iSessionManager => {
+    return DatabaseDriver.getSession();
+  };
 
 export const makeAuthenticateRepository = (): iAuthenticateRepository => {
   const database = getConnection();
-  const authenticateColletion = database.collection<AuthEntity>('authenticates');
+  const authenticateColletion =
+    database.collection<AuthEntity>('authenticates');
 
-  const memoryCache = GetMemoryCached({ 
+  const memoryCache = GetMemoryCached({
     context: 'ATH',
-  })
+  });
 
-  return new AuthenticateRepository(database, authenticateColletion, memoryCache);
+  return new AuthenticateRepository(
+    database,
+    authenticateColletion,
+    memoryCache
+  );
 };
 
 export const makeUserRepository = (): iUserRepository => {

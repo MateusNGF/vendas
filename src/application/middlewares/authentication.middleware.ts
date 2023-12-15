@@ -12,12 +12,14 @@ export class AuthenticationMiddleware extends iMiddleware {
 
   async run(request: HttpRequest): Promise<HttpResponse> {
     const token = request.headers['x-access-token'];
-    const content: HttpRequest.Headers = { decodedTokenUser : null }
+    const content: HttpRequest.Headers = { decodedTokenUser: null };
 
     try {
       if (!token) throw new UnauthorizedError('Token required.');
 
-      content.decodedTokenUser = await this.tokenAdapter.verify<PayloadToken>(token);
+      content.decodedTokenUser = await this.tokenAdapter.verify<PayloadToken>(
+        token
+      );
 
       return this.sendSucess(HTTP_STATUS.OK, content);
     } catch (e) {

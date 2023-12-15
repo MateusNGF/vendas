@@ -9,12 +9,14 @@ class Mongo implements iDatabaseDriver<MongoClient> {
 
   async connect(config?: iDriver.ConnectionOptions): Promise<this> {
     if (!this.client) {
-      this.client = await MongoClient.connect(config?.uri ?? process.env.MONGO_URI as string);
-      
+      this.client = await MongoClient.connect(
+        config?.uri ?? (process.env.MONGO_URI as string)
+      );
+
       config?.callback && config.callback();
     }
 
-    return this
+    return this;
   }
 
   public async disconnect(): Promise<void> {
@@ -22,13 +24,14 @@ class Mongo implements iDatabaseDriver<MongoClient> {
     this.client = null;
   }
 
-  public get() { return this }
+  public get() {
+    return this;
+  }
 
   public onError(callback: (error: any) => void): void {
-    this.client.once('close', callback)
-    this.client.once('error', callback)
+    this.client.once('close', callback);
+    this.client.once('error', callback);
   }
-  
 
   public getSession(): iDatabaseDriver.iSessionManager {
     if (!this.client) throw new Error('No has connection with database.');
@@ -48,11 +51,10 @@ class Mongo implements iDatabaseDriver<MongoClient> {
   }
 }
 
-export const DatabaseDriver : iDatabaseDriver = new Mongo();
+export const DatabaseDriver: iDatabaseDriver = new Mongo();
 
 class MongoSession implements iDatabaseDriver.iSessionManager {
-
-  private mongoSession: ClientSession
+  private mongoSession: ClientSession;
 
   constructor(private readonly client: MongoClient) {}
 
@@ -61,19 +63,16 @@ class MongoSession implements iDatabaseDriver.iSessionManager {
   }
 
   async createSession(): Promise<this> {
-    try{
-
+    try {
       if (!this.client) return;
-  
-      this.mongoSession = this.client.startSession()
-      return this
 
-    }catch(e){
-      console.error(e)
-      await this.endSession()
-      throw e
+      this.mongoSession = this.client.startSession();
+      return this;
+    } catch (e) {
+      console.error(e);
+      await this.endSession();
+      throw e;
     }
-   
   }
 
   async endSession(): Promise<void> {

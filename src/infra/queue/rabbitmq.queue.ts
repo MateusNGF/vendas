@@ -1,71 +1,73 @@
-import  { Channel, Connection, ConsumeMessage, connect } from "amqplib";
-import { iQueueDriver } from "./contracts/iQueue";
-import { iDriver } from "../contracts/driver.interface";
-
+import { Channel, Connection, ConsumeMessage, connect } from 'amqplib';
+import { iQueueDriver } from './contracts/iQueue';
+import { iDriver } from '../contracts/driver.interface';
 
 class RabbitmqDriver implements iQueueDriver {
+  readonly name: string = 'Rabbitmq';
 
-    readonly name: string = 'Rabbitmq'
+  private connection: Connection = null;
+  private channel: Channel = null;
 
-    private connection : Connection = null
-    private channel : Channel = null
-    
-    constructor(){}
+  constructor() {}
 
-    get() { return this }
+  get() {
+    return this;
+  }
 
+  onError(callback: (error: any) => void) {
+    this.connection.once('close', callback);
+    this.connection.once('error', callback);
+  }
 
-    onError(callback : (error : any) => void) {
-        this.connection.once('close', callback)
-        this.connection.once('error', callback)
+  async disconnect(): Promise<void> {
+    this.channel && this.channel.close();
+    this.connection && this.connection.close();
+  }
+
+  async connect(config?: iDriver.ConnectionOptions): Promise<this> {
+    if (!this.connection) {
+      const uriToConnectServerAmqp = config?.uri
+        ? config?.uri
+        : process.env.RABBITMQ_URI;
+
+      this.connection = await connect(uriToConnectServerAmqp);
+      this.channel = await this.connection.createChannel();
+
+      config?.callback && config.callback();
     }
 
-    async disconnect(): Promise<void> {
-        this.channel && this.channel.close()
-        this.connection && this.connection.close()
-    }
+    return this;
+  }
 
-    async connect(config?: iDriver.ConnectionOptions): Promise<this> {
-        if (!this.connection) {
-            const uriToConnectServerAmqp = config?.uri ? config?.uri : process.env.RABBITMQ_URI
-
-            this.connection = await connect(uriToConnectServerAmqp)
-            this.channel = await this.connection.createChannel()
-
-            config?.callback && config.callback()
-        }
-
-        return this
-    }
-
-
-    public getManager(): iQueueDriver.iQueueManager {
-        return new QueueManager(this.channel)
-    }
+  public getManager(): iQueueDriver.iQueueManager {
+    return new QueueManager(this.channel);
+  }
 }
 
+export const QueueDriver: iQueueDriver = new RabbitmqDriver();
 
-export const QueueDriver : iQueueDriver = new RabbitmqDriver()
+export class QueueManager implements iQueueDriver.iQueueManager {
+  constructor(private readonly channel: Channel) {}
 
-export class QueueManager  implements iQueueDriver.iQueueManager {
+  publishInQueue(queue: string, content: any): boolean {
+    if (!this.channel) return;
+    return this.channel.sendToQueue(
+      queue,
+      Buffer.from(JSON.stringify(content))
+    );
+  }
 
-    constructor(
-        private readonly channel: Channel
-    ){}
-
-    publishInQueue(queue: string, content: any): boolean {
-        if (!this.channel) return;
-        return this.channel.sendToQueue(queue, Buffer.from(JSON.stringify(content)))
-     }
- 
-     consumeInQueue(queue: string, callback: (content: ConsumeMessage) => void): void {
-        if (!this.channel) return;
-         this.channel.consume(queue, (msg) => {
-             if (msg !== null) {
-                 const content = JSON.parse(msg.content.toString())
-                 callback(content)
-                 this.channel.ack(msg)
-             }
-         })
-     }
+  consumeInQueue(
+    queue: string,
+    callback: (content: ConsumeMessage) => void
+  ): void {
+    if (!this.channel) return;
+    this.channel.consume(queue, (msg) => {
+      if (msg !== null) {
+        const content = JSON.parse(msg.content.toString());
+        callback(content);
+        this.channel.ack(msg);
+      }
+    });
+  }
 }

@@ -4,7 +4,5 @@ import { NotificationHandlerCreateIncomingTransactionForProducts } from '../../m
 import { makeCreateTransactionUsecase } from '../usecases/transaction.factory';
 
 export function makeCreateTransactionController(): iController {
-  return new CreateTransactionController(
-      makeCreateTransactionUsecase()
-    );
+  return new CreateTransactionController(makeCreateTransactionUsecase());
 }

@@ -1,82 +1,78 @@
-import { RedisClientType, createClient} from 'redis'
-import { iMemoryCachedDriver } from '../contracts'
-import { iDriver } from 'src/infra/contracts/driver.interface'
-
+import { RedisClientType, createClient } from 'redis';
+import { iMemoryCachedDriver } from '../contracts';
+import { iDriver } from 'src/infra/contracts/driver.interface';
 
 class RedisDriveDatabase implements iMemoryCachedDriver<RedisClientType> {
-    readonly name: string = 'RedisDB'
+  readonly name: string = 'RedisDB';
 
-    public client: RedisClientType
+  public client: RedisClientType;
 
-    public async connect(config?: iDriver.ConnectionOptions): Promise<this> {
-        if (!this.client){
-            this.client = createClient({
-                url: config?.uri ?? process.env.REDIS_URL
-            })
+  public async connect(config?: iDriver.ConnectionOptions): Promise<this> {
+    if (!this.client) {
+      this.client = createClient({
+        url: config?.uri ?? process.env.REDIS_URL,
+      });
 
-            await this.client.connect()
-            config?.callback && config.callback();
-        }
-
-        return this
+      await this.client.connect();
+      config?.callback && config.callback();
     }
 
-    public get() { return this }
+    return this;
+  }
 
+  public get() {
+    return this;
+  }
 
-    public async disconnect(): Promise<void> {
-        if (this.client) {
-            await this.client.disconnect()
-        }
+  public async disconnect(): Promise<void> {
+    if (this.client) {
+      await this.client.disconnect();
     }
+  }
 
-    async onError(callback: (error : any) => void){
-        this.client.once('close', callback)
-        this.client.once('error', callback)
-    }
+  async onError(callback: (error: any) => void) {
+    this.client.once('close', callback);
+    this.client.once('error', callback);
+  }
 }
-
 
 export class RedisManagerDatabase implements iMemoryCachedDriver.iManager {
+  constructor(
+    private readonly drive: iMemoryCachedDriver<RedisClientType>,
+    private readonly configuration: iMemoryCachedDriver.iConfiguration
+  ) {}
 
-    constructor(
-        private readonly drive: iMemoryCachedDriver<RedisClientType>,
-        private readonly configuration: iMemoryCachedDriver.iConfiguration
-    ){}
+  async set(key: string, value: any, options = { expire: 60 * 5 }) {
+    if (!this.drive.client || !key || !value) return null;
 
-    async set(key: string, value : any, options = { expire : 60 * 5 }){
-        if ( !this.drive.client || ( !key || !value ) ) return null
+    key = this.BuildContext(key);
 
-        key = this.BuildContext(key)
+    await this.drive.client?.set(key, JSON.stringify(value), {
+      EX: options.expire,
+    });
+  }
 
-        await this.drive.client?.set(key, JSON.stringify(value), {
-            EX : options.expire
-        })
-    }
+  async get<type = any>(key: string): Promise<type> {
+    if (!this.drive.client || !key) return null;
 
-    async get<type=any>(key : string) : Promise<type> {
-        if (!this.drive.client || !key) return null
+    key = this.BuildContext(key);
 
-        key = this.BuildContext(key)
+    const content = await this.drive.client?.get(key);
+    return JSON.parse(content);
+  }
 
-        const content = await this.drive.client?.get(key)
-        return JSON.parse(content) 
-    }
+  async del(key: string) {
+    key = this.BuildContext(key);
 
+    if (!this.drive.client || !key) return null;
+    await this.drive.client?.del(key);
+  }
 
-    async del(key : string){
-        key = this.BuildContext(key)
-
-        if (!this.drive.client || !key) return null
-        await this.drive.client?.del(key)
-    }
-
-
-    private BuildContext(key : string){
-        return this.configuration.context ? `${this.configuration.context.toUpperCase()}|${key}` : key
-    }
-
+  private BuildContext(key: string) {
+    return this.configuration.context
+      ? `${this.configuration.context.toUpperCase()}|${key}`
+      : key;
+  }
 }
 
-
-export const MemoryCacheDriver : iMemoryCachedDriver = new RedisDriveDatabase()
+export const MemoryCacheDriver: iMemoryCachedDriver = new RedisDriveDatabase();

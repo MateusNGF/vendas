@@ -1,6 +1,4 @@
-import {
-  OperationFailed
-} from '../../../domain/errors';
+import { OperationFailed } from '../../../domain/errors';
 import {
   iCreateAuthenticationUsecase,
   iGetAuthenticateRecordUsecase,
@@ -25,7 +23,8 @@ export class CreateAuthenticateData implements iCreateAuthenticationUsecase {
       email: input.email,
     });
 
-    if (hasRecord) throw new OperationFailed(`Email ${input.email} has record.`);
+    if (hasRecord)
+      throw new OperationFailed(`Email ${input.email} has record.`);
 
     const incomingAuthenticate = new AuthEntity({
       email: input.email,
@@ -33,10 +32,13 @@ export class CreateAuthenticateData implements iCreateAuthenticationUsecase {
       password: await this.hashAdapter.encrypt(input.password),
     });
 
-    const authenticate = await this.authenticateRepository.create(incomingAuthenticate);
+    const authenticate = await this.authenticateRepository.create(
+      incomingAuthenticate
+    );
 
-    if (!authenticate) new OperationFailed('Authenticate create failed. Try again.');
+    if (!authenticate)
+      new OperationFailed('Authenticate create failed. Try again.');
 
-    return {id: authenticate.id};
+    return { id: authenticate.id };
   }
 }

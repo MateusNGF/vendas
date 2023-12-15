@@ -13,23 +13,26 @@ export class RegisterProductController extends iController {
   }
   async exec(request: HttpRequest): Promise<HttpResponse> {
     try {
-
-      if (!Array.isArray(request.body)){ 
-        throw new OperationFailed('body need be an array of products.') 
+      if (!Array.isArray(request.body)) {
+        throw new OperationFailed('body need be an array of products.');
       }
 
-      const content: Array<iRegisterProductUsecase.ProductContent> = request.body;
+      const content: Array<iRegisterProductUsecase.ProductContent> =
+        request.body;
       const currentUser = request.headers.decodedTokenUser.user_id;
 
-
-      const contentProductsAndTransaction = await this.registerProductUsecase.exec({
-        user_id : currentUser,
-        products: content.map((product) => ({
-          name: product.name,
-          sale_price: product.sale_price,
-          stock: product.stock
-        })),
-      }, { createTransaction : true });
+      const contentProductsAndTransaction =
+        await this.registerProductUsecase.exec(
+          {
+            user_id: currentUser,
+            products: content.map((product) => ({
+              name: product.name,
+              sale_price: product.sale_price,
+              stock: product.stock,
+            })),
+          },
+          { createTransaction: true }
+        );
 
       return this.sendSucess(200, contentProductsAndTransaction);
     } catch (e) {

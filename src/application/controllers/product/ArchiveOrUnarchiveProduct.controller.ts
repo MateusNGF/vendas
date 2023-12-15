@@ -12,8 +12,8 @@ export class ArchiveOrUnarchiveProductController extends iController {
   }
   async exec(request: HttpRequest): Promise<HttpResponse> {
     try {
-
-      const notificationHandler = NotificationHandlerArchiveOrUnarchiveProduct()
+      const notificationHandler =
+        NotificationHandlerArchiveOrUnarchiveProduct();
 
       const content: iArchiveOrUnarchiveProductUsecase.Input = {
         action: request.params.action,

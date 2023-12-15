@@ -1,8 +1,7 @@
 import { iDateProvider } from './contracts/iDateProvider.contract';
 
 class DateManager implements iDateProvider {
-
-  name: string = 'SystemDate'
+  name: string = 'SystemDate';
 
   constructor(
     private readonly dateRef: string | number | Date = new Date(),

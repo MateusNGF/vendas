@@ -13,8 +13,8 @@ export class AccessAccountUserController extends iController {
 
   async exec(request: HttpRequest): Promise<HttpResponse> {
     try {
-      const notificationErrorHandler = NotificationHandlerAccessAccountUser()
-      
+      const notificationErrorHandler = NotificationHandlerAccessAccountUser();
+
       const content: iAccessAccountUserUsecase.Input = request.body;
 
       ObjectManager.hasKeysWithNotification<iAccessAccountUserUsecase.Input>(
@@ -23,7 +23,7 @@ export class AccessAccountUserController extends iController {
         notificationErrorHandler
       );
 
-      notificationErrorHandler.CheckToNextStep()
+      notificationErrorHandler.CheckToNextStep();
 
       const token = await this.accessAccountUserUsecase.exec({
         email: content.email,

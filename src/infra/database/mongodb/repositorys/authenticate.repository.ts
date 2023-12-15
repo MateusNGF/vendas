@@ -32,7 +32,7 @@ export class AuthenticateRepository implements iAuthenticateRepository {
 
     content = await this.findOneWithProjection({ associeted_id: associetedId });
     await this.memoryCache.set(content.associeted_id, content);
-    return content
+    return content;
   }
 
   findByEmail(email: string): Promise<AuthEntity> {
@@ -45,7 +45,7 @@ export class AuthenticateRepository implements iAuthenticateRepository {
 
     content = await this.findOneWithProjection({ id: id });
     await this.memoryCache.set(content.associeted_id, content);
-    return content
+    return content;
   }
 
   private findOneWithProjection(
