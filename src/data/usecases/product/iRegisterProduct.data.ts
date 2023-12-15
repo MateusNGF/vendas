@@ -50,7 +50,7 @@ export class RegisterProductData implements iRegisterProductUsecase {
         transaction: null
       }
 
-      await session.commitTransaction()
+      
 
       if (options?.createTransaction) {
         result.transaction = await this.createTransactionUsecase.exec({
@@ -60,8 +60,10 @@ export class RegisterProductData implements iRegisterProductUsecase {
             id: p.id,
             quantity: p.stock,
           })),
-        })
+        }, { session })
       }
+
+      await session.commitTransaction()
 
       return result
 
