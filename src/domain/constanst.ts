@@ -1,0 +1,2 @@
+export enum SYSTEM_PERMISSION { ADM = 1, USR = 0 } 
+export enum ASSOCITED_TYPE_USER_COMPANY { ADM  = 1, ASSOCIETED = 2, CUSTOMER = 3}
