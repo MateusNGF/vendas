@@ -1,12 +1,12 @@
 import { OperationFailed } from '../../../domain/errors';
 import { iCreateTokenAuthenticateUsecase } from 'src/domain/usecases/authenticate';
-import { iAccessAccountUserUsecase } from 'src/domain/usecases/user';
+import { iSignInAccountUserUsecase } from 'src/domain/usecases/user';
 
-export class AccessAccountUserData implements iAccessAccountUserUsecase {
+export class SignInAccountUserData implements iSignInAccountUserUsecase {
   constructor(
     private readonly createTokenAuthenticate: iCreateTokenAuthenticateUsecase
   ) {}
-  async exec(input: iAccessAccountUserUsecase.Input): Promise<string> {
+  async exec(input: iSignInAccountUserUsecase.Input): Promise<string> {
     const token = await this.createTokenAuthenticate.exec({
       email: input.email,
       password: input.password,

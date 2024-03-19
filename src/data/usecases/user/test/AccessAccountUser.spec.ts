@@ -1,23 +1,23 @@
 import { mock, MockProxy } from 'jest-mock-extended';
 import { OperationFailed } from '../../../../domain/errors';
 import { iCreateTokenAuthenticateUsecase } from 'src/domain/usecases/authenticate';
-import { iAccessAccountUserUsecase } from 'src/domain/usecases/user';
-import { AccessAccountUserData } from '../AccessAccountUser.data';
+import { iSignInAccountUserUsecase } from 'src/domain/usecases/user';
+import { SignInAccountUserData } from '../SignInAccountUser.data';
 
 describe('CreateTokenAuthenticate', () => {
-  let sut: iAccessAccountUserUsecase;
+  let sut: iSignInAccountUserUsecase;
 
   let createTokenAuthenticate: MockProxy<iCreateTokenAuthenticateUsecase>;
 
-  let fakeInputCredentials: iAccessAccountUserUsecase.Input;
-  let fakeOutput: iAccessAccountUserUsecase.Output;
+  let fakeInputCredentials: iSignInAccountUserUsecase.Input;
+  let fakeOutput: iSignInAccountUserUsecase.Output;
 
   beforeAll(() => {
     createTokenAuthenticate = mock();
   });
 
   beforeEach(() => {
-    sut = new AccessAccountUserData(createTokenAuthenticate);
+    sut = new SignInAccountUserData(createTokenAuthenticate);
 
     fakeOutput = 'token_qualquer';
     fakeInputCredentials = {

@@ -1,11 +1,11 @@
 import {
-  AccessAccountUserData,
-  CreateAccountUserData,
+  SignInAccountUserData,
+  SignUpAccountUserData,
   GetAccountUserData,
 } from '../../../../data/usecases/user';
 import {
-  iAccessAccountUserUsecase,
-  iCreateAccountUserUsecase,
+  iSignInAccountUserUsecase,
+  iSignUpAccountUserUsecase,
   iGetAccountUserUsecase,
 } from 'src/domain/usecases/user';
 import { makeUserRepository } from '../../infra/database/mongo.factory';
@@ -14,16 +14,16 @@ import {
   makeCreateTokenAuthenticateUsecase,
 } from './authenticate.factory';
 
-export function makeCreateAccountUserUsecase(): iCreateAccountUserUsecase {
-  return new CreateAccountUserData(
+export function makeSignUpAccountUserUsecase(): iSignUpAccountUserUsecase {
+  return new SignUpAccountUserData(
     makeUserRepository(),
     makeCreateAuthenticateUsecase(),
     makeCreateTokenAuthenticateUsecase()
   );
 }
 
-export function makeAccessAccountUserUsecase(): iAccessAccountUserUsecase {
-  return new AccessAccountUserData(makeCreateTokenAuthenticateUsecase());
+export function makeSignInAccountUserUsecase(): iSignInAccountUserUsecase {
+  return new SignInAccountUserData(makeCreateTokenAuthenticateUsecase());
 }
 
 export function makeGetAccountUserUsecase(): iGetAccountUserUsecase {

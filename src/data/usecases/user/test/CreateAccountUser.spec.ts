@@ -4,20 +4,20 @@ import {
   iCreateAuthenticationUsecase,
   iCreateTokenAuthenticateUsecase,
 } from 'src/domain/usecases/authenticate';
-import { iCreateAccountUserUsecase } from 'src/domain/usecases/user';
+import { iSignUpAccountUserUsecase } from 'src/domain/usecases/user';
 import { iUserRepository } from 'src/infra/database/contracts/repositorys/iUser.repository';
-import { CreateAccountUserData } from '../CreateAccountUser.data';
+import { SignUpAccountUserData } from '../SignUpAccountUser.data';
 import { UserEntity } from 'src/domain/entities';
 
 describe('CreateTokenAuthenticate', () => {
-  let sut: iCreateAccountUserUsecase;
+  let sut: iSignUpAccountUserUsecase;
 
   let userRepository: MockProxy<iUserRepository>;
   let createAuthenticate: MockProxy<iCreateAuthenticationUsecase>;
   let createTokenAuthenticate: MockProxy<iCreateTokenAuthenticateUsecase>;
 
-  let fakeInputCredentials: iCreateAccountUserUsecase.Input;
-  let fakeOutput: iCreateAccountUserUsecase.Output;
+  let fakeInputCredentials: iSignUpAccountUserUsecase.Input;
+  let fakeOutput: iSignUpAccountUserUsecase.Output;
   let userPartial: Partial<UserEntity>;
 
   beforeAll(() => {
@@ -27,7 +27,7 @@ describe('CreateTokenAuthenticate', () => {
   });
 
   beforeEach(() => {
-    sut = new CreateAccountUserData(
+    sut = new SignUpAccountUserData(
       userRepository,
       createAuthenticate,
       createTokenAuthenticate

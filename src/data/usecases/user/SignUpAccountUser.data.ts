@@ -4,16 +4,16 @@ import {
   iCreateAuthenticationUsecase,
   iCreateTokenAuthenticateUsecase,
 } from 'src/domain/usecases/authenticate';
-import { iCreateAccountUserUsecase } from 'src/domain/usecases/user';
+import { iSignUpAccountUserUsecase } from 'src/domain/usecases/user';
 import { iUserRepository } from 'src/infra/database/contracts/repositorys/iUser.repository';
 
-export class CreateAccountUserData implements iCreateAccountUserUsecase {
+export class SignUpAccountUserData implements iSignUpAccountUserUsecase {
   constructor(
     private readonly userRepository: iUserRepository,
     private readonly createAuthentication: iCreateAuthenticationUsecase,
     private readonly createTokenAuthenticate: iCreateTokenAuthenticateUsecase
   ) {}
-  async exec(input: iCreateAccountUserUsecase.Input): Promise<string> {
+  async exec(input: iSignUpAccountUserUsecase.Input): Promise<string> {
     const userPartial = this.userRepository.makePartial({
       name: input.name,
     });

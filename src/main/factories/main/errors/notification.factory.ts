@@ -1,14 +1,14 @@
 import { INotificationErrorManager } from '../../../../domain/contracts';
 import { NotificationErrorManager } from '../../../../domain/errors';
 
-export const NotificationHandlerCreateAccountUser =
+export const NotificationHandlerSignUpAccountUser =
   (): INotificationErrorManager => {
     return new NotificationErrorManager({
       context: 'CREATE_ACCOUNT_USER',
     });
   };
 
-export const NotificationHandlerAccessAccountUser =
+export const NotificationHandlerSignInAccountUser =
   (): INotificationErrorManager => {
     return new NotificationErrorManager({
       context: 'ACCESS_ACCOUNT_USER',

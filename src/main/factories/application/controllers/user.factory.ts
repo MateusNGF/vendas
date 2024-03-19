@@ -1,21 +1,21 @@
 import { iController } from '../../../../application/contracts';
 import { GetAccountUserController } from '../../../../application/controllers/user/GetAccountUser.controller';
 import {
-  AccessAccountUserController,
-  CreateAccountUserController,
+  SignInAccountUserController,
+  SignUpAccountUserController,
 } from '../../../../application/controllers/user';
 import {
-  makeAccessAccountUserUsecase,
-  makeCreateAccountUserUsecase,
+  makeSignInAccountUserUsecase,
+  makeSignUpAccountUserUsecase,
   makeGetAccountUserUsecase,
 } from '../usecases/user.factory';
 
-export function makeCreateAccountUserController(): iController {
-  return new CreateAccountUserController(makeCreateAccountUserUsecase());
+export function makeSignUpAccountUserController(): iController {
+  return new SignUpAccountUserController(makeSignUpAccountUserUsecase());
 }
 
-export function makeAccessAccountUserController(): iController {
-  return new AccessAccountUserController(makeAccessAccountUserUsecase());
+export function makeSignInAccountUserController(): iController {
+  return new SignInAccountUserController(makeSignInAccountUserUsecase());
 }
 
 export function makeGetAccountUserController(): iController {
