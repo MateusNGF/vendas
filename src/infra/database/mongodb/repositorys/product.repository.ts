@@ -127,7 +127,7 @@ export class ProductRepository implements iProductRepository {
   ): Promise<ProductEntity> {
     return this.colletion.findOne(filter, {
       projection: { _id: 0 },
-      session: options?.session.get(),
+      session: options?.session?.get(),
     });
   }
 }
