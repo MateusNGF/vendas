@@ -67,6 +67,10 @@ class DateManager implements iDateProvider {
     );
     return new Date(dateNormalized);
   }
+
+  get(): this {
+      return this
+  }
 }
 
 export const DateProvider = (
