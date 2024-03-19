@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  mongo_primary:
+    image: mongodb/mongodb-community-server:latest
+    container_name: mongo_primary
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    ports:
+      - 27017:27017
+    extra_hosts: 
+      -  "host.docker.internal:host-gateway" 
+    healthcheck:
+      test:  echo  "try { rs.status() } catch (err) { 
+            rs.initiate({_id:'rs0',members:[
+              {_id:0 ,host:'host.docker.internal:27017',priority:1},
+              {_id:1 ,host:'host.docker.internal:27018',priority:0.5},
+              {_id:2 ,host:'host.docker.internal:27019',priority:0.5}
+            ]}) }"  |  mongosh  --port  27017  --quiet 
+      interval: 5s
+      timeout: 30s
+      start_period: 0s
+      retries: 30
+    networks:
+      - database_networks
+
+
+  mongo_secondary1:
+    image: mongodb/mongodb-community-server:latest
+    container_name: mongo_secondary1
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    ports:
+      - 27018:27017
+    networks:
+      - database_networks
+    extra_hosts: 
+      -  "host.docker.internal:host-gateway" 
+
+  mongo_secondary2:
+    image: mongodb/mongodb-community-server:latest
+    container_name: mongo_secondary2
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    ports:
+      - 27019:27017
+    networks:
+      - database_networks
+    extra_hosts: 
+      -  "host.docker.internal:host-gateway" 
+
+
+networks:
+  database_networks: {}
+
