@@ -55,6 +55,15 @@ export class CreateTransactionForProductsData
           { session }
         );
 
+        if (!productContent || !productContent.id) {
+          this.notificationErrorHandler.AddNotification({
+            key: 'NOT_FOUND',
+            message: `Product ${productBasic.id} not found.`,
+          });
+
+          break;
+        }
+
         transactionPartial.products.push({
           id: productBasic.id,
           name: productContent.name,
