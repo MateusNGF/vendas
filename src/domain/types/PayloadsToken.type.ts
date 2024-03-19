@@ -3,8 +3,3 @@ export type PayloadToken = {
   user_id: string;
   access_level: number;
 };
-
-export enum PERMISSION {
-  ADM = 1,
-  USR = 0,
-}

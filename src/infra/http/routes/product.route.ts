@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { PERMISSION } from '../../../domain/types';
+import { SYSTEM_PERMISSION } from '../../../domain/constanst';
 import { adaptExpressMiddleware } from '../../../main/adapters/express-middleware';
 import { adaptExpressRoute } from '../../../main/adapters/express-route';
 import {
@@ -16,21 +16,21 @@ export default (router: Router): void => {
   router.post(
     '/register',
     adaptExpressMiddleware(makeMiddlewareAuthentication()),
-    adaptExpressMiddleware(makeMiddlewareAuthorization(PERMISSION.ADM)),
+    adaptExpressMiddleware(makeMiddlewareAuthorization(SYSTEM_PERMISSION.USR)),
     adaptExpressRoute(makeRegisterProductController())
   );
 
   router.put(
     '/au/:action/:productId',
     adaptExpressMiddleware(makeMiddlewareAuthentication()),
-    adaptExpressMiddleware(makeMiddlewareAuthorization(PERMISSION.ADM)),
+    adaptExpressMiddleware(makeMiddlewareAuthorization(SYSTEM_PERMISSION.USR)),
     adaptExpressRoute(makeArchiveOrUnarchiveProductController())
   );
 
   router.get(
     '/list/filter',
     adaptExpressMiddleware(makeMiddlewareAuthentication()),
-    adaptExpressMiddleware(makeMiddlewareAuthorization(PERMISSION.USR)),
+    adaptExpressMiddleware(makeMiddlewareAuthorization(SYSTEM_PERMISSION.USR)),
     adaptExpressRoute(makeListProductController())
   );
 };

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { PERMISSION } from '../../../domain/types';
+import { SYSTEM_PERMISSION } from '../../../domain/constanst';
 import { adaptExpressMiddleware } from '../../../main/adapters/express-middleware';
 import { adaptExpressRoute } from '../../../main/adapters/express-route';
 import { makeCreateTransactionController } from '../../../main/factories/application/controllers';
@@ -13,7 +13,7 @@ export default (router: Router): void => {
     '/register',
     adaptExpressMiddleware(makeMiddlewareAuthentication()),
     adaptExpressMiddleware(
-      makeMiddlewareAuthorization(PERMISSION.USR, { only_level: false })
+      makeMiddlewareAuthorization(SYSTEM_PERMISSION.USR, { only_level: false })
     ),
     adaptExpressRoute(makeCreateTransactionController())
   );
