@@ -35,7 +35,7 @@
 
 
 # USING DEVELOPER
- > For using project how to developer, need compose depency of project using docker: MongoDB, disk in database, only. And Reddis optional. Using command ```npm run docker:build``` and  ```npm run docker:compose```.
+ > For using project how to developer, need compose depency of project using docker: MongoDB, disk in database, only. And Reddis optional. Using command ```npm run docker:build``` to generate image of api`s and  ```npm run docker:compose``` to up all aplication.
  > Then, run command ```rpm run start:dev```.
 > 
 > ◻️ LoadBalance:Nginx <br> 
