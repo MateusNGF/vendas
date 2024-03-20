@@ -17,10 +17,9 @@ export class RegisterProductController extends iController {
         throw new OperationFailed('body need be an array of products.');
       }
 
-      const content: Array<iRegisterProductUsecase.ProductContent> =
-        request.body;
+      const content: Array<iRegisterProductUsecase.ProductContent> = request.body;
       const currentUser = request.headers.decodedTokenUser.user_id;
-
+      
       const contentProductsAndTransaction =
         await this.registerProductUsecase.exec(
           {
