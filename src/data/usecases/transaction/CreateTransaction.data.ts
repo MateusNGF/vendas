@@ -7,15 +7,14 @@ import { iUserRepository } from 'src/infra/database/contracts/repositorys/iUser.
 import { ObjectManager, Writeable } from '../../../domain/utils';
 import { ProductEntity, TransactionEntity } from '../../../domain/entities';
 import { iQueueDriver } from '../../../infra/queue/contracts/iQueue';
-import { INotificationErrorManager } from '../../../domain/contracts';
+import { INotificationErrorDriver } from '../../../domain/contracts';
 
 export class CreateTransactionForProductsData
   implements iCreateTransactionUsecase
 {
   constructor(
     private readonly queueDriver: iQueueDriver.iQueueManager,
-    private readonly databaseSession: iDatabaseDriver.iSessionManager,
-    private readonly notificationErrorHandler: INotificationErrorManager,
+    private readonly notificationErrorDriver: INotificationErrorDriver,
     private readonly userRepository: iUserRepository,
     private readonly productRepository: iProductRepository,
     private readonly transactionRepository: iTransactionRepository
@@ -24,7 +23,9 @@ export class CreateTransactionForProductsData
     input: iCreateTransactionUsecase.Input,
     options?: iCreateTransactionUsecase.Options
   ) {
-    this.Validation(input);
+    const notificationError = await this.notificationErrorDriver.create()
+
+    this.Validation(input, { notificationError });
 
     const session = options?.session;
 
@@ -32,9 +33,7 @@ export class CreateTransactionForProductsData
       const { products, user_id } = input;
 
       // Os dados desse usuário remetem a um funcionario ou vendedor que vai operar a transação.
-      const user_content = await this.userRepository.findById(user_id, {
-        session,
-      });
+      const user_content = await this.userRepository.findById(user_id, {session });
       if (!user_content) {
         throw new OperationFailed(`User with id ${user_id} not found.`);
       }
@@ -56,7 +55,7 @@ export class CreateTransactionForProductsData
         );
 
         if (!productContent || !productContent.id) {
-          this.notificationErrorHandler.AddNotification({
+          notificationError.AddNotification({
             key: 'NOT_FOUND',
             message: `Product ${productBasic.id} not found.`,
           });
@@ -76,7 +75,7 @@ export class CreateTransactionForProductsData
         );
       }
 
-      this.notificationErrorHandler.CheckToNextStep();
+      notificationError.CheckToNextStep();
 
       const transaction = new TransactionEntity(transactionPartial);
       const resultOperation = await this.transactionRepository.create(
@@ -104,28 +103,21 @@ export class CreateTransactionForProductsData
     }
   }
 
-  private makeProductContentTransaction(
-    incomingProductData: TransactionEntity.ProductIncomingTransaction,
-    product: ProductEntity
-  ): TransactionEntity.ProductContentTransaction {
-    return;
-  }
-
-  private Validation(input: iCreateTransactionUsecase.Input) {
+  private Validation(input: iCreateTransactionUsecase.Input, { notificationError }) {
     ObjectManager.hasKeysWithNotification<iCreateTransactionUsecase.Input>(
       ['type', 'products'],
       input,
-      this.notificationErrorHandler
+      notificationError
     );
 
     if (!['incoming', 'outgoing'].includes(input.type)) {
-      this.notificationErrorHandler.AddNotification({
+      notificationError.AddNotification({
         key: 'type',
         message: 'Invalid type, accept incoming or outgoing.',
       });
     }
 
-    this.notificationErrorHandler.CheckToNextStep();
+    notificationError.CheckToNextStep();
 
     if (input.products.length < 1) {
       throw new OperationFailed(
@@ -136,9 +128,9 @@ export class CreateTransactionForProductsData
     ObjectManager.hasKeysWithNotification<TransactionEntity.ProductIncomingTransaction>(
       ['id', 'quantity'],
       input.products,
-      this.notificationErrorHandler
+      notificationError
     );
 
-    this.notificationErrorHandler.CheckToNextStep();
+    notificationError.CheckToNextStep();
   }
 }

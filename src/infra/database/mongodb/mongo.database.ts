@@ -6,6 +6,7 @@ class Mongo implements iDatabaseDriver<MongoClient> {
   readonly name: string = 'MongoDB';
 
   private client: MongoClient | null = null;
+  private session: iDatabaseDriver.iSessionManager = null
 
   async connect(config?: iDriver.ConnectionOptions): Promise<this> {
     if (!this.client) {
@@ -13,6 +14,7 @@ class Mongo implements iDatabaseDriver<MongoClient> {
         config?.uri ?? (process.env.MONGO_URI as string)
       );
 
+      this.session = new MongoSession(this.client)
       config?.callback && config.callback();
     }
 
@@ -35,7 +37,7 @@ class Mongo implements iDatabaseDriver<MongoClient> {
 
   public getSession(): iDatabaseDriver.iSessionManager {
     if (!this.client) throw new Error('No has connection with database.');
-    return new MongoSession(this.client);
+    return this.session
   }
 
   public colletion<Schema>(name: string): Collection<Schema> {
@@ -59,7 +61,11 @@ class MongoSession implements iDatabaseDriver.iSessionManager {
   constructor(private readonly client: MongoClient) {}
 
   startTransaction(): void {
-    this.mongoSession.startTransaction();
+    this.mongoSession.startTransaction({
+      readConcern: { level: 'snapshot' },
+      writeConcern: { w: 'majority' },
+      readPreference: 'primary'
+    });
   }
 
   async createSession(): Promise<this> {

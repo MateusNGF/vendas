@@ -2,18 +2,19 @@ import { iController } from '../../../application/contracts';
 import { HttpRequest, HttpResponse } from 'src/application/helpers/http';
 import { iArchiveOrUnarchiveProductUsecase } from 'src/domain/usecases/product';
 import { ObjectManager } from '../../../domain/utils';
-import { NotificationHandlerArchiveOrUnarchiveProduct } from '../../../main/factories/main/errors';
+import { INotificationErrorDriver } from 'src/domain/contracts';
 
 export class ArchiveOrUnarchiveProductController extends iController {
   constructor(
-    private readonly archiveOrUnarchiveProduct: iArchiveOrUnarchiveProductUsecase
+    private readonly archiveOrUnarchiveProduct: iArchiveOrUnarchiveProductUsecase,
+    private readonly NotificationErrorDriver: INotificationErrorDriver
   ) {
     super();
   }
   async exec(request: HttpRequest): Promise<HttpResponse> {
     try {
-      const notificationHandler =
-        NotificationHandlerArchiveOrUnarchiveProduct();
+      const notificationError = await this.NotificationErrorDriver.create()
+
 
       const content: iArchiveOrUnarchiveProductUsecase.Input = {
         action: request.params.action,
@@ -23,10 +24,10 @@ export class ArchiveOrUnarchiveProductController extends iController {
       ObjectManager.hasKeysWithNotification<iArchiveOrUnarchiveProductUsecase.Input>(
         ['action', 'product_id'],
         content,
-        notificationHandler
+        notificationError
       );
 
-      notificationHandler.CheckToNextStep();
+      notificationError.CheckToNextStep();
 
       const result = await this.archiveOrUnarchiveProduct.exec(content);
 

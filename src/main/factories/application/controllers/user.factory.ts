@@ -9,13 +9,20 @@ import {
   makeSignUpAccountUserUsecase,
   makeGetAccountUserUsecase,
 } from '../usecases/user.factory';
+import { NotificationHandlerSignInAccountUser } from '../../main/errors';
 
 export function makeSignUpAccountUserController(): iController {
-  return new SignUpAccountUserController(makeSignUpAccountUserUsecase());
+  return new SignUpAccountUserController(
+    makeSignUpAccountUserUsecase(),
+    NotificationHandlerSignInAccountUser()
+  );
 }
 
 export function makeSignInAccountUserController(): iController {
-  return new SignInAccountUserController(makeSignInAccountUserUsecase());
+  return new SignInAccountUserController(
+      makeSignInAccountUserUsecase(),
+      NotificationHandlerSignInAccountUser()
+    );
 }
 
 export function makeGetAccountUserController(): iController {

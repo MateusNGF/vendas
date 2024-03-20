@@ -9,6 +9,7 @@ import {
   makeListProductUsecase,
   makeRegisterProductUsecase,
 } from '../usecases/product.factory';
+import { NotificationHandlerArchiveOrUnarchiveProduct } from '../../main/errors';
 
 export function makeRegisterProductController(): iController {
   return new RegisterProductController(makeRegisterProductUsecase());
@@ -16,7 +17,8 @@ export function makeRegisterProductController(): iController {
 
 export function makeArchiveOrUnarchiveProductController(): iController {
   return new ArchiveOrUnarchiveProductController(
-    makeArchiveOrUnarchiveProductUsecase()
+    makeArchiveOrUnarchiveProductUsecase(),
+    NotificationHandlerArchiveOrUnarchiveProduct()
   );
 }
 

@@ -1,4 +1,4 @@
-import { INotificationErrorManager } from '../contracts/iNotificationError';
+import { INotificationErrorDriver } from '../contracts/iNotificationError';
 
 export class ObjectManager extends Object {
   /**
@@ -13,7 +13,7 @@ export class ObjectManager extends Object {
   static hasKeysWithNotification<TypeKeysRequireds = string>(
     requireds: Array<keyof TypeKeysRequireds>,
     content: any,
-    notification: INotificationErrorManager,
+    notification: INotificationErrorDriver.IManager,
     security: boolean = false
   ) {
     if (Array.isArray(content)) {
@@ -45,7 +45,7 @@ export class ObjectManager extends Object {
   static justThesePropertiesNotification(
     requireds: Array<any>,
     object: object,
-    notification: INotificationErrorManager
+    notification: INotificationErrorDriver.IManager
   ) {
     for (const key in object) {
       if (!requireds.find((element) => element == key)) {
@@ -61,7 +61,7 @@ export class ObjectManager extends Object {
   static hasThesePropertiesNotification(
     requireds: Array<any>,
     object: object,
-    notification: INotificationErrorManager
+    notification: INotificationErrorDriver.IManager
   ) {
     requireds.forEach((element: any) => {
       if (!(element in object)) {

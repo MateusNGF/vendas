@@ -1,44 +1,44 @@
-import { INotificationErrorManager } from '../../../../domain/contracts';
-import { NotificationErrorManager } from '../../../../domain/errors';
+import { INotificationErrorDriver } from '../../../../domain/contracts';
+import { NotificationErrorDriver } from '../../../../domain/errors';
 
 export const NotificationHandlerSignUpAccountUser =
-  (): INotificationErrorManager => {
-    return new NotificationErrorManager({
+  (): INotificationErrorDriver => {
+    return new NotificationErrorDriver({
       context: 'CREATE_ACCOUNT_USER',
     });
   };
 
 export const NotificationHandlerSignInAccountUser =
-  (): INotificationErrorManager => {
-    return new NotificationErrorManager({
+  (): INotificationErrorDriver => {
+    return new NotificationErrorDriver({
       context: 'ACCESS_ACCOUNT_USER',
     });
   };
 
 export const NotificationHandlerGetAccountUser =
-  (): INotificationErrorManager => {
-    return new NotificationErrorManager({
+  (): INotificationErrorDriver => {
+    return new NotificationErrorDriver({
       context: 'GET_ACCOUNT_USER',
     });
   };
 
 export const NotificationHandlerCreateIncomingTransactionForProducts =
-  (): INotificationErrorManager => {
-    return new NotificationErrorManager({
+  (): INotificationErrorDriver => {
+    return new NotificationErrorDriver({
       context: 'CREATE_INCOMING_TRANSACTION_PRODUCTS',
     });
   };
 
 export const NotificationHandlerArchiveOrUnarchiveProduct =
-  (): INotificationErrorManager => {
-    return new NotificationErrorManager({
+  (): INotificationErrorDriver => {
+    return new NotificationErrorDriver({
       context: 'ARCHIVE_UNARCHIVE_PRODUCT',
     });
   };
 
 export const NotificationHandlerRegisterProduct =
-  (): INotificationErrorManager => {
-    return new NotificationErrorManager({
+  (): INotificationErrorDriver => {
+    return new NotificationErrorDriver({
       context: 'REGISTER_PRODUCT',
     });
   };

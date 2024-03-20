@@ -3,14 +3,14 @@ import { ProductEntity } from '../../../domain/entities';
 import { OperationFailed } from '../../../domain/errors';
 import { iRegisterProductUsecase } from '../../../domain/usecases/product';
 import { iProductRepository } from '../../../infra/database/contracts/repositorys/iProduct.repository';
-import { INotificationErrorManager } from '../../../domain/contracts';
+import { INotificationErrorDriver } from '../../../domain/contracts';
 import { ObjectManager, generateID } from '../../../domain/utils';
 import { iCreateTransactionUsecase } from '../../../domain/usecases/transaction/iCreateTransaction.usecase';
 
 export class RegisterProductData implements iRegisterProductUsecase {
   constructor(
     private readonly databaseSession: iDatabaseDriver.iSessionManager,
-    private readonly notificationErrorHandler: INotificationErrorManager,
+    private readonly notificationErrorDriver: INotificationErrorDriver,
     private readonly productRepository: iProductRepository,
     private readonly createTransactionUsecase: iCreateTransactionUsecase
   ) {}
@@ -20,14 +20,15 @@ export class RegisterProductData implements iRegisterProductUsecase {
     options: iRegisterProductUsecase.Options
   ): Promise<iRegisterProductUsecase.Output> {
     const session = await this.databaseSession.createSession();
+    const notificationError = await this.notificationErrorDriver.create()
 
     session.startTransaction();
 
     try {
       const products = input.products;
 
-      this.ValidateInputContent(input);
-      await this.ValidateProductContent(products, { session });
+      this.ValidateInputContent(input, { notificationError });
+      await this.ValidateProductContent(products, { session, notificationError });
 
       const formartedProducts = products.map((product) => {
         return new ProductEntity({
@@ -39,10 +40,7 @@ export class RegisterProductData implements iRegisterProductUsecase {
         });
       });
 
-      const resultRegisterInDatabase =
-        await this.productRepository.registerProduct(formartedProducts, {
-          session,
-        });
+      const resultRegisterInDatabase = await this.productRepository.registerProduct(formartedProducts, {session});
       if (!resultRegisterInDatabase) {
         throw new OperationFailed('Product registration failed. Try again.');
       }
@@ -67,7 +65,6 @@ export class RegisterProductData implements iRegisterProductUsecase {
       }
 
       await session.commitTransaction();
-
       return result;
     } catch (error) {
       await session.abortTransaction();
@@ -77,31 +74,35 @@ export class RegisterProductData implements iRegisterProductUsecase {
     }
   }
 
-  private ValidateInputContent(content: iRegisterProductUsecase.Input) {
+  private ValidateInputContent(content: iRegisterProductUsecase.Input, { notificationError }) {
     ObjectManager.hasKeysWithNotification<iRegisterProductUsecase.Input>(
       ['products', 'user_id'],
       content,
-      this.notificationErrorHandler
+      notificationError
     );
 
     ObjectManager.hasKeysWithNotification<iRegisterProductUsecase.ProductContent>(
       ['name', 'sale_price', 'stock'],
       content.products,
-      this.notificationErrorHandler
+      notificationError
     );
 
-    this.notificationErrorHandler.CheckToNextStep();
+    notificationError.CheckToNextStep();
   }
 
-  private async ValidateProductContent(products, { session }) {
-    products.forEach(async (product, index) => {
-      const isDuplicatedInDatabase =
-        await this.productRepository.isDuplicatedProduct(product, { session });
+  private async ValidateProductContent(products : Array<iRegisterProductUsecase.ProductContent>, { session, notificationError }) {
+
+    for (let iIndex = 0; iIndex < products.length; iIndex++) {
+      const product = products[iIndex];
+      
+      const isDuplicatedInDatabase = await this.productRepository.isDuplicatedProduct(product, { session });
+
+      console.log({isDuplicatedInDatabase})
 
       if (isDuplicatedInDatabase) {
-        this.notificationErrorHandler.AddNotification({
+        notificationError.AddNotification({
           key: 'name',
-          message: `Product at ${index}º ${product.name} is already registered`,
+          message: `Product at ${iIndex + 1}º ${product.name} is already registered`,
         });
       }
 
@@ -110,23 +111,22 @@ export class RegisterProductData implements iRegisterProductUsecase {
         isEqualPrice: (p) => p.sale_price === product.sale_price,
       };
 
-      products.forEach((product, _index) => {
-        if (_index === index) return;
+      for (let sIndex = 0; sIndex < products.length; sIndex++) {
+        const incoming_product_array = products[sIndex];
 
-        if (
-          !conditionDuplication.isEqualName(product) &&
-          !conditionDuplication.isEqualPrice(product)
-        ) {
-          return;
+        if (sIndex === iIndex) break;
+
+        if (conditionDuplication.isEqualName(incoming_product_array)) {
+          notificationError.AddNotification({
+           key: 'name',
+           message: `Product at ${sIndex}º ${incoming_product_array.name} is duplicated in array`,
+         });
         }
+        
+        continue;
+      }
+    }
 
-        this.notificationErrorHandler.AddNotification({
-          key: 'name; price',
-          message: `Product at ${index}º ${product.name} is duplicated in array`,
-        });
-      });
-    });
-
-    this.notificationErrorHandler.CheckToNextStep();
+    notificationError.CheckToNextStep();
   }
 }

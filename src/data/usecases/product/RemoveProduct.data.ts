@@ -2,14 +2,14 @@ import { iDatabaseDriver } from 'src/infra/database/contracts';
 import { TransactionEntity } from '../../../domain/entities';
 import { iRemoveProductUsecase } from '../../../domain/usecases/product';
 import { iProductRepository } from '../../../infra/database/contracts/repositorys/iProduct.repository';
-import { INotificationErrorManager } from 'src/domain/contracts';
+import { INotificationErrorDriver } from 'src/domain/contracts';
 import { iCreateTransactionUsecase } from 'src/domain/usecases/transaction/iCreateTransaction.usecase';
 
 export class RemoveProductData implements iRemoveProductUsecase {
   constructor(
     private readonly productRepository: iProductRepository,
     private readonly createTransactionUsecase: iCreateTransactionUsecase,
-    private readonly notificationErrorHandler: INotificationErrorManager,
+    private readonly notificationErrorDriver: INotificationErrorDriver,
     private readonly databaseSession: iDatabaseDriver.iSessionManager
   ) {}
 
@@ -18,6 +18,8 @@ export class RemoveProductData implements iRemoveProductUsecase {
     options?: iRemoveProductUsecase.Options
   ): Promise<iRemoveProductUsecase.Output> {
     const session = await this.databaseSession.createSession();
+    const notificationError = await this.notificationErrorDriver.create()
+    
 
     const products = input.products;
 
@@ -25,16 +27,12 @@ export class RemoveProductData implements iRemoveProductUsecase {
       session.startTransaction();
 
       for (let i = 0; i < products.length; i++) {
-        const productBasic: TransactionEntity.ProductIncomingTransaction =
-          products[i];
+        const productBasic: TransactionEntity.ProductIncomingTransaction = products[i];
 
-        const productContent = await this.productRepository.productOutput(
-          productBasic,
-          { session }
-        );
+        const productContent = await this.productRepository.productOutput(productBasic,{ session });
 
         if (!productContent) {
-          this.notificationErrorHandler.AddNotification({
+          notificationError.AddNotification({
             key: 'id',
             message: `Product ${productBasic.id} not updated.`,
           });
@@ -42,7 +40,7 @@ export class RemoveProductData implements iRemoveProductUsecase {
         }
       }
 
-      this.notificationErrorHandler.CheckToNextStep();
+      notificationError.CheckToNextStep();
 
       await session.commitTransaction();
 

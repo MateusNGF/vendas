@@ -12,7 +12,6 @@ import { NotificationHandlerCreateIncomingTransactionForProducts } from '../../m
 export function makeCreateTransactionUsecase(): iCreateTransactionUsecase {
   return new CreateTransactionForProductsData(
     QueueDriver.getManager(),
-    makeSessionManagerDatabase(),
     NotificationHandlerCreateIncomingTransactionForProducts(),
     makeUserRepository(),
     makeProductRepository(),

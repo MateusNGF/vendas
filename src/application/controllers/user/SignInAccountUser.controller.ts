@@ -3,27 +3,30 @@ import { HttpRequest, HttpResponse } from 'src/application/helpers/http';
 import { iSignInAccountUserUsecase } from 'src/domain/usecases/user';
 import { ObjectManager } from '../../../domain/utils';
 import { NotificationHandlerSignInAccountUser } from '../../../main/factories/main/errors';
+import { INotificationErrorDriver } from 'src/domain/contracts';
 
 export class SignInAccountUserController extends iController {
   constructor(
-    private readonly SignInAccountUserUsecase: iSignInAccountUserUsecase
+    private readonly SignInAccountUserUsecase: iSignInAccountUserUsecase,
+    private readonly NotificationErrorDriver: INotificationErrorDriver
   ) {
     super();
   }
 
   async exec(request: HttpRequest): Promise<HttpResponse> {
     try {
-      const notificationErrorHandler = NotificationHandlerSignInAccountUser();
+      const notificationError = await this.NotificationErrorDriver.create()
+
 
       const content: iSignInAccountUserUsecase.Input = request.body;
 
       ObjectManager.hasKeysWithNotification<iSignInAccountUserUsecase.Input>(
         ['email', 'password'],
         content,
-        notificationErrorHandler
+        notificationError
       );
 
-      notificationErrorHandler.CheckToNextStep();
+      notificationError.CheckToNextStep();
 
       const token = await this.SignInAccountUserUsecase.exec({
         email: content.email,

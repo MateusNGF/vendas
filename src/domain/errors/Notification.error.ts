@@ -1,23 +1,22 @@
 import {
-  INotificationContent,
-  INotificationErrorManager,
+  INotificationErrorDriver,
 } from '../contracts/iNotificationError';
 
 export class NotificationError extends Error {
   name: string = 'Notification Error';
-  notifications: Array<INotificationContent> = [];
-  constructor(stackNotification: Array<INotificationContent>) {
+  notifications: Array<INotificationErrorDriver.INotificationContent> = [];
+  constructor(stackNotification: Array<INotificationErrorDriver.INotificationContent>) {
     super('');
     this.notifications = stackNotification;
   }
 }
 
-export class NotificationContent implements INotificationContent {
+export class NotificationContent implements INotificationErrorDriver.INotificationContent {
   key: string;
   message: string;
   context?: string;
 
-  constructor(notification: INotificationContent) {
+  constructor(notification: INotificationErrorDriver.INotificationContent) {
     this.message = notification.message;
     this.key = notification.key;
     this.context = notification.context;
@@ -31,12 +30,20 @@ export class NotificationContent implements INotificationContent {
   }
 }
 
-export class NotificationErrorManager implements INotificationErrorManager {
-  private stackNotifications: Array<INotificationContent> = [];
+export class NotificationErrorDriver implements INotificationErrorDriver {
+  constructor(private readonly _settings: INotificationErrorDriver.IDriverSettings) {}
+    async create(settings : INotificationErrorDriver.IDriverSettings): Promise<INotificationErrorDriver.IManager> {
+        return new NotificationErrorManager(settings ?? this._settings);
+    }
+}
 
-  constructor(private readonly _settings: { context: string }) {}
 
-  AddNotification(error: INotificationContent): void {
+class NotificationErrorManager implements INotificationErrorDriver.IManager {
+  private stackNotifications: Array<INotificationErrorDriver.INotificationContent> = [];
+
+  constructor(private readonly _settings?: INotificationErrorDriver.IDriverSettings) {}
+
+  AddNotification(error: INotificationErrorDriver.INotificationContent): void {
     error.context = error.context ? error.context : this._settings.context;
     this.stackNotifications.push(new NotificationContent(error));
   }
@@ -50,7 +57,7 @@ export class NotificationErrorManager implements INotificationErrorManager {
     }
   }
 
-  GetErrors(): INotificationContent[] {
+  GetErrors(): INotificationErrorDriver.INotificationContent[] {
     return this.stackNotifications;
   }
   GetToStrings(): string {
@@ -58,4 +65,5 @@ export class NotificationErrorManager implements INotificationErrorManager {
       .map((error, index) => `${index + 1}º ${String(error)}`)
       .join(';\n ');
   }
+
 }

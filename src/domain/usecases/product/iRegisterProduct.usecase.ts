@@ -1,5 +1,4 @@
 import { iUsecase } from 'src/domain/contracts';
-import { ProductEntity, UserEntity } from 'src/domain/entities';
 
 export abstract class iRegisterProductUsecase implements iUsecase {
   abstract exec(
