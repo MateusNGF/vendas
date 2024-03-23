@@ -8,7 +8,7 @@ class RedisDriveDatabase implements iMemoryCachedDriver<RedisClientType> {
   public client: RedisClientType;
 
   public async connect(config?: iDriver.ConnectionOptions): Promise<this> {
-    if (!this.client) {
+    if (!this.client || !this.client.isOpen) {
       this.client = createClient({
         url: config?.uri ?? process.env.REDIS_URL,
       });
@@ -43,7 +43,7 @@ export class RedisManagerDatabase implements iMemoryCachedDriver.iManager {
   ) {}
 
   async set(key: string, value: any, options = { expire: 60 * 5 }) {
-    if (!this.drive.client || !key || !value) return null;
+    if (!this.drive.client?.isReady || !key || !value) return null;
 
     key = this.BuildContext(key);
 
@@ -53,7 +53,7 @@ export class RedisManagerDatabase implements iMemoryCachedDriver.iManager {
   }
 
   async get<type = any>(key: string): Promise<type> {
-    if (!this.drive.client || !key) return null;
+    if (!this.drive.client?.isReady || !key) return null;
 
     key = this.BuildContext(key);
 
@@ -62,9 +62,10 @@ export class RedisManagerDatabase implements iMemoryCachedDriver.iManager {
   }
 
   async del(key: string) {
+    if (!this.drive.client?.isReady  || !key) return null;
+
     key = this.BuildContext(key);
 
-    if (!this.drive.client || !key) return null;
     await this.drive.client?.del(key);
   }
 

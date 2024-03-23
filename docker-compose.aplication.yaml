@@ -21,78 +21,78 @@ services:
     networks:
       - vendas_networks
 
-  api_1:
-    image: vendas_img
-    container_name: api_1
-    env_file: .env
-    environment:
-      - MONGO_URI=mongodb://host.docker.internal:27017/vendas
-      - REDIS_URI=redis://cache_service:6379
-    ports:
-      - 3000
-    networks:
-      - vendas_networks
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 80M
-  depends_on:
-    - queue_service
-    - cache_service
+  # api_1:
+  #   image: vendas_img
+  #   container_name: api_1
+  #   env_file: .env
+  #   environment:
+  #     - MONGO_URI=mongodb://host.docker.internal:27017/vendas
+  #     - REDIS_URI=redis://cache_service:6379
+  #   ports:
+  #     - 3000
+  #   networks:
+  #     - vendas_networks
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.50'
+  #         memory: 80M
+  # depends_on:
+  #   - queue_service
+  #   - cache_service
   
-  api_2:
-    image: vendas_img
-    container_name: api_2
-    env_file: .env
-    environment:
-      - MONGO_URI=mongodb://host.docker.internal:27017/vendas
-      - REDIS_URI=redis://cache_service:6379
-    ports:
-      - 3000
-    networks:
-      - vendas_networks
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 80M
+  # api_2:
+  #   image: vendas_img
+  #   container_name: api_2
+  #   env_file: .env
+  #   environment:
+  #     - MONGO_URI=mongodb://host.docker.internal:27017/vendas
+  #     - REDIS_URI=redis://cache_service:6379
+  #   ports:
+  #     - 3000
+  #   networks:
+  #     - vendas_networks
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.50'
+  #         memory: 80M
 
-  api_3:
-    image: vendas_img
-    container_name: api_3
-    env_file: .env
-    environment:
-      - MONGO_URI=mongodb://host.docker.internal:27017/vendas
-      - REDIS_URI=redis://cache_service:6379
-    ports:
-      - 3000
-    networks:
-      - vendas_networks
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 80M
+  # api_3:
+  #   image: vendas_img
+  #   container_name: api_3
+  #   env_file: .env
+  #   environment:
+  #     - MONGO_URI=mongodb://host.docker.internal:27017/vendas
+  #     - REDIS_URI=redis://cache_service:6379
+  #   ports:
+  #     - 3000
+  #   networks:
+  #     - vendas_networks
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.50'
+  #         memory: 80M
 
-  balanceador:
-    image: nginx:latest
-    container_name: nginx
-    volumes:
-      - ./config/nginx:/etc/nginx/conf.d:rw
-    ports:
-      - 8080:3000
-    networks:
-      - vendas_networks
-    deploy:
-      resources:
-        limits:
-          cpus: '0.1'
-          memory: 200M
-    depends_on:
-      - api_1
-      - api_2
-      - api_3
+  # balanceador:
+  #   image: nginx:latest
+  #   container_name: nginx
+  #   volumes:
+  #     - ./config/nginx:/etc/nginx/conf.d:rw
+  #   ports:
+  #     - 8080:3000
+  #   networks:
+  #     - vendas_networks
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '0.1'
+  #         memory: 200M
+  #   depends_on:
+  #     - api_1
+  #     - api_2
+  #     - api_3
   
 
 

@@ -1,12 +1,12 @@
-import { Db } from 'mongodb';
-import { AuthEntity, ProductEntity, UserEntity } from 'src/domain/entities';
-import { iAuthenticateRepository } from 'src/infra/database/contracts/repositorys/iAuthenticate.repository';
+import { Collection, Db } from 'mongodb';
+import { AuthEntity, ProductEntity, UserEntity } from '../../../../domain/entities';
+import { iAuthenticateRepository } from '../../../../infra/database/contracts/repositorys/iAuthenticate.repository';
 import {
   AuthenticateRepository,
   ProductRepository,
 } from '../../../../infra/database/mongodb/repositorys';
-import { DatabaseDriver } from '../../../../../src/infra/database/mongodb';
-import { iUserRepository } from 'src/infra/database/contracts/repositorys/iUser.repository';
+import { DatabaseDriver } from '../../../../infra/database/mongodb';
+import { iUserRepository } from '../../../../infra/database/contracts/repositorys/iUser.repository';
 import { UserRepository } from '../../../../infra/database/mongodb/repositorys/user.repository';
 import { iProductRepository } from '../../../../infra/database/contracts/repositorys/iProduct.repository';
 import { iTransactionRepository } from '../../../../infra/database/contracts/repositorys/iTransaction.repository';
@@ -14,6 +14,9 @@ import { TransactionEntity } from '../../../../domain/entities/transaction.entit
 import { TransactionRepository } from '../../../../infra/database/mongodb/repositorys/transaction.repository';
 import { iDatabaseDriver } from '../../../../infra/database/contracts';
 import { GetMemoryCached } from './redis.factory';
+import { iCompanyRepository } from '../../../../infra/database/contracts/repositorys/iCompany.repository';
+import { CompanyRepository } from '../../../../infra/database/mongodb/repositorys/company.repository';
+import { CompanyEntity } from '../../../../domain/entities/company.entity';
 
 const getConnection = (): Db => {
   return DatabaseDriver.getDatabase();
@@ -48,6 +51,20 @@ export const makeUserRepository = (): iUserRepository => {
     database,
     userRepository,
     makeAuthenticateRepository()
+  );
+};
+
+export const makeCompanyRepository = (): iCompanyRepository => {
+  const database = getConnection();
+  const companyRepository  = database.collection<CompanyEntity>('companies');
+
+  const memoryCache = GetMemoryCached({
+    context: 'COMPANY',
+  });
+
+  return new CompanyRepository(
+    companyRepository,
+    memoryCache
   );
 };
 

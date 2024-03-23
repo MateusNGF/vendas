@@ -25,18 +25,21 @@ export class ObjectManager extends Object {
         ObjectManager.hasThesePropertiesNotification(
           requireds,
           content,
-          notification
+          notification,
+          security
         );
         ObjectManager.justThesePropertiesNotification(
           requireds,
           content,
-          notification
+          notification,
+          security
         );
       } else {
         ObjectManager.hasThesePropertiesNotification(
           requireds,
           content,
-          notification
+          notification,
+          security
         );
       }
     }
@@ -45,14 +48,15 @@ export class ObjectManager extends Object {
   static justThesePropertiesNotification(
     requireds: Array<any>,
     object: object,
-    notification: INotificationErrorDriver.IManager
+    notification: INotificationErrorDriver.IManager,
+    security: boolean
   ) {
     for (const key in object) {
       if (!requireds.find((element) => element == key)) {
         // UnexpectedParamError
         notification.AddNotification({
           key: key,
-          message: `It's param not is required.`,
+          message: `It's param not is ${security ? 'accepted' : 'required'}.`,
         });
       }
     }
@@ -61,14 +65,15 @@ export class ObjectManager extends Object {
   static hasThesePropertiesNotification(
     requireds: Array<any>,
     object: object,
-    notification: INotificationErrorDriver.IManager
+    notification: INotificationErrorDriver.IManager,
+    security: boolean
   ) {
     requireds.forEach((element: any) => {
       if (!(element in object)) {
         // MissingParamError
         return notification.AddNotification({
           key: element,
-          message: `it's key is required.`,
+          message: `it's key is ${security ? 'accepted' : 'required'}.`,
         });
       }
       if (!object[element]) {

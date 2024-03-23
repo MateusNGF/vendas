@@ -42,3 +42,9 @@ export const NotificationHandlerRegisterProduct =
       context: 'REGISTER_PRODUCT',
     });
   };
+
+  export const NotificationHandlerRegisterCompany = (): INotificationErrorDriver => {
+    return new NotificationErrorDriver({
+      context: 'REGISTER_COMPANY',
+    });
+  };
