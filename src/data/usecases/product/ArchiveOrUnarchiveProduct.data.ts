@@ -1,9 +1,7 @@
 import { iArchiveOrUnarchiveProductUsecase } from 'src/domain/usecases/product';
 import { iProductRepository } from 'src/infra/database/contracts/repositorys/iProduct.repository';
 
-export class ArchiveOrUnarchiveProductData
-  implements iArchiveOrUnarchiveProductUsecase
-{
+export class ArchiveOrUnarchiveProductData implements iArchiveOrUnarchiveProductUsecase {
   constructor(private readonly productRepository: iProductRepository) {}
   exec(input: iArchiveOrUnarchiveProductUsecase.Input): Promise<boolean> {
     switch (input.action) {

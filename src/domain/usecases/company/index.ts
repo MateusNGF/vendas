@@ -1,1 +1,1 @@
-export * from './IRegisterCompany.usecase'
+export * from './IRegisterCompany.usecase';

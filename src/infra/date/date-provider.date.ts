@@ -3,10 +3,7 @@ import { iDateProvider } from './contracts/iDateProvider.contract';
 class DateManager implements iDateProvider {
   name: string = 'SystemDate';
 
-  constructor(
-    private readonly dateRef: string | number | Date = new Date(),
-    private readonly locateFormart: iDateProvider.Locates = 'en-US'
-  ) {}
+  constructor(private readonly dateRef: string | number | Date = new Date(), private readonly locateFormart: iDateProvider.Locates = 'en-US') {}
 
   now(): iDateProvider {
     return new DateManager(new Date());
@@ -21,9 +18,7 @@ class DateManager implements iDateProvider {
   }
 
   toDateString(locateFormart?: iDateProvider.Locates): string {
-    return new Date(this.dateRef).toLocaleDateString(
-      locateFormart ?? this.locateFormart
-    );
+    return new Date(this.dateRef).toLocaleDateString(locateFormart ?? this.locateFormart);
   }
 
   isBefore(dateToCompare: string | Date): boolean {
@@ -61,19 +56,13 @@ class DateManager implements iDateProvider {
   }
 
   tz(timezone?: iDateProvider.Timezone): Date {
-    const dateNormalized = new Date(this.dateRef).toLocaleString(
-      this.locateFormart,
-      { timeZone: timezone ?? process.env.TZ }
-    );
+    const dateNormalized = new Date(this.dateRef).toLocaleString(this.locateFormart, { timeZone: timezone ?? process.env.TZ });
     return new Date(dateNormalized);
   }
 
   get(): this {
-      return this
+    return this;
   }
 }
 
-export const DateProvider = (
-  date?: string | Date,
-  locate?: iDateProvider.Locates
-): iDateProvider => new DateManager(date, locate);
+export const DateProvider = (date?: string | Date, locate?: iDateProvider.Locates): iDateProvider => new DateManager(date, locate);

@@ -3,9 +3,7 @@ import { ProductEntity } from 'src/domain/entities';
 import { BaseFilterForListing } from 'src/domain/types';
 
 export abstract class iListProductUsecase implements iUsecase {
-  abstract exec(
-    input: iListProductUsecase.Input
-  ): Promise<iListProductUsecase.Output>;
+  abstract exec(input: iListProductUsecase.Input): Promise<iListProductUsecase.Output>;
 }
 
 export namespace iListProductUsecase {

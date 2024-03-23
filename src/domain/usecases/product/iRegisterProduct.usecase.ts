@@ -1,10 +1,7 @@
 import { iUsecase } from 'src/domain/contracts';
 
 export abstract class iRegisterProductUsecase implements iUsecase {
-  abstract exec(
-    input: iRegisterProductUsecase.Input,
-    options?: iRegisterProductUsecase.Options
-  ): Promise<iRegisterProductUsecase.Output>;
+  abstract exec(input: iRegisterProductUsecase.Input, options?: iRegisterProductUsecase.Options): Promise<iRegisterProductUsecase.Output>;
 }
 
 export namespace iRegisterProductUsecase {

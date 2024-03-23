@@ -10,47 +10,20 @@ export class ObjectManager extends Object {
    * @param security true para deixar apenas os required no objeto, false verifica se tem pelo menos os requireds.
    */
 
-  static hasKeysWithNotification<TypeKeysRequireds = string>(
-    requireds: Array<keyof TypeKeysRequireds>,
-    content: any,
-    notification: INotificationErrorDriver.IManager,
-    security: boolean = false
-  ) {
+  static hasKeysWithNotification<TypeKeysRequireds = string>(requireds: Array<keyof TypeKeysRequireds>, content: any, notification: INotificationErrorDriver.IManager, security: boolean = false) {
     if (Array.isArray(content)) {
-      content.forEach((i) =>
-        this.hasKeysWithNotification(requireds, i, notification, security)
-      );
+      content.forEach((i) => this.hasKeysWithNotification(requireds, i, notification, security));
     } else {
       if (security) {
-        ObjectManager.hasThesePropertiesNotification(
-          requireds,
-          content,
-          notification,
-          security
-        );
-        ObjectManager.justThesePropertiesNotification(
-          requireds,
-          content,
-          notification,
-          security
-        );
+        ObjectManager.hasThesePropertiesNotification(requireds, content, notification, security);
+        ObjectManager.justThesePropertiesNotification(requireds, content, notification, security);
       } else {
-        ObjectManager.hasThesePropertiesNotification(
-          requireds,
-          content,
-          notification,
-          security
-        );
+        ObjectManager.hasThesePropertiesNotification(requireds, content, notification, security);
       }
     }
   }
 
-  static justThesePropertiesNotification(
-    requireds: Array<any>,
-    object: object,
-    notification: INotificationErrorDriver.IManager,
-    security: boolean
-  ) {
+  static justThesePropertiesNotification(requireds: Array<any>, object: object, notification: INotificationErrorDriver.IManager, security: boolean) {
     for (const key in object) {
       if (!requireds.find((element) => element == key)) {
         // UnexpectedParamError
@@ -62,12 +35,7 @@ export class ObjectManager extends Object {
     }
   }
 
-  static hasThesePropertiesNotification(
-    requireds: Array<any>,
-    object: object,
-    notification: INotificationErrorDriver.IManager,
-    security: boolean
-  ) {
+  static hasThesePropertiesNotification(requireds: Array<any>, object: object, notification: INotificationErrorDriver.IManager, security: boolean) {
     requireds.forEach((element: any) => {
       if (!(element in object)) {
         // MissingParamError

@@ -1,9 +1,6 @@
 import { mock, MockProxy } from 'jest-mock-extended';
 import { OperationFailed } from '../../../../domain/errors';
-import {
-  iCreateAuthenticationUsecase,
-  iCreateTokenAuthenticateUsecase,
-} from 'src/domain/usecases/authenticate';
+import { iCreateAuthenticationUsecase, iCreateTokenAuthenticateUsecase } from 'src/domain/usecases/authenticate';
 import { iSignUpAccountUserUsecase } from 'src/domain/usecases/user';
 import { iUserRepository } from 'src/infra/database/contracts/repositorys/iUser.repository';
 import { SignUpAccountUserData } from '../SignUpAccountUser.data';
@@ -27,11 +24,7 @@ describe('CreateTokenAuthenticate', () => {
   });
 
   beforeEach(() => {
-    sut = new SignUpAccountUserData(
-      userRepository,
-      createAuthenticate,
-      createTokenAuthenticate
-    );
+    sut = new SignUpAccountUserData(userRepository, createAuthenticate, createTokenAuthenticate);
 
     fakeOutput = 'tokken_qualquer';
     fakeInputCredentials = {

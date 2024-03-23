@@ -61,9 +61,7 @@ class ExpressHttpDriver implements iHttpDriver<Express> {
   private makePathOverview(layer: any, prefix: string) {
     const method = Object.keys(layer.route.methods)[0];
     const path = layer.route.path;
-    return `[${method.toUpperCase()}] ${process.env.SYSTEM_ADDRESS}:${
-      process.env.PORT
-    }/${prefix}${path}`;
+    return `[${method.toUpperCase()}] ${process.env.SYSTEM_ADDRESS}:${process.env.PORT}/${prefix}${path}`;
   }
 }
 

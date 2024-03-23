@@ -7,8 +7,7 @@ export class TransactionEntity extends iEntity {
   public readonly user_id: string = null;
   public readonly customer_id?: string = null;
   public readonly total_price: number = 0;
-  public readonly products: Array<TransactionEntity.ProductContentTransaction> =
-    [];
+  public readonly products: Array<TransactionEntity.ProductContentTransaction> = [];
 
   constructor(transaction: Partial<TransactionEntity>) {
     super(transaction);
@@ -17,9 +16,7 @@ export class TransactionEntity extends iEntity {
 }
 
 export namespace TransactionEntity {
-  export abstract class ProductIncomingTransaction
-    implements Partial<ProductEntity>
-  {
+  export abstract class ProductIncomingTransaction implements Partial<ProductEntity> {
     public id: any;
     public quantity: number;
   }

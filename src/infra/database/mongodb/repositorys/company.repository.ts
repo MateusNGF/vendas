@@ -5,12 +5,8 @@ import { iCompanyRepository } from '../../contracts/repositorys/iCompany.reposit
 import { CompanyEntity } from 'src/domain/entities/company.entity';
 
 export class CompanyRepository implements iCompanyRepository {
-
-  private readonly _projection = { _id: 0 }
-  constructor(
-    private readonly colletion: Collection<CompanyEntity>,
-    private readonly memoryCache: iMemoryCachedDriver.iManager
-  ) { }
+  private readonly _projection = { _id: 0 };
+  constructor(private readonly colletion: Collection<CompanyEntity>, private readonly memoryCache: iMemoryCachedDriver.iManager) {}
 
   async create(company: CompanyEntity): Promise<{ id: string }> {
     const idGenerate = company.id ? company.id : generateID();
@@ -26,9 +22,8 @@ export class CompanyRepository implements iCompanyRepository {
       };
     }
 
-    return null
+    return null;
   }
-
 
   async findById(id: string): Promise<CompanyEntity> {
     let content = await this.memoryCache.get(id);
@@ -40,8 +35,7 @@ export class CompanyRepository implements iCompanyRepository {
   }
 
   async findByOnwer(user_id: string): Promise<Array<CompanyEntity>> {
-    const content = this.colletion.find({ owner_id: user_id }, { projection: this._projection })
-    return await content.toArray()
+    const content = this.colletion.find({ owner_id: user_id }, { projection: this._projection });
+    return await content.toArray();
   }
-
 }

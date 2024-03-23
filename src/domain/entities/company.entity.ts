@@ -1,7 +1,6 @@
 import { iEntity } from '../contracts';
 import { ObjectManager } from '../utils';
 
-
 export class CompanyEntity extends iEntity {
   public readonly name: string = null;
   public readonly fantasy_name: string = null;

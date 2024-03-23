@@ -1,9 +1,7 @@
 import { iUsecase } from 'src/domain/contracts';
 
 export abstract class iArchiveOrUnarchiveProductUsecase implements iUsecase {
-  abstract exec(
-    input: iArchiveOrUnarchiveProductUsecase.Input
-  ): Promise<iArchiveOrUnarchiveProductUsecase.Output>;
+  abstract exec(input: iArchiveOrUnarchiveProductUsecase.Input): Promise<iArchiveOrUnarchiveProductUsecase.Output>;
 }
 
 export namespace iArchiveOrUnarchiveProductUsecase {

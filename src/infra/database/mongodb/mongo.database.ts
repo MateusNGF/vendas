@@ -6,15 +6,13 @@ class Mongo implements iDatabaseDriver<MongoClient> {
   readonly name: string = 'MongoDB';
 
   private client: MongoClient | null = null;
-  private session: iDatabaseDriver.iSessionManager = null
+  private session: iDatabaseDriver.iSessionManager = null;
 
   async connect(config?: iDriver.ConnectionOptions): Promise<this> {
     if (!this.client) {
-      this.client = await MongoClient.connect(
-        config?.uri ?? (process.env.MONGO_URI as string)
-      );
+      this.client = await MongoClient.connect(config?.uri ?? (process.env.MONGO_URI as string));
 
-      this.session = new MongoSession(this.client)
+      this.session = new MongoSession(this.client);
       config?.callback && config.callback();
     }
 
@@ -37,14 +35,12 @@ class Mongo implements iDatabaseDriver<MongoClient> {
 
   public getSession(): iDatabaseDriver.iSessionManager {
     if (!this.client) throw new Error('No has connection with database.');
-    return this.session
+    return this.session;
   }
 
   public colletion<Schema>(name: string): Collection<Schema> {
     if (!this.client) throw new Error('No has connection with database.');
-    return this.client
-      .db(process.env.MONGO_DATABASE as string)
-      .collection<Schema>(name);
+    return this.client.db(process.env.MONGO_DATABASE as string).collection<Schema>(name);
   }
 
   public getDatabase(): Db {
@@ -64,7 +60,7 @@ class MongoSession implements iDatabaseDriver.iSessionManager {
     this.mongoSession.startTransaction({
       readConcern: { level: 'snapshot' },
       writeConcern: { w: 'majority' },
-      readPreference: 'primary'
+      readPreference: 'primary',
     });
   }
 

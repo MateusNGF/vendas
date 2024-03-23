@@ -2,15 +2,8 @@ import { Router } from 'express';
 import { SYSTEM_PERMISSION } from '../../../domain/constanst';
 import { adaptExpressMiddleware } from '../../../main/adapters/express-middleware';
 import { adaptExpressRoute } from '../../../main/adapters/express-route';
-import {
-  makeListProductController,
-  makeArchiveOrUnarchiveProductController,
-  makeRegisterProductController,
-} from '../../../main/factories/application/controllers/product.factory';
-import {
-  makeMiddlewareAuthentication,
-  makeMiddlewareAuthorization,
-} from '../../../main/factories/application/middlewares/authentication.middleware.factory';
+import { makeListProductController, makeArchiveOrUnarchiveProductController, makeRegisterProductController } from '../../../main/factories/application/controllers/product.factory';
+import { makeMiddlewareAuthentication, makeMiddlewareAuthorization } from '../../../main/factories/application/middlewares/authentication.middleware.factory';
 
 export default (router: Router): void => {
   router.post(

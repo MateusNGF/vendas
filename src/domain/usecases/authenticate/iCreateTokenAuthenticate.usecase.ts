@@ -2,9 +2,7 @@ import { iEntity, iUsecase } from 'src/domain/contracts';
 import { AuthEntity } from 'src/domain/entities/auth.entity';
 
 export abstract class iCreateTokenAuthenticateUsecase implements iUsecase {
-  abstract exec(
-    input: iCreateTokenAuthenticateUsecase.Input
-  ): Promise<iCreateTokenAuthenticateUsecase.Output>;
+  abstract exec(input: iCreateTokenAuthenticateUsecase.Input): Promise<iCreateTokenAuthenticateUsecase.Output>;
 }
 
 export namespace iCreateTokenAuthenticateUsecase {

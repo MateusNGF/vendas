@@ -4,9 +4,7 @@ import { iCreateTransactionUsecase } from 'src/domain/usecases/transaction/iCrea
 import { OperationFailed } from '../../../domain/errors';
 
 export class CreateTransactionController extends iController {
-  constructor(
-    private readonly createTransactionUsecase: iCreateTransactionUsecase
-  ) {
+  constructor(private readonly createTransactionUsecase: iCreateTransactionUsecase) {
     super();
   }
 

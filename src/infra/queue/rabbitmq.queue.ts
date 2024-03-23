@@ -26,9 +26,7 @@ class RabbitmqDriver implements iQueueDriver {
 
   async connect(config?: iDriver.ConnectionOptions): Promise<this> {
     if (!this.connection) {
-      const uriToConnectServerAmqp = config?.uri
-        ? config?.uri
-        : process.env.RABBITMQ_URI;
+      const uriToConnectServerAmqp = config?.uri ? config?.uri : process.env.RABBITMQ_URI;
 
       this.connection = await connect(uriToConnectServerAmqp);
       this.channel = await this.connection.createChannel();
@@ -51,16 +49,10 @@ export class QueueManager implements iQueueDriver.iQueueManager {
 
   publishInQueue(queue: string, content: any): boolean {
     if (!this.channel) return;
-    return this.channel.sendToQueue(
-      queue,
-      Buffer.from(JSON.stringify(content))
-    );
+    return this.channel.sendToQueue(queue, Buffer.from(JSON.stringify(content)));
   }
 
-  consumeInQueue(
-    queue: string,
-    callback: (content: ConsumeMessage) => void
-  ): void {
+  consumeInQueue(queue: string, callback: (content: ConsumeMessage) => void): void {
     if (!this.channel) return;
     this.channel.consume(queue, (msg) => {
       if (msg !== null) {

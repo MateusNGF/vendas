@@ -2,10 +2,7 @@ import { iUsecase } from 'src/domain/contracts';
 import { TransactionEntity } from 'src/domain/entities/transaction.entity';
 
 export abstract class iCreateTransactionUsecase implements iUsecase {
-  abstract exec(
-    input: iCreateTransactionUsecase.Input,
-    options?: iCreateTransactionUsecase.Options
-  ): Promise<iCreateTransactionUsecase.Output>;
+  abstract exec(input: iCreateTransactionUsecase.Input, options?: iCreateTransactionUsecase.Options): Promise<iCreateTransactionUsecase.Output>;
 }
 
 export namespace iCreateTransactionUsecase {

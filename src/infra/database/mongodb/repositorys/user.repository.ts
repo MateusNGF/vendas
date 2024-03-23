@@ -7,15 +7,9 @@ import { iAuthenticateRepository } from '../../contracts/repositorys/iAuthentica
 import { iUserRepository } from '../../contracts/repositorys/iUser.repository';
 
 export class UserRepository implements iUserRepository {
-  constructor(
-    private readonly database: Db,
-    private readonly colletionUser: Collection<UserEntity>,
-    private readonly authRepository: iAuthenticateRepository
-  ) {}
+  constructor(private readonly database: Db, private readonly colletionUser: Collection<UserEntity>, private readonly authRepository: iAuthenticateRepository) {}
 
-  async getComplete(
-    input: iGetAccountUserUsecase.Input
-  ): Promise<iGetAccountUserUsecase.Output> {
+  async getComplete(input: iGetAccountUserUsecase.Input): Promise<iGetAccountUserUsecase.Output> {
     let auth: AuthEntity;
     if (input.email) {
       auth = await this.authRepository.findByEmail(input.email);
@@ -57,17 +51,11 @@ export class UserRepository implements iUserRepository {
     }
   }
 
-  findById(
-    id: string,
-    options?: BaseRepository.QueryOptions
-  ): Promise<UserEntity> {
+  findById(id: string, options?: BaseRepository.QueryOptions): Promise<UserEntity> {
     return this.findOneWithProjection({ id: id }, options);
   }
 
-  private findOneWithProjection(
-    filter: Filter<UserEntity>,
-    options?: BaseRepository.QueryOptions
-  ): Promise<UserEntity> {
+  private findOneWithProjection(filter: Filter<UserEntity>, options?: BaseRepository.QueryOptions): Promise<UserEntity> {
     const session = options && options.session ? options.session.get() : null;
     return this.colletionUser.findOne(filter, {
       session,

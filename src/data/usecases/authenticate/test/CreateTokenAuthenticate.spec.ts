@@ -1,7 +1,4 @@
-import {
-  iCreateTokenAuthenticateUsecase,
-  iGetAuthenticateRecordUsecase,
-} from 'src/domain/usecases/authenticate';
+import { iCreateTokenAuthenticateUsecase, iGetAuthenticateRecordUsecase } from 'src/domain/usecases/authenticate';
 import { mock, MockProxy } from 'jest-mock-extended';
 import { AuthEntity } from 'src/domain/entities/auth.entity';
 import { OperationFailed, UnauthorizedError } from '../../../../domain/errors';
@@ -26,11 +23,7 @@ describe('CreateTokenAuthenticate', () => {
   });
 
   beforeEach(() => {
-    sut = new CreateTokenAuthenticateData(
-      tokenAdapter,
-      getAuthenticateRecord,
-      hashAdapter
-    );
+    sut = new CreateTokenAuthenticateData(tokenAdapter, getAuthenticateRecord, hashAdapter);
 
     fakeOutput = 'token_valid';
     fakeInputCredentials = {

@@ -6,9 +6,7 @@ import { ObjectManager } from '../../../domain/utils';
 import { NotificationHandlerRegisterProduct } from '../../../main/factories/main/errors';
 
 export class RegisterProductController extends iController {
-  constructor(
-    private readonly registerProductUsecase: iRegisterProductUsecase
-  ) {
+  constructor(private readonly registerProductUsecase: iRegisterProductUsecase) {
     super();
   }
   async exec(request: HttpRequest): Promise<HttpResponse> {
@@ -19,19 +17,18 @@ export class RegisterProductController extends iController {
 
       const content: Array<iRegisterProductUsecase.ProductContent> = request.body;
       const currentUser = request.headers.decodedTokenUser.user_id;
-      
-      const contentProductsAndTransaction =
-        await this.registerProductUsecase.exec(
-          {
-            user_id: currentUser,
-            products: content.map((product) => ({
-              name: product.name,
-              sale_price: product.sale_price,
-              stock: product.stock,
-            })),
-          },
-          { createTransaction: true }
-        );
+
+      const contentProductsAndTransaction = await this.registerProductUsecase.exec(
+        {
+          user_id: currentUser,
+          products: content.map((product) => ({
+            name: product.name,
+            sale_price: product.sale_price,
+            stock: product.stock,
+          })),
+        },
+        { createTransaction: true }
+      );
 
       return this.sendSucess(200, contentProductsAndTransaction);
     } catch (e) {

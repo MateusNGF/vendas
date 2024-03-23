@@ -4,9 +4,7 @@ import { iUserRepository } from 'src/infra/database/contracts/repositorys/iUser.
 export class GetAccountUserData implements iGetAccountUserUsecase {
   constructor(private readonly userRepository: iUserRepository) {}
 
-  exec(
-    input: iGetAccountUserUsecase.Input
-  ): Promise<iGetAccountUserUsecase.Output> {
+  exec(input: iGetAccountUserUsecase.Input): Promise<iGetAccountUserUsecase.Output> {
     return this.userRepository.getComplete(input);
   }
 }

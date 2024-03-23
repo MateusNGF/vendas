@@ -1,10 +1,7 @@
 import { Collection, Db } from 'mongodb';
 import { AuthEntity, ProductEntity, UserEntity } from '../../../../domain/entities';
 import { iAuthenticateRepository } from '../../../../infra/database/contracts/repositorys/iAuthenticate.repository';
-import {
-  AuthenticateRepository,
-  ProductRepository,
-} from '../../../../infra/database/mongodb/repositorys';
+import { AuthenticateRepository, ProductRepository } from '../../../../infra/database/mongodb/repositorys';
 import { DatabaseDriver } from '../../../../infra/database/mongodb';
 import { iUserRepository } from '../../../../infra/database/contracts/repositorys/iUser.repository';
 import { UserRepository } from '../../../../infra/database/mongodb/repositorys/user.repository';
@@ -22,50 +19,37 @@ const getConnection = (): Db => {
   return DatabaseDriver.getDatabase();
 };
 
-export const makeSessionManagerDatabase =
-  (): iDatabaseDriver.iSessionManager => {
-    return DatabaseDriver.getSession();
-  };
+export const makeSessionManagerDatabase = (): iDatabaseDriver.iSessionManager => {
+  return DatabaseDriver.getSession();
+};
 
 export const makeAuthenticateRepository = (): iAuthenticateRepository => {
   const database = getConnection();
-  const authenticateColletion =
-    database.collection<AuthEntity>('authenticates');
+  const authenticateColletion = database.collection<AuthEntity>('authenticates');
 
   const memoryCache = GetMemoryCached({
     context: 'ATH',
   });
 
-  return new AuthenticateRepository(
-    database,
-    authenticateColletion,
-    memoryCache
-  );
+  return new AuthenticateRepository(database, authenticateColletion, memoryCache);
 };
 
 export const makeUserRepository = (): iUserRepository => {
   const database = getConnection();
   const userRepository = database.collection<UserEntity>('users');
 
-  return new UserRepository(
-    database,
-    userRepository,
-    makeAuthenticateRepository()
-  );
+  return new UserRepository(database, userRepository, makeAuthenticateRepository());
 };
 
 export const makeCompanyRepository = (): iCompanyRepository => {
   const database = getConnection();
-  const companyRepository  = database.collection<CompanyEntity>('companies');
+  const companyRepository = database.collection<CompanyEntity>('companies');
 
   const memoryCache = GetMemoryCached({
     context: 'COMPANY',
   });
 
-  return new CompanyRepository(
-    companyRepository,
-    memoryCache
-  );
+  return new CompanyRepository(companyRepository, memoryCache);
 };
 
 export const makeProductRepository = (): iProductRepository => {
@@ -77,8 +61,7 @@ export const makeProductRepository = (): iProductRepository => {
 
 export const makeTransactionRepository = (): iTransactionRepository => {
   const database = getConnection();
-  const transactionRepository =
-    database.collection<TransactionEntity>('transactions');
+  const transactionRepository = database.collection<TransactionEntity>('transactions');
 
   return new TransactionRepository(transactionRepository);
 };

@@ -1,13 +1,5 @@
-import {
-  CreateAuthenticateData,
-  CreateTokenAuthenticateData,
-  GetAuthenticateRecordData,
-} from '../../../../data/usecases/authenticate';
-import {
-  iCreateAuthenticationUsecase,
-  iCreateTokenAuthenticateUsecase,
-  iGetAuthenticateRecordUsecase,
-} from 'src/domain/usecases/authenticate';
+import { CreateAuthenticateData, CreateTokenAuthenticateData, GetAuthenticateRecordData } from '../../../../data/usecases/authenticate';
+import { iCreateAuthenticationUsecase, iCreateTokenAuthenticateUsecase, iGetAuthenticateRecordUsecase } from 'src/domain/usecases/authenticate';
 import { makeHashAdapter, makeTokenAdapter } from '../../infra/cryptography';
 import { makeAuthenticateRepository } from '../../infra/database/mongo.factory';
 
@@ -29,9 +21,5 @@ export function makeCreateTokenAuthenticateUsecase(): iCreateTokenAuthenticateUs
   const getAuthenticate = makeGetAuthenticateRecordUsecase();
   const tokenAdapter = makeTokenAdapter();
 
-  return new CreateTokenAuthenticateData(
-    tokenAdapter,
-    getAuthenticate,
-    hashAdapter
-  );
+  return new CreateTokenAuthenticateData(tokenAdapter, getAuthenticate, hashAdapter);
 }

@@ -1,19 +1,11 @@
 import { iQueueDriver } from 'src/infra/queue/contracts/iQueue';
-import {
-  iDatabaseDriver,
-  iMemoryCachedDriver,
-} from '../../infra/database/contracts';
+import { iDatabaseDriver, iMemoryCachedDriver } from '../../infra/database/contracts';
 import { LoggerProvider } from '../../infra/logger';
 import { iApplication } from './app.interface';
 import { iHttpDriver } from 'src/infra/http/contracts/iHttp.interface';
 
 export class AplicationDrive implements iApplication {
-  constructor(
-    private HTTPDriver: iHttpDriver,
-    private DatabaseDriver: iDatabaseDriver,
-    private MemoryCacheDriver: iMemoryCachedDriver,
-    private QueueDriver: iQueueDriver
-  ) {}
+  constructor(private HTTPDriver: iHttpDriver, private DatabaseDriver: iDatabaseDriver, private MemoryCacheDriver: iMemoryCachedDriver, private QueueDriver: iQueueDriver) {}
 
   async start(callback?: Function): Promise<void> {
     await Promise.all([this.startDatabase(), this.startQueue()]);
@@ -35,9 +27,7 @@ export class AplicationDrive implements iApplication {
   private async startQueue() {
     if (this.QueueDriver) {
       const module_name = `MODULE QUEUE SERVICE (${this.QueueDriver.name})`;
-      const observingAttemptsConnectionWithQueueService = observingAttempts(
-        `Try Connection with ${module_name.toLowerCase()}`
-      );
+      const observingAttemptsConnectionWithQueueService = observingAttempts(`Try Connection with ${module_name.toLowerCase()}`);
       try {
         await this.QueueDriver.connect({
           callback: () => {
@@ -64,9 +54,7 @@ export class AplicationDrive implements iApplication {
   private async startDatabase() {
     if (this.MemoryCacheDriver) {
       const module_name = `MODULE MEMORYCACHE (${this.MemoryCacheDriver.name})`;
-      const observingAttemptsConnectionWithCached = observingAttempts(
-        `Try Connection with ${module_name.toLocaleLowerCase()}`
-      );
+      const observingAttemptsConnectionWithCached = observingAttempts(`Try Connection with ${module_name.toLocaleLowerCase()}`);
       try {
         await this.MemoryCacheDriver.connect({
           callback: () => {
@@ -90,9 +78,7 @@ export class AplicationDrive implements iApplication {
 
     if (this.DatabaseDriver) {
       const module_name = `MODULE DATABASE (${this.DatabaseDriver.name})`;
-      const observerConnectionWithDatabase = observingAttempts(
-        `Try Connection with ${module_name.toLocaleLowerCase()}`
-      );
+      const observerConnectionWithDatabase = observingAttempts(`Try Connection with ${module_name.toLocaleLowerCase()}`);
       try {
         await this.DatabaseDriver.connect({
           callback: () => {

@@ -2,10 +2,7 @@ import { iUsecase } from 'src/domain/contracts';
 import { iCreateTransactionUsecase } from '../transaction/iCreateTransaction.usecase';
 
 export abstract class iRemoveProductUsecase implements iUsecase {
-  abstract exec(
-    input: iRemoveProductUsecase.Input,
-    options: iRemoveProductUsecase.Options
-  ): Promise<iRemoveProductUsecase.Output>;
+  abstract exec(input: iRemoveProductUsecase.Input, options: iRemoveProductUsecase.Options): Promise<iRemoveProductUsecase.Output>;
 }
 
 export namespace iRemoveProductUsecase {

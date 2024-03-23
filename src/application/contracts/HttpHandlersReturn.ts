@@ -26,14 +26,7 @@ export abstract class HTTPHandlerReturns {
     }
   }
 
-  sendSucess(
-    status:
-      | HTTP_STATUS.OK
-      | HTTP_STATUS.ACCEPTED
-      | HTTP_STATUS.CREATED
-      | HTTP_STATUS.CONTINUE = HTTP_STATUS.CONTINUE,
-    data?: any
-  ): HttpResponse<any> {
+  sendSucess(status: HTTP_STATUS.OK | HTTP_STATUS.ACCEPTED | HTTP_STATUS.CREATED | HTTP_STATUS.CONTINUE = HTTP_STATUS.CONTINUE, data?: any): HttpResponse<any> {
     if (typeof data == 'string') {
       data = { message: data };
     }

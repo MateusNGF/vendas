@@ -1,9 +1,6 @@
 import { mock, MockProxy } from 'jest-mock-extended';
 import { AuthEntity } from 'src/domain/entities/auth.entity';
-import {
-  iCreateAuthenticationUsecase,
-  iGetAuthenticateRecordUsecase,
-} from 'src/domain/usecases/authenticate';
+import { iCreateAuthenticationUsecase, iGetAuthenticateRecordUsecase } from 'src/domain/usecases/authenticate';
 import { iAuthenticateRepository } from 'src/infra/database/contracts/repositorys/iAuthenticate.repository';
 import { CreateAuthenticateData } from '../CreateAuthenticate.data';
 import { iHashAdapter } from 'src/infra/cryptography/contracts';
@@ -27,11 +24,7 @@ describe('CreateTokenAuthenticate', () => {
   });
 
   beforeEach(() => {
-    sut = new CreateAuthenticateData(
-      authenticateRepository,
-      getAuthenticateRecord,
-      hashAdapter
-    );
+    sut = new CreateAuthenticateData(authenticateRepository, getAuthenticateRecord, hashAdapter);
 
     fakeOutput = {
       id: 'id_any',

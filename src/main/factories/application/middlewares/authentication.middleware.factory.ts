@@ -9,9 +9,6 @@ export const makeMiddlewareAuthentication = (): iMiddleware => {
   return new AuthenticationMiddleware(tokenAdapter);
 };
 
-export const makeMiddlewareAuthorization = (
-  necessaryLevel: number,
-  options?: AuthorizationMiddleware.Options
-): iMiddleware => {
+export const makeMiddlewareAuthorization = (necessaryLevel: number, options?: AuthorizationMiddleware.Options): iMiddleware => {
   return new AuthorizationMiddleware(necessaryLevel, options);
 };

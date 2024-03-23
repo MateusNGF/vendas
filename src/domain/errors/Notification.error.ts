@@ -1,6 +1,4 @@
-import {
-  INotificationErrorDriver,
-} from '../contracts/iNotificationError';
+import { INotificationErrorDriver } from '../contracts/iNotificationError';
 
 export class NotificationError extends Error {
   name: string = 'Notification Error';
@@ -32,11 +30,10 @@ export class NotificationContent implements INotificationErrorDriver.INotificati
 
 export class NotificationErrorDriver implements INotificationErrorDriver {
   constructor(private readonly _settings: INotificationErrorDriver.IDriverSettings) {}
-    async create(settings : INotificationErrorDriver.IDriverSettings): Promise<INotificationErrorDriver.IManager> {
-        return new NotificationErrorManager(settings ?? this._settings);
-    }
+  async create(settings: INotificationErrorDriver.IDriverSettings): Promise<INotificationErrorDriver.IManager> {
+    return new NotificationErrorManager(settings ?? this._settings);
+  }
 }
-
 
 class NotificationErrorManager implements INotificationErrorDriver.IManager {
   private stackNotifications: Array<INotificationErrorDriver.INotificationContent> = [];
@@ -61,9 +58,6 @@ class NotificationErrorManager implements INotificationErrorDriver.IManager {
     return this.stackNotifications;
   }
   GetToStrings(): string {
-    return this.stackNotifications
-      .map((error, index) => `${index + 1}º ${String(error)}`)
-      .join(';\n ');
+    return this.stackNotifications.map((error, index) => `${index + 1}º ${String(error)}`).join(';\n ');
   }
-
 }

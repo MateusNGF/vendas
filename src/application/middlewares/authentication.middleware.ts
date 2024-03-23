@@ -17,9 +17,7 @@ export class AuthenticationMiddleware extends iMiddleware {
     try {
       if (!token) throw new UnauthorizedError('Token required.');
 
-      content.decodedTokenUser = await this.tokenAdapter.verify<PayloadToken>(
-        token
-      );
+      content.decodedTokenUser = await this.tokenAdapter.verify<PayloadToken>(token);
 
       return this.sendSucess(HTTP_STATUS.OK, content);
     } catch (e) {

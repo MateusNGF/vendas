@@ -5,11 +5,7 @@ import { iAuthenticateRepository } from '../../contracts/repositorys/iAuthentica
 import { iMemoryCachedDriver } from '../../contracts';
 
 export class AuthenticateRepository implements iAuthenticateRepository {
-  constructor(
-    private readonly database: Db,
-    private readonly colletion: Collection<AuthEntity>,
-    private readonly memoryCache: iMemoryCachedDriver.iManager
-  ) {}
+  constructor(private readonly database: Db, private readonly colletion: Collection<AuthEntity>, private readonly memoryCache: iMemoryCachedDriver.iManager) {}
   async create(auth: AuthEntity): Promise<{ id: string }> {
     const idGenerate = auth.id ? auth.id : generateID();
 
@@ -48,9 +44,7 @@ export class AuthenticateRepository implements iAuthenticateRepository {
     return content;
   }
 
-  private findOneWithProjection(
-    filter: Filter<AuthEntity>
-  ): Promise<AuthEntity> {
+  private findOneWithProjection(filter: Filter<AuthEntity>): Promise<AuthEntity> {
     return this.colletion.findOne(filter, { projection: { _id: 0 } });
   }
 }

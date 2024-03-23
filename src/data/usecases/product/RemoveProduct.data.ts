@@ -13,13 +13,9 @@ export class RemoveProductData implements iRemoveProductUsecase {
     private readonly databaseSession: iDatabaseDriver.iSessionManager
   ) {}
 
-  async exec(
-    input: iRemoveProductUsecase.Input,
-    options?: iRemoveProductUsecase.Options
-  ): Promise<iRemoveProductUsecase.Output> {
+  async exec(input: iRemoveProductUsecase.Input, options?: iRemoveProductUsecase.Options): Promise<iRemoveProductUsecase.Output> {
     const session = await this.databaseSession.createSession();
-    const notificationError = await this.notificationErrorDriver.create()
-    
+    const notificationError = await this.notificationErrorDriver.create();
 
     const products = input.products;
 
@@ -29,7 +25,7 @@ export class RemoveProductData implements iRemoveProductUsecase {
       for (let i = 0; i < products.length; i++) {
         const productBasic: TransactionEntity.ProductIncomingTransaction = products[i];
 
-        const productContent = await this.productRepository.productOutput(productBasic,{ session });
+        const productContent = await this.productRepository.productOutput(productBasic, { session });
 
         if (!productContent) {
           notificationError.AddNotification({

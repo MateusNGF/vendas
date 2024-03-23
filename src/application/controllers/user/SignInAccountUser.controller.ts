@@ -6,25 +6,17 @@ import { NotificationHandlerSignInAccountUser } from '../../../main/factories/ma
 import { INotificationErrorDriver } from 'src/domain/contracts';
 
 export class SignInAccountUserController extends iController {
-  constructor(
-    private readonly SignInAccountUserUsecase: iSignInAccountUserUsecase,
-    private readonly NotificationErrorDriver: INotificationErrorDriver
-  ) {
+  constructor(private readonly SignInAccountUserUsecase: iSignInAccountUserUsecase, private readonly NotificationErrorDriver: INotificationErrorDriver) {
     super();
   }
 
   async exec(request: HttpRequest): Promise<HttpResponse> {
     try {
-      const notificationError = await this.NotificationErrorDriver.create()
-
+      const notificationError = await this.NotificationErrorDriver.create();
 
       const content: iSignInAccountUserUsecase.Input = request.body;
 
-      ObjectManager.hasKeysWithNotification<iSignInAccountUserUsecase.Input>(
-        ['email', 'password'],
-        content,
-        notificationError
-      );
+      ObjectManager.hasKeysWithNotification<iSignInAccountUserUsecase.Input>(['email', 'password'], content, notificationError);
 
       notificationError.CheckToNextStep();
 

@@ -9,9 +9,7 @@ import { ProductEntity, TransactionEntity } from '../../../domain/entities';
 import { iQueueDriver } from '../../../infra/queue/contracts/iQueue';
 import { INotificationErrorDriver } from '../../../domain/contracts';
 
-export class CreateTransactionForProductsData
-  implements iCreateTransactionUsecase
-{
+export class CreateTransactionForProductsData implements iCreateTransactionUsecase {
   constructor(
     private readonly queueDriver: iQueueDriver.iQueueManager,
     private readonly notificationErrorDriver: INotificationErrorDriver,
@@ -19,11 +17,8 @@ export class CreateTransactionForProductsData
     private readonly productRepository: iProductRepository,
     private readonly transactionRepository: iTransactionRepository
   ) {}
-  async exec(
-    input: iCreateTransactionUsecase.Input,
-    options?: iCreateTransactionUsecase.Options
-  ) {
-    const notificationError = await this.notificationErrorDriver.create()
+  async exec(input: iCreateTransactionUsecase.Input, options?: iCreateTransactionUsecase.Options) {
+    const notificationError = await this.notificationErrorDriver.create();
 
     this.Validation(input, { notificationError });
 
@@ -33,7 +28,7 @@ export class CreateTransactionForProductsData
       const { products, user_id } = input;
 
       // Os dados desse usuário remetem a um funcionario ou vendedor que vai operar a transação.
-      const user_content = await this.userRepository.findById(user_id, {session });
+      const user_content = await this.userRepository.findById(user_id, { session });
       if (!user_content) {
         throw new OperationFailed(`User with id ${user_id} not found.`);
       }
@@ -46,13 +41,9 @@ export class CreateTransactionForProductsData
       };
 
       for (let i = 0; i < products.length; i++) {
-        const productBasic: TransactionEntity.ProductIncomingTransaction =
-          products[i];
+        const productBasic: TransactionEntity.ProductIncomingTransaction = products[i];
 
-        const productContent = await this.productRepository.findById(
-          productBasic.id,
-          { session }
-        );
+        const productContent = await this.productRepository.findById(productBasic.id, { session });
 
         if (!productContent || !productContent.id) {
           notificationError.AddNotification({
@@ -70,29 +61,21 @@ export class CreateTransactionForProductsData
           quantity: productBasic.quantity,
         });
 
-        transactionPartial.total_price += Number(
-          productContent.sale_price * productBasic.quantity
-        );
+        transactionPartial.total_price += Number(productContent.sale_price * productBasic.quantity);
       }
 
       notificationError.CheckToNextStep();
 
       const transaction = new TransactionEntity(transactionPartial);
-      const resultOperation = await this.transactionRepository.create(
-        transaction,
-        { session }
-      );
+      const resultOperation = await this.transactionRepository.create(transaction, { session });
 
-      this.queueDriver.publishInQueue<Partial<TransactionEntity>>(
-        'transaction',
-        {
-          id: resultOperation.id,
-          user_id: transaction.user_id,
-          customer_id: transaction.customer_id,
-          created_at: transaction.created_at,
-          products: transaction.products,
-        }
-      );
+      this.queueDriver.publishInQueue<Partial<TransactionEntity>>('transaction', {
+        id: resultOperation.id,
+        user_id: transaction.user_id,
+        customer_id: transaction.customer_id,
+        created_at: transaction.created_at,
+        products: transaction.products,
+      });
 
       return {
         id: resultOperation.id,
@@ -104,11 +87,7 @@ export class CreateTransactionForProductsData
   }
 
   private Validation(input: iCreateTransactionUsecase.Input, { notificationError }) {
-    ObjectManager.hasKeysWithNotification<iCreateTransactionUsecase.Input>(
-      ['type', 'products'],
-      input,
-      notificationError
-    );
+    ObjectManager.hasKeysWithNotification<iCreateTransactionUsecase.Input>(['type', 'products'], input, notificationError);
 
     if (!['incoming', 'outgoing'].includes(input.type)) {
       notificationError.AddNotification({
@@ -120,16 +99,10 @@ export class CreateTransactionForProductsData
     notificationError.CheckToNextStep();
 
     if (input.products.length < 1) {
-      throw new OperationFailed(
-        'Need one or more products for creating transaction.'
-      );
+      throw new OperationFailed('Need one or more products for creating transaction.');
     }
 
-    ObjectManager.hasKeysWithNotification<TransactionEntity.ProductIncomingTransaction>(
-      ['id', 'quantity'],
-      input.products,
-      notificationError
-    );
+    ObjectManager.hasKeysWithNotification<TransactionEntity.ProductIncomingTransaction>(['id', 'quantity'], input.products, notificationError);
 
     notificationError.CheckToNextStep();
   }

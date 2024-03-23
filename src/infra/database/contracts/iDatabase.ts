@@ -1,8 +1,6 @@
 import { iDriver } from '../../../infra/contracts/driver.interface';
 
-export interface iDatabaseDriver<type_driver = any>
-  extends iDriver<type_driver>,
-    iDriver.iConnection {
+export interface iDatabaseDriver<type_driver = any> extends iDriver<type_driver>, iDriver.iConnection {
   readonly name: string;
 
   getSession(): iDatabaseDriver.iSessionManager;
@@ -20,9 +18,7 @@ export namespace iDatabaseDriver {
   }
 }
 
-export interface iMemoryCachedDriver<TypeMemmoryCached = any>
-  extends iDriver,
-    iDriver.iConnection {
+export interface iMemoryCachedDriver<TypeMemmoryCached = any> extends iDriver, iDriver.iConnection {
   readonly name: string;
 
   client: TypeMemmoryCached;

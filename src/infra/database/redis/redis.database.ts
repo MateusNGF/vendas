@@ -37,10 +37,7 @@ class RedisDriveDatabase implements iMemoryCachedDriver<RedisClientType> {
 }
 
 export class RedisManagerDatabase implements iMemoryCachedDriver.iManager {
-  constructor(
-    private readonly drive: iMemoryCachedDriver<RedisClientType>,
-    private readonly configuration: iMemoryCachedDriver.iConfiguration
-  ) {}
+  constructor(private readonly drive: iMemoryCachedDriver<RedisClientType>, private readonly configuration: iMemoryCachedDriver.iConfiguration) {}
 
   async set(key: string, value: any, options = { expire: 60 * 5 }) {
     if (!this.drive.client?.isReady || !key || !value) return null;
@@ -62,7 +59,7 @@ export class RedisManagerDatabase implements iMemoryCachedDriver.iManager {
   }
 
   async del(key: string) {
-    if (!this.drive.client?.isReady  || !key) return null;
+    if (!this.drive.client?.isReady || !key) return null;
 
     key = this.BuildContext(key);
 
@@ -70,9 +67,7 @@ export class RedisManagerDatabase implements iMemoryCachedDriver.iManager {
   }
 
   private BuildContext(key: string) {
-    return this.configuration.context
-      ? `${this.configuration.context.toUpperCase()}|${key}`
-      : key;
+    return this.configuration.context ? `${this.configuration.context.toUpperCase()}|${key}` : key;
   }
 }
 

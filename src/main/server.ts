@@ -7,12 +7,7 @@ import { QueueDriver } from '../infra/queue/rabbitmq.queue';
 import { iApplication } from './apps/app.interface';
 
 (async () => {
-  const Aplication: iApplication = new AplicationDrive(
-    HTTPDriver,
-    DatabaseDriver,
-    MemoryCacheDriver,
-    QueueDriver
-  );
+  const Aplication: iApplication = new AplicationDrive(HTTPDriver, DatabaseDriver, MemoryCacheDriver, QueueDriver);
 
   try {
     await Aplication.start();

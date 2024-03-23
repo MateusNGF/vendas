@@ -16,54 +16,50 @@ describe('RegisterCompanyUsecase', () => {
   });
 
   beforeEach(() => {
-    sut = new RegisterCompanyData(
-      companyRepository,
-      null as any
-    );
+    sut = new RegisterCompanyData(companyRepository, null as any);
 
     fakeInputCredentials = {
       created_by: 'any_created_by',
-      company : {
+      company: {
         name: 'any_name',
         fantasy_name: 'any_fantasy_name',
         created_at: new Date(),
-      }
+      },
     };
     expectedOutput = {
-        id: 'any_id',
-        ...fakeInputCredentials.company
+      id: 'any_id',
+      ...fakeInputCredentials.company,
     };
   });
 
   beforeEach(() => {
     companyRepository.create.mockResolvedValue({ id: 'any_id' });
-  })
+  });
 
   it('Should return company with same information from input', async () => {
     const result = await sut.exec(fakeInputCredentials);
     expect(result).toEqual(
-        expect.objectContaining<iRegisterCompanyUsecase.Output>({ 
-          ...fakeInputCredentials.company
-        })
+      expect.objectContaining<iRegisterCompanyUsecase.Output>({
+        ...fakeInputCredentials.company,
+      })
     );
   });
 
   it('Should return company associeted owner_id and created_by from created_by', async () => {
     const result = await sut.exec(fakeInputCredentials);
     expect(result).toEqual(
-        expect.objectContaining<iRegisterCompanyUsecase.Output>({ 
-          created_by: fakeInputCredentials.created_by,
-          owner_id: fakeInputCredentials.created_by
-        })
+      expect.objectContaining<iRegisterCompanyUsecase.Output>({
+        created_by: fakeInputCredentials.created_by,
+        owner_id: fakeInputCredentials.created_by,
+      })
     );
   });
 
   it('Should return company with id', async () => {
     const result = await sut.exec(fakeInputCredentials);
-    expect(result).toHaveProperty("id");
+    expect(result).toHaveProperty('id');
   });
 
-  
   it('Should return OperationFailed when create company return failed.', async () => {
     companyRepository.create.mockResolvedValue(null);
 

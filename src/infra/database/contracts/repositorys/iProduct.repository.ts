@@ -4,38 +4,14 @@ import { BaseFilterForListing } from 'src/domain/types';
 import { BaseRepository } from '.';
 
 export interface iProductRepository extends BaseRepository<ProductEntity> {
-  isDuplicatedProduct(
-    product: Partial<ProductEntity>,
-    options?: iProductRepository.Options
-  ): Promise<ProductEntity>;
-  registerProduct(
-    product: Array<ProductEntity>,
-    options?: iProductRepository.Options
-  ): Promise<boolean>;
-  archiveProduct(
-    productId: string,
-    options?: iProductRepository.Options
-  ): Promise<boolean>;
-  unarchiveProduct(
-    productId: string,
-    options?: iProductRepository.Options
-  ): Promise<boolean>;
-  listProduct(
-    filter: iProductRepository.FilterForList,
-    options?: iProductRepository.Options
-  ): Promise<Array<ProductEntity>>;
-  productOutput(
-    productDetails: TransactionEntity.ProductIncomingTransaction,
-    options?: iProductRepository.Options
-  ): Promise<ProductEntity>;
-  findById(
-    id: string,
-    options?: iProductRepository.Options
-  ): Promise<ProductEntity>;
-  findByIds(
-    ids: Array<string>,
-    options?: iProductRepository.Options
-  ): Promise<Array<ProductEntity>>;
+  isDuplicatedProduct(product: Partial<ProductEntity>, options?: iProductRepository.Options): Promise<ProductEntity>;
+  registerProduct(product: Array<ProductEntity>, options?: iProductRepository.Options): Promise<boolean>;
+  archiveProduct(productId: string, options?: iProductRepository.Options): Promise<boolean>;
+  unarchiveProduct(productId: string, options?: iProductRepository.Options): Promise<boolean>;
+  listProduct(filter: iProductRepository.FilterForList, options?: iProductRepository.Options): Promise<Array<ProductEntity>>;
+  productOutput(productDetails: TransactionEntity.ProductIncomingTransaction, options?: iProductRepository.Options): Promise<ProductEntity>;
+  findById(id: string, options?: iProductRepository.Options): Promise<ProductEntity>;
+  findByIds(ids: Array<string>, options?: iProductRepository.Options): Promise<Array<ProductEntity>>;
 }
 
 export namespace iProductRepository {

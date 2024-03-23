@@ -1,9 +1,6 @@
 import { UserEntity } from '../../../domain/entities';
 import { OperationFailed } from '../../../domain/errors';
-import {
-  iCreateAuthenticationUsecase,
-  iCreateTokenAuthenticateUsecase,
-} from 'src/domain/usecases/authenticate';
+import { iCreateAuthenticationUsecase, iCreateTokenAuthenticateUsecase } from 'src/domain/usecases/authenticate';
 import { iSignUpAccountUserUsecase } from 'src/domain/usecases/user';
 import { iUserRepository } from 'src/infra/database/contracts/repositorys/iUser.repository';
 
@@ -24,8 +21,7 @@ export class SignUpAccountUserData implements iSignUpAccountUserUsecase {
       associeted_id: userPartial.id,
     });
 
-    if (!authenticate)
-      throw new OperationFailed('Unable to create an authenticator.');
+    if (!authenticate) throw new OperationFailed('Unable to create an authenticator.');
 
     const user = new UserEntity({
       id: userPartial.id,
@@ -33,8 +29,7 @@ export class SignUpAccountUserData implements iSignUpAccountUserUsecase {
     });
 
     const inserteded = await this.userRepository.create(user);
-    if (!inserteded || (inserteded && !inserteded.id))
-      throw new OperationFailed('Operation failed, please try again.');
+    if (!inserteded || (inserteded && !inserteded.id)) throw new OperationFailed('Operation failed, please try again.');
 
     const token = await this.createTokenAuthenticate.exec({
       associeted_id: inserteded.id,

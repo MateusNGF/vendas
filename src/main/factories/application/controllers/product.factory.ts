@@ -1,14 +1,7 @@
 import { iController } from '../../../../application/contracts';
 import { ListProductController } from '../../../../application/controllers/product/ListProduct.controller';
-import {
-  ArchiveOrUnarchiveProductController,
-  RegisterProductController,
-} from '../../../../application/controllers/product';
-import {
-  makeArchiveOrUnarchiveProductUsecase,
-  makeListProductUsecase,
-  makeRegisterProductUsecase,
-} from '../usecases/product.factory';
+import { ArchiveOrUnarchiveProductController, RegisterProductController } from '../../../../application/controllers/product';
+import { makeArchiveOrUnarchiveProductUsecase, makeListProductUsecase, makeRegisterProductUsecase } from '../usecases/product.factory';
 import { NotificationHandlerArchiveOrUnarchiveProduct } from '../../main/errors';
 
 export function makeRegisterProductController(): iController {
@@ -16,10 +9,7 @@ export function makeRegisterProductController(): iController {
 }
 
 export function makeArchiveOrUnarchiveProductController(): iController {
-  return new ArchiveOrUnarchiveProductController(
-    makeArchiveOrUnarchiveProductUsecase(),
-    NotificationHandlerArchiveOrUnarchiveProduct()
-  );
+  return new ArchiveOrUnarchiveProductController(makeArchiveOrUnarchiveProductUsecase(), NotificationHandlerArchiveOrUnarchiveProduct());
 }
 
 export function makeListProductController(): iController {

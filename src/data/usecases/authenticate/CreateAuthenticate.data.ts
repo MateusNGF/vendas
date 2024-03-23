@@ -1,30 +1,20 @@
 import { OperationFailed } from '../../../domain/errors';
-import {
-  iCreateAuthenticationUsecase,
-  iGetAuthenticateRecordUsecase,
-} from 'src/domain/usecases/authenticate';
+import { iCreateAuthenticationUsecase, iGetAuthenticateRecordUsecase } from 'src/domain/usecases/authenticate';
 import { iAuthenticateRepository } from 'src/infra/database/contracts/repositorys/iAuthenticate.repository';
 import { iHashAdapter } from 'src/infra/cryptography/contracts';
 import { AuthEntity } from '../../../domain/entities';
 
 export class CreateAuthenticateData implements iCreateAuthenticationUsecase {
-  constructor(
-    private readonly authenticateRepository: iAuthenticateRepository,
-    private readonly getAuthenticateRecord: iGetAuthenticateRecordUsecase,
-    private readonly hashAdapter: iHashAdapter
-  ) {}
+  constructor(private readonly authenticateRepository: iAuthenticateRepository, private readonly getAuthenticateRecord: iGetAuthenticateRecordUsecase, private readonly hashAdapter: iHashAdapter) {}
 
-  async exec(
-    input: iCreateAuthenticationUsecase.Input
-  ): Promise<iCreateAuthenticationUsecase.Output> {
+  async exec(input: iCreateAuthenticationUsecase.Input): Promise<iCreateAuthenticationUsecase.Output> {
     if (!input) return;
 
     const hasRecord = await this.getAuthenticateRecord.exec({
       email: input.email,
     });
 
-    if (hasRecord)
-      throw new OperationFailed(`Email ${input.email} has record.`);
+    if (hasRecord) throw new OperationFailed(`Email ${input.email} has record.`);
 
     const incomingAuthenticate = new AuthEntity({
       email: input.email,
@@ -32,12 +22,9 @@ export class CreateAuthenticateData implements iCreateAuthenticationUsecase {
       password: await this.hashAdapter.encrypt(input.password),
     });
 
-    const authenticate = await this.authenticateRepository.create(
-      incomingAuthenticate
-    );
+    const authenticate = await this.authenticateRepository.create(incomingAuthenticate);
 
-    if (!authenticate)
-      new OperationFailed('Authenticate create failed. Try again.');
+    if (!authenticate) new OperationFailed('Authenticate create failed. Try again.');
 
     return { id: authenticate.id };
   }
