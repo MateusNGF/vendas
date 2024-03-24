@@ -16,6 +16,7 @@ class ExpressHttpDriver implements iHttpDriver<Express> {
   constructor() {
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
+    this.preperCORS()
   }
 
   public async connect(config?: iDriver.ConnectionOptions): Promise<this> {
@@ -56,6 +57,21 @@ class ExpressHttpDriver implements iHttpDriver<Express> {
 
         this.app.use(`/${prefix_route}`, router);
       });
+  }
+
+  private preperCORS(){
+    this.app.use((req, res, next) => {
+      
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+
+      if (req.method === 'OPTIONS') {
+        return res.sendStatus(200)
+      }
+
+      next();
+    });
   }
 
   private makePathOverview(layer: any, prefix: string) {
